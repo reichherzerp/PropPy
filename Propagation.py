@@ -1,51 +1,38 @@
-import matplotlib.pyplot as plt
 import random
-import numpy as np
-from numba import jit, int32, float32, types, typed
+from numba import jit, float32, types, typed
 from numba.typed import List
 from numba.experimental import jitclass
+import numpy as np
 
-spec = [
-    ('free_mean_path_para', float32), # a simple scalar field
-    ('free_mean_path_perp', float32), 
-    ('gyro_radius', float32), 
-    ('t', float32),
-    ('pos', float32[:]),          # an array field
-    ('direction', types.ListType(types.int64))     
+spec = [   
+    ('step_size', float32), # a simple scalar field
 ]
 
 @jitclass(spec)
-class Popagation():
-    def __init__(self, gyro_radius, free_mean_path_para, free_mean_path_perp, direction):
-        self.gyro_radius = gyro_radius
-        self.free_mean_path_para = free_mean_path_para
-        self.free_mean_path_perp = free_mean_path_perp
-        self.t = 0
-        self.pos = np.zeros(3, dtype=np.float32)
-        self.direction = direction
-                 
-     
-    def move(self, step_size):
-        p = 1.0*step_size
-        self.t = self.t + 1*step_size
+class Propagation():
+    def __init__(self, step_size):
+        self.step_size = step_size
         
-        if self.t > self.gyro_radius:
+    def move(self, particle):
+        step_size = 1
+        p = 1.0*step_size
+        particle.t = particle.t + 1*step_size
+        
+        if particle.t > particle.gyro_radius:
             # after gyroradius ~ half gyroorbit, particle 
             # needs to change direction perp to background field
-            if (random.randint(0, self.free_mean_path_perp) == 1):
-                self.direction[0] = self.direction[0]*(-1)
-            if (random.randint(0, self.free_mean_path_perp) == 0):
-                self.direction[1] = self.direction[1]*(-1)
-        if self.t > self.free_mean_path_para:
+            if (random.randint(0, particle.free_mean_path_perp) == 1):
+                particle.direction[0] = particle.direction[0]*(-1)
+            if (random.randint(0, particle.free_mean_path_perp) == 0):
+                particle.direction[1] = particle.direction[1]*(-1)
+        if particle.t > particle.free_mean_path_para:
             # after mean-free length, particle can also change 
             # direction parallel to mean field
-            if (random.randint(0, self.free_mean_path_para) == 0):
-                self.direction[2] = self.direction[2]*(-1)
+            if (random.randint(0, particle.free_mean_path_para) == 0):
+                particle.direction[2] = particle.direction[2]*(-1)
             
-        absDirection = (self.direction[0]**2+self.direction[1]**2+self.direction[2]**2)**0.5
-        self.pos[0] = self.pos[0] + p*self.direction[0]/absDirection
-        self.pos[1] = self.pos[1] + p*self.direction[1]/absDirection
-        self.pos[2] = self.pos[2] + p*self.direction[2]/absDirection
-        
-    def kappa(self, axis):
-        return self.pos[axis]**2/(2*self.t)
+        absDirection = (particle.direction[0]**2+particle.direction[1]**2+particle.direction[2]**2)**0.5
+        particle.pos[0] = particle.pos[0] + p*particle.direction[0]/absDirection
+        particle.pos[1] = particle.pos[1] + p*particle.direction[1]/absDirection
+        particle.pos[2] = particle.pos[2] + p*particle.direction[2]/absDirection
+        return particle
