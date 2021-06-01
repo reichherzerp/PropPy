@@ -47,4 +47,9 @@ class Propagation():
         particle.pos[0] = particle.pos[0] + d[0]
         particle.pos[1] = particle.pos[1] + d[1]
         particle.pos[2] = particle.pos[2] + d[2]
-        return particle
+
+
+    def move_fast(self, particle):
+        particle.pos[0] = particle.pos[0] + 1.0
+        particle.pos[1] = particle.pos[1] + 1.0
+        particle.pos[2] = particle.pos[2] + 1.0

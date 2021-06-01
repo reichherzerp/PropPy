@@ -1,12 +1,12 @@
 import random
 import numpy as np
-from numba import jit, float32, types, typed
+from numba import jit, int32, float32, types, typed
 from numba.typed import List
+import numba
 from numba.experimental import jitclass
 import numpy as np
 from modules.Particle import Particle
 from modules.Propagation import Propagation
-
 
 simulation_spec = [
     ('particles', types.ListType(Particle.class_type.instance_type)),
@@ -19,11 +19,10 @@ class Simulation():
     def __init__(self):
         print('init simulation completed')
   
-    def addParticles(self, source):
+    def add_particles(self, source):
         particles = List()
         for j in range(source.nr_particles):
             particle = Particle(j, source.gyro_radius, source.diffusion_tensor)
-            #direction = List()
             random_values = np.ones(3, dtype=np.int32)
             random_values[0] = random.randint(0, 1)*2-1
             random_values[1] = random.randint(0, 1)*2-1
@@ -33,12 +32,9 @@ class Simulation():
             
         self.particles = particles
 
-    def addPropagation(self, propagation, time):
+    def add_propagation(self, propagation, time):
         self.propagation = propagation
         self.time = time
-
-    def addOutput(self, output):
-        self.output = output
         
     def distribution(self, axis):
         data = []
@@ -46,7 +42,7 @@ class Simulation():
             data.append(p.pos[axis])
         return data
     
-    def runSimulation(self):
+    def run_simulation(self, observer_type):
         id = []
         x = []
         y = []
@@ -54,19 +50,23 @@ class Simulation():
         time = []
         
         for i, t in enumerate(self.time):
-            particles = List()
             for p in self.particles:
-                particles.append(self.propagation.move(p))
+                self.propagation.move(p)
                 ### observer
-                if i < 1000 or i % 1000 == 0:
-                    id.append(p.id)
-                    x.append(p.pos[0])
-                    y.append(p.pos[1])
-                    z.append(p.pos[2])
-                    time.append(t)
-   
-            self.particles = particles
-  
-        return id, time, x, y, z
+                if observer_type == 0:
+                    if i < 1000 or i % 1000 == 0:
+                        id.append(p.id)
+                        x.append(p.pos[0])
+                        y.append(p.pos[1])
+                        z.append(p.pos[2])
+                        time.append(t)
+                if observer_type == 1:
+                    r2 = p.pos[0]**2+p.pos[1]**2+p.pos[2]**2
+                    if r2 >= (3*10**2)**2 and r2 <= (3*10**2)**2+1:
+                        id.append(p.id)
+                        x.append(p.pos[0])
+                        y.append(p.pos[1])
+                        z.append(p.pos[2])
+                        time.append(t)
 
-        
+        return id, time, x, y, z
