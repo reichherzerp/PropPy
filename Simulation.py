@@ -1,11 +1,12 @@
-import matplotlib.pyplot as plt
 import random
 import numpy as np
 from numba import jit, float32, types, typed
 from numba.typed import List
 from numba.experimental import jitclass
 import numpy as np
-from .Particle import Particle
+from modules.Particle import Particle
+from modules.Propagation import Propagation
+from modules.Source import Source
 
 simulation_spec = [
     ('particles', types.ListType(Particle.class_type.instance_type)),
@@ -21,11 +22,13 @@ class Simulation():
     def addParticles(self, source):
         particles = List()
         for j in range(source.nr_particles):
-            particle = Particle(source.gyro_radius, source.free_mean_path_para, source.free_mean_path_perp)
-            direction = List()
-            random_values = np.random.randint(low=0, high=1, size=3)*2-1
-            [direction.append(x) for x in random_values]
-            particle.setDirection(direction)
+            particle = Particle(source.gyro_radius, source.diffusion_tensor)
+            #direction = List()
+            random_values = np.ones(3, dtype=np.int32)
+            random_values[0] = random.randint(0, 1)*2-1
+            random_values[1] = random.randint(0, 1)*2-1
+            random_values[2] = random.randint(0, 1)*2-1
+            particle.setDirection(random_values)
             particles.append(particle)
             
         self.particles = particles
@@ -50,4 +53,11 @@ class Simulation():
             kappa_para_sum = 0
             particles = List()
             [particles.append(self.propagation.move(p)) for p in self.particles]
+            for p in particles:
+                kappa_perp_sum = kappa_perp_sum + (p.kappa(0)+p.kappa(1))/2
+                kappa_para_sum = kappa_para_sum + p.kappa(2)
+    
+            kappa_para.append(kappa_para_sum/len(particles)/t)
+            kappa_perp.append(kappa_perp_sum/len(particles)/t)
             self.particles = particles
+        return [kappa_para, kappa_perp]
