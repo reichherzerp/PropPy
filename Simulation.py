@@ -17,7 +17,7 @@ simulation_spec = [
 @jitclass(simulation_spec)
 class Simulation():
     def __init__(self):
-        print('start simulation')
+        print('init simulation completed')
   
     def addParticles(self, source):
         particles = List()
@@ -43,12 +43,12 @@ class Simulation():
             data.append(p.pos[axis])
         return data
     
-    def runSimulation(self, time):
+    def runSimulation(self):
         kappa_perp = []
         kappa_para = []
         x = [0]
         y = [0]
-        for i, t in enumerate(time):
+        for i, t in enumerate(self.time):
             kappa_perp_sum = 0
             kappa_para_sum = 0
             particles = List()
