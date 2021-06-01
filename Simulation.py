@@ -6,7 +6,7 @@ from numba.experimental import jitclass
 import numpy as np
 from modules.Particle import Particle
 from modules.Propagation import Propagation
-from modules.Source import Source
+
 
 simulation_spec = [
     ('particles', types.ListType(Particle.class_type.instance_type)),
@@ -22,7 +22,7 @@ class Simulation():
     def addParticles(self, source):
         particles = List()
         for j in range(source.nr_particles):
-            particle = Particle(source.gyro_radius, source.diffusion_tensor)
+            particle = Particle(j, source.gyro_radius, source.diffusion_tensor)
             #direction = List()
             random_values = np.ones(3, dtype=np.int32)
             random_values[0] = random.randint(0, 1)*2-1
@@ -36,6 +36,9 @@ class Simulation():
     def addPropagation(self, propagation, time):
         self.propagation = propagation
         self.time = time
+
+    def addOutput(self, output):
+        self.output = output
         
     def distribution(self, axis):
         data = []
@@ -44,20 +47,26 @@ class Simulation():
         return data
     
     def runSimulation(self):
-        kappa_perp = []
-        kappa_para = []
-        x = [0]
-        y = [0]
+        id = []
+        x = []
+        y = []
+        z = []
+        time = []
+        
         for i, t in enumerate(self.time):
-            kappa_perp_sum = 0
-            kappa_para_sum = 0
             particles = List()
-            [particles.append(self.propagation.move(p)) for p in self.particles]
-            for p in particles:
-                kappa_perp_sum = kappa_perp_sum + (p.kappa(0)+p.kappa(1))/2
-                kappa_para_sum = kappa_para_sum + p.kappa(2)
-    
-            kappa_para.append(kappa_para_sum/len(particles)/t)
-            kappa_perp.append(kappa_perp_sum/len(particles)/t)
+            for p in self.particles:
+                particles.append(self.propagation.move(p))
+                ### observer
+                if i < 1000 or i % 1000 == 0:
+                    id.append(p.id)
+                    x.append(p.pos[0])
+                    y.append(p.pos[1])
+                    z.append(p.pos[2])
+                    time.append(t)
+   
             self.particles = particles
-        return [kappa_para, kappa_perp]
+  
+        return id, time, x, y, z
+
+        
