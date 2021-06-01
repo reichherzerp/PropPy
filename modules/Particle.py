@@ -9,6 +9,7 @@ spec = [
     ('gyro_radius', float32), # a simple scalar field 
     ('t', float32),
     ('pos', float32[:]),          # an array field
+    ('pos_previous', float32[:]),
     ('direction', int32[:]),
     ('id', int32)      
 ]
@@ -21,6 +22,7 @@ class Particle():
         self.diffusion_tensor = diffusion_tensor
         self.t = 0
         self.pos = np.zeros(3, dtype=np.float32)
+        self.pos_previous = np.zeros(3, dtype=np.float32)
         
     def setDirection(self, direction):
         self.direction = direction

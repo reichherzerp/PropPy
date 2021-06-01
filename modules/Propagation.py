@@ -14,6 +14,7 @@ class Propagation():
         self.step_size = step_size
         
     def move(self, particle):
+        particle.pos_previous = particle.pos
         kappa = particle.diffusion_tensor
         tau_step = 1.0
         chi = np.array([1.0, 1.0, 1.0])
