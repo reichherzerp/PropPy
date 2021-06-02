@@ -20,8 +20,8 @@ class Propagation():
     def set_nr_fixed_gyro_radii(self, nr_fixed_gyro_radii):
         self.nr_fixed_gyro_radii = nr_fixed_gyro_radii
 
-    def set_normalized_chi(self, normalized_chi):
-        self.normalized_chi = normalized_chi
+    def set_normalized_chi(self, chi_normalized):
+        self.chi_normalized = chi_normalized
         
     def move(self, particle):
         pos_previous = particle.pos
