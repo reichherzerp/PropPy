@@ -11,7 +11,8 @@ spec = [
     ('pos', float32[:]),          # an array field
     ('pos_previous', float32[:]),
     ('direction', int32[:]),
-    ('id', int32)      
+    ('id', int32),
+    ('phi', float32), 
 ]
 
 @jitclass(spec)
@@ -21,6 +22,7 @@ class Particle():
         self.gyro_radius = gyro_radius
         self.diffusion_tensor = diffusion_tensor
         self.t = 0
+        self.phi = 0
         self.pos = np.zeros(3, dtype=np.float32)
         self.pos_previous = np.zeros(3, dtype=np.float32)
         
