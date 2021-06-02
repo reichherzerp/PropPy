@@ -6,20 +6,22 @@ import numpy as np
 
 spec = [   
     ('step_size', float32), # a simple scalar field
+    ('chi_normalized', float32[:])
 ]
 
 @jitclass(spec)
 class Propagation():
     def __init__(self, step_size):
         self.step_size = step_size
+        self.chi_normalized = np.array([1.0/3**0.5, 1.0/3**0.5, 1.0/3**0.5], dtype=np.float32)
         
     def move(self, particle):
         pos_previous = particle.pos
         kappa = particle.diffusion_tensor
         tau_step = 1.0
-        chi = np.array([1.0, 1.0, 1.0])
+        
         v = 1.0
-        chi = chi/np.sum(chi)*v
+        chi = self.chi_normalized*v
         tau = kappa*tau_step**2/chi**2
         xi = 2/tau
         prop_turn = tau_step*xi 
