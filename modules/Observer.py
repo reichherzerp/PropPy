@@ -1,26 +1,17 @@
-import matplotlib.pyplot as plt
-import numpy as np
-from scipy.stats import norm
+from numba import jit, int32, float32, types, typed
+from numba.typed import List
+from numba import numba
+from numba.experimental import jitclass
 
-class Plotter():
-    def __init__(self):
-        print('init plotter')
-        
-    def distribution(self, data):
-        print('start plotting')
-        plt.figure()
-        # Fit a normal distribution to the data:
-        mu, std = norm.fit(data)
 
-        # Plot the histogram.
-        plt.hist(data, bins=100, density=True, alpha=0.6, color='g')
+observer_spec = [
+    ('observer_type', int32),
+    ('sphere_radii', float32[:]),
+]
 
-        # Plot the PDF.
-        xmin, xmax = plt.xlim()
-        x_values = np.linspace(xmin, xmax, 100)
-        p = norm.pdf(x_values, mu, std)
-        plt.plot(x_values, p, 'k', linewidth=2)
-        title = "Fit results: mu = %.2f,  std = %.2f" % (mu, std)
-        plt.title(title)
-
-        plt.show()
+@jitclass(observer_spec)
+class Observer():
+    def __init__(self, observer_type, sphere_radii):
+        self.observer_type = observer_type
+        self.sphere_radii = sphere_radii 
+        print('init observer completed')
