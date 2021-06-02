@@ -22,15 +22,14 @@ class Propagation():
         chi = chi/np.sum(chi)*v
         tau = kappa*tau_step**2/chi**2
         xi = 2/tau
-        prop_turn = tau_step*xi
-        random_value = random.random()
+        prop_turn = tau_step*xi 
         
         step_size = 1
-        p = 1.0*step_size
         particle.t = particle.t + 1*step_size
         
         
         ### 1. change direction (if needed)
+        random_value = random.random()
         if particle.t > particle.gyro_radius:
             # after gyroradius ~ half gyroorbit, particle 
             # needs to change direction perp to background field

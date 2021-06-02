@@ -2,7 +2,6 @@ import random
 import numpy as np
 from numba import jit, int32, float32, types, typed
 from numba.typed import List
-import numba
 from numba.experimental import jitclass
 import numpy as np
 from modules.Particle import Particle
@@ -41,12 +40,6 @@ class Simulation():
 
     def add_observer(self, observer):
         self.observer = observer
-        
-    def distribution(self, axis):
-        data = []
-        for p in self.particles:
-            data.append(p.pos[axis])
-        return data
     
     def run_simulation(self):
         id = []
@@ -58,27 +51,20 @@ class Simulation():
         
         for i, t in enumerate(self.time):
             for p in self.particles:
+
                 self.propagation.move(p)
+                
                 ### observer
-                if self.observer.observer_type == 0:
-                    if i < 1000 or i % 1000 == 0:
-                        id.append(p.id)
-                        x.append(p.pos[0])
-                        y.append(p.pos[1])
-                        z.append(p.pos[2])
-                        time.append(t)
-                if self.observer.observer_type == 1:
-                    r2 = p.pos[0]**2+p.pos[1]**2+p.pos[2]**2
-                    r2_previous = p.pos_previous[0]**2+p.pos_previous[1]**2+p.pos_previous[2]**2
-                    for r_sphere in self.observer.sphere_radii:
-                        r2_sphere = r_sphere**2
-                        if (r2 >= r2_sphere and r2_previous < r2_sphere) or (r2 <= r2_sphere and r2_previous > r2_sphere):
-                            ### in this case, the particles crossed the sphere with radius^2 = r2_sphere
-                            id.append(p.id)
-                            x.append(p.pos[0])
-                            y.append(p.pos[1])
-                            z.append(p.pos[2])
-                            time.append(t)
-                            radius.append(r_sphere)
+                observe = self.observer.observe(i, p)
+                should_observe = observe[0]
+
+                ### output data
+                if should_observe:
+                    id.append(p.id)
+                    x.append(p.pos[0])
+                    y.append(p.pos[1])
+                    z.append(p.pos[2])
+                    time.append(t)
+                    radius.append(observe[1])
 
         return id, time, x, y, z, radius
