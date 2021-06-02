@@ -25,9 +25,9 @@ class Observer():
     def add_observer_spheres(self, sphere_radii):
         self.sphere_radii = sphere_radii
         if self.observer_sphere:
-            print('caution: overwritten observer spheres with: ', sphere_radii)
+            print('caution: overwritten observer spheres with radii: ', sphere_radii)
         else: 
-            print('added observer spheres with: ', sphere_radii)
+            print('added observer spheres with radii: ', sphere_radii)
             self.observer_sphere = 1
 
     def change_observer_resolution(self, detailed_range, observer_resolution):
