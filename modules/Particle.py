@@ -9,16 +9,20 @@ spec = [
     ('gyro_radius', float32), # a simple scalar field 
     ('t', float32),
     ('pos', float32[:]),          # an array field
-    ('direction', int32[:])     
+    ('pos_previous', float32[:]),
+    ('direction', int32[:]),
+    ('id', int32)      
 ]
 
 @jitclass(spec)
 class Particle():
-    def __init__(self, gyro_radius, diffusion_tensor):
+    def __init__(self, id, gyro_radius, diffusion_tensor):
+        self.id = id
         self.gyro_radius = gyro_radius
         self.diffusion_tensor = diffusion_tensor
         self.t = 0
         self.pos = np.zeros(3, dtype=np.float32)
+        self.pos_previous = np.zeros(3, dtype=np.float32)
         
     def setDirection(self, direction):
         self.direction = direction

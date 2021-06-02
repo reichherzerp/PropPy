@@ -1,16 +1,18 @@
 import random
 import numpy as np
-from numba import jit, float32, types, typed
+from numba import jit, int32, float32, types, typed
 from numba.typed import List
 from numba.experimental import jitclass
 import numpy as np
 from modules.Particle import Particle
 from modules.Propagation import Propagation
-from modules.Source import Source
+from modules.Observer import Observer
+
 
 simulation_spec = [
     ('particles', types.ListType(Particle.class_type.instance_type)),
     ('propagation', Propagation.class_type.instance_type),
+    ('observer', Observer.class_type.instance_type),
     ('time', float32[:]),
 ]
 
@@ -19,11 +21,10 @@ class Simulation():
     def __init__(self):
         print('init simulation completed')
   
-    def addParticles(self, source):
+    def add_particles(self, source):
         particles = List()
         for j in range(source.nr_particles):
-            particle = Particle(source.gyro_radius, source.diffusion_tensor)
-            #direction = List()
+            particle = Particle(j, source.gyro_radius, source.diffusion_tensor)
             random_values = np.ones(3, dtype=np.int32)
             random_values[0] = random.randint(0, 1)*2-1
             random_values[1] = random.randint(0, 1)*2-1
@@ -33,31 +34,37 @@ class Simulation():
             
         self.particles = particles
 
-    def addPropagation(self, propagation, time):
+    def add_propagation(self, propagation, time):
         self.propagation = propagation
         self.time = time
+
+    def add_observer(self, observer):
+        self.observer = observer
+    
+    def run_simulation(self):
+        id = []
+        x = []
+        y = []
+        z = []
+        time = []
+        radius = []
         
-    def distribution(self, axis):
-        data = []
-        for p in self.particles:
-            data.append(p.pos[axis])
-        return data
-    
-    def runSimulation(self):
-        kappa_perp = []
-        kappa_para = []
-        x = [0]
-        y = [0]
         for i, t in enumerate(self.time):
-            kappa_perp_sum = 0
-            kappa_para_sum = 0
-            particles = List()
-            [particles.append(self.propagation.move(p)) for p in self.particles]
-            for p in particles:
-                kappa_perp_sum = kappa_perp_sum + (p.kappa(0)+p.kappa(1))/2
-                kappa_para_sum = kappa_para_sum + p.kappa(2)
-    
-            kappa_para.append(kappa_para_sum/len(particles)/t)
-            kappa_perp.append(kappa_perp_sum/len(particles)/t)
-            self.particles = particles
-        return [kappa_para, kappa_perp]
+            for p in self.particles:
+
+                self.propagation.move(p)
+                
+                ### observer
+                observe = self.observer.observe(i, p)
+                should_observe = observe[0]
+
+                ### output data
+                if should_observe:
+                    id.append(p.id)
+                    x.append(p.pos[0])
+                    y.append(p.pos[1])
+                    z.append(p.pos[2])
+                    time.append(t)
+                    radius.append(observe[1])
+
+        return id, time, x, y, z, radius
