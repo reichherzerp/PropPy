@@ -1,12 +1,13 @@
 import random
-from numba import jit, float32, types, typed
+from numba import jit, int32, float32, types, typed
 from numba.typed import List
 from numba.experimental import jitclass
 import numpy as np
 
 spec = [   
     ('step_size', float32), # a simple scalar field
-    ('chi_normalized', float32[:])
+    ('chi_normalized', float32[:]),
+    ('nr_fixed_gyro_radii', int32),
 ]
 
 @jitclass(spec)
@@ -14,6 +15,13 @@ class Propagation():
     def __init__(self, step_size):
         self.step_size = step_size
         self.chi_normalized = np.array([1.0/3**0.5, 1.0/3**0.5, 1.0/3**0.5], dtype=np.float32)
+        self.nr_fixed_gyro_radii = 1
+
+    def set_nr_fixed_gyro_radii(self, nr_fixed_gyro_radii):
+        self.nr_fixed_gyro_radii = nr_fixed_gyro_radii
+
+    def set_normalized_chi(self, normalized_chi):
+        self.normalized_chi = normalized_chi
         
     def move(self, particle):
         pos_previous = particle.pos
@@ -32,7 +40,7 @@ class Propagation():
         
         ### 1. change direction (if needed)
         random_value = random.random()
-        if particle.t > particle.gyro_radius:
+        if particle.t > self.nr_fixed_gyro_radii * particle.gyro_radius:
             # after gyroradius ~ half gyroorbit, particle 
             # needs to change direction perp to background field
             if (random_value <= prop_turn[0]):
@@ -53,8 +61,3 @@ class Propagation():
         particle.pos_previous[1] = pos_previous[1] - d[1]
         particle.pos_previous[2] = pos_previous[2] - d[2]
  
-
-    def move_fast(self, particle):
-        particle.pos[0] = particle.pos[0] + 1.0
-        particle.pos[1] = particle.pos[1] + 1.0
-        particle.pos[2] = particle.pos[2] + 1.0
