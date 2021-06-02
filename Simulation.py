@@ -61,8 +61,12 @@ class Simulation():
                         z.append(p.pos[2])
                         time.append(t)
                 if observer_type == 1:
+                    r2_sphere = (1*10**2)**2
                     r2 = p.pos[0]**2+p.pos[1]**2+p.pos[2]**2
-                    if r2 >= (3*10**2)**2 and r2 <= (3*10**2)**2+1:
+                    r2_previous = p.pos_previous[0]**2+p.pos_previous[1]**2+p.pos_previous[2]**2
+                    #print(r2, r2_previous, r2_sphere)
+                    if (r2 >= r2_sphere and r2_previous < r2_sphere) or (r2 <= r2_sphere and r2_previous > r2_sphere):
+                        ### in this case, the particles crossed the sphere with radius^2 = r2_sphere
                         id.append(p.id)
                         x.append(p.pos[0])
                         y.append(p.pos[1])

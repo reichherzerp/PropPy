@@ -14,7 +14,7 @@ class Propagation():
         self.step_size = step_size
         
     def move(self, particle):
-        particle.pos_previous = particle.pos
+        pos_previous = particle.pos
         kappa = particle.diffusion_tensor
         tau_step = 1.0
         chi = np.array([1.0, 1.0, 1.0])
@@ -45,10 +45,13 @@ class Propagation():
         abs_direction = (particle.direction[0]**2+particle.direction[1]**2+particle.direction[2]**2)**0.5
         speed = particle.direction / abs_direction * v
         d = speed * tau_step 
-        particle.pos[0] = particle.pos[0] + d[0]
-        particle.pos[1] = particle.pos[1] + d[1]
-        particle.pos[2] = particle.pos[2] + d[2]
-
+        particle.pos[0] = pos_previous[0] + d[0]
+        particle.pos[1] = pos_previous[1] + d[1]
+        particle.pos[2] = pos_previous[2] + d[2]
+        particle.pos_previous[0] = pos_previous[0] - d[0]
+        particle.pos_previous[1] = pos_previous[1] - d[1]
+        particle.pos_previous[2] = pos_previous[2] - d[2]
+ 
 
     def move_fast(self, particle):
         particle.pos[0] = particle.pos[0] + 1.0
