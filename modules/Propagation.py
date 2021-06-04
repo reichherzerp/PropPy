@@ -61,7 +61,6 @@ class Propagation():
         particle.pos_previous[1] = pos_previous[1] - d[1]
         particle.pos_previous[2] = pos_previous[2] - d[2]
 
-
     def move_polar(self, particle):
         pos_previous = particle.pos
         kappa = particle.diffusion_tensor
@@ -94,10 +93,12 @@ class Propagation():
         speed = particle.direction / abs_direction * v
         d = speed * tau_step 
         ### move along phi
-        particle.phi = particle.phi + particle.direction[1] * 0.05 / 2 / np.pi
+        particle.phi = particle.phi + particle.direction[1] * 0.1 / 2 / np.pi
+        delta_x = particle.gyro_radius * (np.cos(particle.phi) - np.cos(particle.phi - particle.direction[1] * 0.1 / 2 / np.pi))
+        delta_y = particle.gyro_radius * (np.sin(particle.phi) - np.sin(particle.phi - particle.direction[1] * 0.1 / 2 / np.pi))
         ### move along r:
-        delta_x = particle.gyro_radius * np.cos(particle.phi) * particle.direction[0]
-        delta_y = particle.gyro_radius * np.sin(particle.phi) * particle.direction[0]
+        delta_x = delta_x + particle.gyro_radius * np.cos(particle.phi) * particle.direction[0]*5
+        delta_y = delta_y + particle.gyro_radius * np.sin(particle.phi) * particle.direction[0]*5
         r2 = (delta_x**2+delta_y**2)**0.5
         particle.pos[0] = pos_previous[0] + delta_x/r2
         particle.pos[1] = pos_previous[1] + delta_y/r2
