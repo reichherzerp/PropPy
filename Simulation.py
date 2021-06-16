@@ -52,7 +52,7 @@ class Simulation():
         for i, t in enumerate(self.time):
             for p in self.particles:
 
-                self.propagation.move(p)
+                self.propagation.move_polar(p)
                 
                 ### observer
                 observe = self.observer.observe(i, p)
