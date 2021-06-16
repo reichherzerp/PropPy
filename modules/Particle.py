@@ -4,6 +4,7 @@ from numba.typed import List
 from numba.experimental import jitclass
 
 
+
 spec = [
     ('diffusion_tensor', float32[:]), 
     ('gyro_radius', float32), # a simple scalar field 
