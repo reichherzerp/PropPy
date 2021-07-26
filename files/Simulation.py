@@ -12,8 +12,8 @@ class Simulation():
     def add_source(self, source):
         self.source = source
             
-    def add_observer(self, observe_substeps):
-        self.observer = Observer(observe_substeps)
+    def add_observer(self, observer):
+        self.observer = observer
             
     def run_simulation(self, nr_steps):
         for p in self.source.particles:
