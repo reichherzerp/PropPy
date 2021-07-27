@@ -92,6 +92,8 @@ class Particle():
         self.phi = phi
         chi_x_1 = self.gyro_radius_eff * (np.cos(phi) - np.cos(phi_old)) 
         chi_y_1 = self.gyro_radius_eff * (np.sin(phi) - np.sin(phi_old))
+        self.pos[0] = self.pos[0] + chi_x_1
+        self.pos[1] = self.pos[1] + chi_y_1
 
                       
     def move_rho(self):
