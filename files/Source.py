@@ -8,3 +8,4 @@ class Source():
             particle_id = i
             p = Particle(particle_id, gyro_radius, mean_free_path, pos)
             self.particles.append(p)
+            

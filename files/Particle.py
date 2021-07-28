@@ -13,6 +13,7 @@ simulation_spec = [
     ('phi', float32),
     ('particle_id', int32),
     ('dimensions', int32),
+    ('pos_start', float32[:]),
     ('pos', float32[:]),
     ('pos_prev', float32[:]),
     ('direction', float32[:]),
@@ -23,6 +24,7 @@ simulation_spec = [
 @jitclass(simulation_spec)
 class Particle():
     def __init__(self, particle_id, gyro_radius, mean_free_path, pos):
+        print('init particle', pos)
         self.speed = 3*10**8 # [m^2/s]
         self.step_distance = 0.5*10**10 ## [m]
         self.gyro_radius_eff = gyro_radius / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here.
@@ -30,8 +32,9 @@ class Particle():
         self.isotropic = False
         self.dimensions = 3
         self.distance = 0.0
-        self.pos_prev = np.array([0.0, 0.0, 0.0], dtype=np.float32)
-        self.pos = pos
+        self.pos_start = pos[:]
+        self.pos = pos[:]
+        self.pos_prev = self.pos[:]
         self.direction = np.array([1.0, 1.0, 1.0], dtype=np.float32)
         self.phi = 0.0
         xi = [self.speed / mean_free_path[0] / 2.0, self.speed / mean_free_path[1] / 2.0, self.speed / mean_free_path[2] / 2.0] # [1/s] frequency of change
@@ -44,10 +47,9 @@ class Particle():
         simulation_data = []
     
         simulation_data.append([self.particle_id, 0, self.distance, self.pos[0], self.pos[1], self.pos[2], -1.0])
-
+        self.pos = np.array([self.pos_start[0], self.pos_start[1], self.pos_start[2]], dtype=np.float32)
         for i in range(1, nr_steps): 
             self.change_direction()
-            
             self.pos_prev = self.pos 
             for s in range(self.dimensions):
                 self.move_substep(s)
