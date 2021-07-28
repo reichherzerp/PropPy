@@ -5,6 +5,7 @@ from numba.experimental import jitclass
 simulation_spec = [
     ('observe_intermidiate', b1),
     ('observe_steps', b1[:]),
+    ('observe_all', b1),
     ('pos', float32[:]),
     ('pos_prev', float32[:]),
     ('spheres', float32[:]),
@@ -16,16 +17,17 @@ class Observer():
         self.observe_intermidiate = False
         self.observe_steps = observe_steps
         self.spheres = np.array([0.0], dtype=np.float32)
+        self.observe_all = True
         print('observer')
         
     
-    def observe(self, i, s, distance, pos, particle_id):
-        if s == 2 and len(self.spheres) > 1:
+    def observe(self, i, substep, distance, pos, particle_id):
+        if substep == 2 and len(self.spheres) > 1:
             print('todo: implement spherical observer')
             #self.on_sphere()
-        elif self.observe_steps[s]:
-            if ((i == 2 or i%10 == 0) and distance > 600000000.0):
-                return [particle_id, i, distance, pos[0], pos[1], pos[2], -1.0]
+        elif self.observe_steps[substep]:
+            if ((self.observe_all or (i == 2 or i%10 == 0)) and distance > 600000000.0):
+                return [particle_id, i, distance, pos[0], pos[1], pos[2], -1.0, substep]
             else:
                 return None
         else:
