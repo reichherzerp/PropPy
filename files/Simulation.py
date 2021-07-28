@@ -1,4 +1,3 @@
-from files.Particle import Particle
 import numpy as np
 import pandas as pd
 
