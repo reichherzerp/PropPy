@@ -17,8 +17,6 @@ class Simulation():
     def run_simulation(self, nr_steps):
         particles = self.source.particles[:]
         for p in particles:
-            #p = Particle(p, self.source.gyro_radius, self.source.mean_free_path, self.pos[:])
-            print(p.pos)
             data_particle = p.simulate(self.observer, nr_steps)
             self.data = self.data + data_particle
     

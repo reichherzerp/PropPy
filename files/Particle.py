@@ -24,7 +24,6 @@ simulation_spec = [
 @jitclass(simulation_spec)
 class Particle():
     def __init__(self, particle_id, gyro_radius, mean_free_path, pos):
-        print('init particle', pos)
         self.speed = 3*10**8 # [m^2/s]
         self.step_distance = 0.5*10**10 ## [m]
         self.gyro_radius_eff = gyro_radius / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here.
