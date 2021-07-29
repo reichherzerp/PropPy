@@ -13,11 +13,11 @@ simulation_spec = [
 
 @jitclass(simulation_spec)
 class Observer():
-    def __init__(self, observe_steps):
+    def __init__(self, observe_steps, all_steps):
         self.observe_intermidiate = False
         self.observe_steps = observe_steps
         self.spheres = np.array([0.0], dtype=np.float32)
-        self.observe_all = True
+        self.observe_all = all_steps
         print('observer')
         
     
