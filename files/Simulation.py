@@ -5,7 +5,7 @@ import pandas as pd
 class Simulation():
     def __init__(self):
         print('start simulation')
-        self.data = [[0.0, 0.0, 0.0, 0.0, -1.0]]
+        self.data = [[0.0, 0.0, 0.0, 0.0, -1.0, 0.0]]
         self.add_observer(np.array([False, False, True]))
         
     def add_source(self, source):
@@ -22,5 +22,5 @@ class Simulation():
     
     def save_data(self, file_name):
         df = pd.DataFrame(self.data[1:])
-        df.columns = ['id', 'i', 'd', 'x', 'y', 'z', 'radius']
+        df.columns = ['id', 'i', 'd', 'x', 'y', 'z', 'radius', 'step']
         df.to_pickle(file_name+".pkl")
