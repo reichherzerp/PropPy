@@ -13,6 +13,7 @@ simulation_spec = [
     ('phi', float32),
     ('particle_id', int32),
     ('dimensions', int32),
+    ('pos_start', float32[:]),
     ('pos', float32[:]),
     ('pos_prev', float32[:]),
     ('direction', float32[:]),
@@ -30,8 +31,9 @@ class Particle():
         self.isotropic = False
         self.dimensions = 3
         self.distance = 0.0
-        self.pos_prev = np.array([0.0, 0.0, 0.0], dtype=np.float32)
-        self.pos = pos
+        self.pos_start = pos[:]
+        self.pos = pos[:]
+        self.pos_prev = self.pos[:]
         self.direction = np.array([1.0, 1.0, 1.0], dtype=np.float32)
         self.phi = 0.0
         xi = [self.speed / mean_free_path[0] / 2.0, self.speed / mean_free_path[1] / 2.0, self.speed / mean_free_path[2] / 2.0] # [1/s] frequency of change
@@ -43,15 +45,14 @@ class Particle():
     def simulate(self, observer, nr_steps):
         simulation_data = []
     
-        simulation_data.append([self.particle_id, 0, self.distance, self.pos[0], self.pos[1], self.pos[2], -1.0])
-
+        simulation_data.append([self.particle_id, 0, self.distance, self.pos[0], self.pos[1], self.pos[2], -1.0, self.dimensions-1])
+        self.pos = np.array([self.pos_start[0], self.pos_start[1], self.pos_start[2]], dtype=np.float32)
         for i in range(1, nr_steps): 
             self.change_direction()
-            
             self.pos_prev = self.pos 
-            for s in range(self.dimensions):
-                self.move_substep(s)
-                observation = observer.observe(i, s, self.distance, self.pos, self.particle_id)
+            for substep in range(self.dimensions):
+                self.move_substep(substep)
+                observation = observer.observe(i, substep, self.distance, self.pos, self.particle_id)
                 if observation is not None:
                     simulation_data.append(observation)
                 
@@ -90,7 +91,7 @@ class Particle():
         delta_phi = 2 * np.arcsin(distance_in_step / (12**0.5 * self.gyro_radius_eff))
         phi = phi_old + delta_phi * self.direction[0]
         self.phi = phi
-        chi_x_1 = self.gyro_radius_eff * (np.cos(phi) - np.cos(phi_old)) 
+        chi_x_1 = self.gyro_radius_eff * (np.cos(phi) - np.cos(phi_old))
         chi_y_1 = self.gyro_radius_eff * (np.sin(phi) - np.sin(phi_old))
         self.pos[0] = self.pos[0] + chi_x_1
         self.pos[1] = self.pos[1] + chi_y_1
@@ -102,6 +103,5 @@ class Particle():
         delta_rho = distance_in_step / 3**0.5
         chi_x_2 = np.cos(phi) * self.direction[1] * delta_rho
         chi_y_2 = np.sin(phi) * self.direction[1] * delta_rho
-
         self.pos[0] = self.pos[0] + chi_x_2
         self.pos[1] = self.pos[1] + chi_y_2
