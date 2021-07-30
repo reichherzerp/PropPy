@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.stats import norm
 
-class Statistics():
+class Statistics():    
     def __init__(self, df, dimensions):
         print('init statistics plotting class')
         self.df = df
@@ -47,29 +47,35 @@ class Statistics():
         x = df['x'].values
         y = df['y'].values
         z = df['z'].values
-        t = df['d'].values
+        d = df['d'].values
         times = []
         kappa_xx = []
         kappa_yy = []
         kappa_perp = []
         kappa_zz = []
-        for j in range(1, int(len(x)/nr_particles)):
-            t_j = t[j*nr_particles]
-            kappa_xx_current = 0
-            kappa_yy_current = 0
-            kappa_zz_current = 0
-            for i in range(nr_particles):
-                x_i = x[j*nr_particles+i]
-                y_i = y[j*nr_particles+i]
-                z_i = z[j*nr_particles+i]
-                kappa_xx_current = kappa_xx_current + x_i**2
-                kappa_yy_current = kappa_yy_current + y_i**2
-                kappa_zz_current = kappa_zz_current + z_i**2
-            kappa_xx.append(kappa_xx_current/(2*t_j))
-            kappa_yy.append(kappa_yy_current/(2*t_j))
-            kappa_perp.append((kappa_xx_current+kappa_yy_current)/(4*t_j))
-            kappa_zz.append(kappa_zz_current/(2*t_j))
-            times.append(t_j)
+        c = 299792458 # speed of light [m/s]
+        nr_steps =  int(len(d)/nr_particles)
+        # calculate the running diffusion coefficient kappa_i(t) for each step
+        # running diffusion coefficients: kappa_i(t) = <x_i>^2/(2t) = <x_i>^2/(2x_i/c)
+        for j in range(1, nr_steps):
+            d_j = d[j*nr_particles]
+            x_squared = np.array(x[j*nr_particles : (1+j)*nr_particles])**2
+            y_squared = np.array(y[j*nr_particles : (1+j)*nr_particles])**2
+            z_squared = np.array(z[j*nr_particles : (1+j)*nr_particles])**2
+            kappa_xx_running = np.mean(x_squared)/(2*d_j/c)
+            kappa_yy_running = np.mean(y_squared)/(2*d_j/c)
+            kappa_zz_running = np.mean(z_squared)/(2*d_j/c)
+            kappa_xx_running_err = np.std(x_squared)/(2*d_j/c)
+            kappa_yy_running_err = np.std(y_squared)/(2*d_j/c)
+            kappa_zz_running_err = np.std(z_squared)/(2*d_j/c)
+            x_squared = 0
+            y_squared = 0
+            z_squared = 0
+            kappa_xx.append(kappa_xx_running)
+            kappa_yy.append(kappa_yy_running)
+            kappa_perp.append((kappa_xx_running+kappa_yy_running)/2)
+            kappa_zz.append(kappa_zz_running)
+            times.append(d_j)
         plt.figure(figsize=(4,4))
         plt.plot(times, kappa_xx, label='$\kappa_{xx}$')
         plt.plot(times, kappa_yy, label='$\kappa_{yy}$')
