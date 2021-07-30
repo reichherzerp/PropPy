@@ -26,7 +26,7 @@ class Observer():
             print('todo: implement spherical observer')
             #self.on_sphere()
         elif self.observe_steps[substep]:
-            if ((self.observe_all or (i == 2 or i%10 == 0)) and distance > 600000000.0):
+            if ((self.observe_all or (i < 200 or i%10 == 0))):
                 return [particle_id, i, distance, pos[0], pos[1], pos[2], -1.0, substep]
             else:
                 return None
