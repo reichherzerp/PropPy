@@ -35,13 +35,14 @@ class Trajectory():
             plt.savefig(file_name)
         plt.show()
         
-    def plot_trjectory_substeps(self, substep_0, substep_1, particle_ids, n, file_name):
+    def plot_trjectory_substeps(self, substep_0, substep_1, particle_ids, number_steps, file_name):
         # function to visualize substeps. Two substeps can be passed, 
         # which are visualized in the x-y plane. The lines from substep_0 
         # to substep_1 as well as the lines substep_1 to aubstep_0 are marked in color
         if isinstance(particle_ids, int):
             # create a list if only one id was passed to particle_ids
             particle_ids = [particle_ids]
+        n = number_steps*self.dimensions+1 # number of substeps
         for particle_id in particle_ids:
             # filter the pandas dataframe for data of the current particle_id
             df_ids = self.df[self.df['id'] == particle_id][:n]
