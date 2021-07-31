@@ -49,16 +49,23 @@ class Observer():
 
 class TimeEvolutionObserverLog():
     def __init__(self, min_steps, max_steps, nr_steps, substeps):
-        substeps_bool = np.array(substeps) # observe only steps (no substeps)
-        #steps = [0,1,2] # [-1] to observe all
+        substeps_bool = np.array(substeps) 
         steps = np.logspace(np.log10(min_steps), np.log10(max_steps), nr_steps)
+        steps_int32 = np.array(steps, dtype=np.int32) # np.array([-1])
+
+        self.observer = Observer(steps_int32, substeps_bool)
+
+class TimeEvolutionObserverLin():
+    def __init__(self, min_steps, max_steps, nr_steps, substeps):
+        substeps_bool = np.array(substeps) 
+        steps = np.linspace(min_steps, max_steps, nr_steps)
         steps_int32 = np.array(steps, dtype=np.int32) # np.array([-1])
 
         self.observer = Observer(steps_int32, substeps_bool)
 
 class TimeEvolutionObserver():
     def __init__(self, steps, substeps):
-        substeps_bool = np.array(substeps) # observe only steps (no substeps)
+        substeps_bool = np.array(substeps) 
         steps_int32 = np.array(steps, dtype=np.int32) # np.array([-1])
 
         self.observer = Observer(steps_int32, substeps_bool)
