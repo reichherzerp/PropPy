@@ -47,7 +47,7 @@ class Observer():
         #particle_info.append([particle_id, i, distance, pos[0], pos[1], pos[2], sphere*1.0])
         return None
 
-class TimeEvolutionObserver():
+class TimeEvolutionObserverLog():
     def __init__(self):
         substeps = np.array([False, False, True]) # observe only steps (no substeps)
         #steps = [0,1,2] # [-1] to observe all
@@ -55,3 +55,10 @@ class TimeEvolutionObserver():
         steps_int32 = np.array(steps, dtype=np.int32) # np.array([-1])
 
         self.observer = Observer(steps_int32, substeps)
+
+class TimeEvolutionObserver():
+    def __init__(self, steps, substeps):
+        substeps_bool = np.array(substeps) # observe only steps (no substeps)
+        steps_int32 = np.array(steps, dtype=np.int32) # np.array([-1])
+
+        self.observer = Observer(steps_int32, substeps_bool)
