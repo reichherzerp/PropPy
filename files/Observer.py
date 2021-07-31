@@ -38,20 +38,19 @@ class Observer():
         else:
             return None
         
-    
-    def on_sphere(self, pos, pos_prev):
-        #sphere = observer.on_sphere(self.pos, self.pos_prev)
-        #if sphere != None:
-        #print('todo')
-        #particle_info.append(self.observe_particle(i))
-        #particle_info.append([particle_id, i, distance, pos[0], pos[1], pos[2], sphere*1.0])
-        return None
+class ObserverAllSteps():
+    def __init__(self, substeps):
+        substeps_bool = np.array(substeps) 
+        steps = [-1]
+        steps_int32 = np.array(steps, dtype=np.int32) 
+
+        self.observer = Observer(steps_int32, substeps_bool)
 
 class TimeEvolutionObserverLog():
     def __init__(self, min_steps, max_steps, nr_steps, substeps):
         substeps_bool = np.array(substeps) 
         steps = np.logspace(np.log10(min_steps), np.log10(max_steps), nr_steps)
-        steps_int32 = np.array(steps, dtype=np.int32) # np.array([-1])
+        steps_int32 = np.array(steps, dtype=np.int32) 
 
         self.observer = Observer(steps_int32, substeps_bool)
 
@@ -59,7 +58,7 @@ class TimeEvolutionObserverLin():
     def __init__(self, min_steps, max_steps, nr_steps, substeps):
         substeps_bool = np.array(substeps) 
         steps = np.linspace(min_steps, max_steps, nr_steps)
-        steps_int32 = np.array(steps, dtype=np.int32) # np.array([-1])
+        steps_int32 = np.array(steps, dtype=np.int32) 
 
         self.observer = Observer(steps_int32, substeps_bool)
 
