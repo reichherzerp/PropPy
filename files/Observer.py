@@ -1,23 +1,28 @@
-from numba import jit, b1, float32
+from numba import jit, b1, float32, int32
 import numpy as np
 from numba.experimental import jitclass
 
 simulation_spec = [
     ('observe_intermidiate', b1),
-    ('observe_steps', b1[:]),
-    ('observe_all', b1),
+    ('substeps', b1[:]),
+    ('all_steps', b1),
     ('pos', float32[:]),
+    ('steps', int32[:]),
     ('pos_prev', float32[:]),
     ('spheres', float32[:]),
 ]
 
 @jitclass(simulation_spec)
 class Observer():
-    def __init__(self, observe_steps, all_steps):
+    def __init__(self, steps, substeps):
         self.observe_intermidiate = False
-        self.observe_steps = observe_steps
+        self.substeps = substeps
         self.spheres = np.array([0.0], dtype=np.float32)
-        self.observe_all = all_steps
+        self.all_steps = False
+        if -1 in steps:
+            # the -1 is the key to say that all steps should be observed
+            self.all_steps = True
+        self.steps = steps
         print('observer')
         
     
@@ -25,8 +30,8 @@ class Observer():
         if substep == 2 and len(self.spheres) > 1:
             print('todo: implement spherical observer')
             #self.on_sphere()
-        elif self.observe_steps[substep]:
-            if ((self.observe_all or (i < 200 or i%10 == 0))):
+        elif self.substeps[substep]:
+            if self.all_steps or i in self.steps:
                 return [particle_id, i, distance, pos[0], pos[1], pos[2], -1.0, substep]
             else:
                 return None
