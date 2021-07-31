@@ -25,7 +25,6 @@ class Observer():
         self.steps = steps
         print('observer')
         
-    
     def observe(self, i, substep, distance, pos, particle_id):
         if substep == 2 and len(self.spheres) > 1:
             print('todo: implement spherical observer')
@@ -37,7 +36,8 @@ class Observer():
                 return None
         else:
             return None
-        
+
+
 class ObserverAllSteps():
     def __init__(self, substeps):
         substeps_bool = np.array(substeps) 
@@ -45,6 +45,7 @@ class ObserverAllSteps():
         steps_int32 = np.array(steps, dtype=np.int32) 
 
         self.observer = Observer(steps_int32, substeps_bool)
+
 
 class TimeEvolutionObserverLog():
     def __init__(self, min_steps, max_steps, nr_steps, substeps):
@@ -54,6 +55,7 @@ class TimeEvolutionObserverLog():
 
         self.observer = Observer(steps_int32, substeps_bool)
 
+
 class TimeEvolutionObserverLin():
     def __init__(self, min_steps, max_steps, nr_steps, substeps):
         substeps_bool = np.array(substeps) 
@@ -62,9 +64,10 @@ class TimeEvolutionObserverLin():
 
         self.observer = Observer(steps_int32, substeps_bool)
 
+
 class TimeEvolutionObserver():
     def __init__(self, steps, substeps):
         substeps_bool = np.array(substeps) 
-        steps_int32 = np.array(steps, dtype=np.int32) # np.array([-1])
+        steps_int32 = np.array(steps, dtype=np.int32)
 
         self.observer = Observer(steps_int32, substeps_bool)
