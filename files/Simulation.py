@@ -7,8 +7,8 @@ class Simulation():
     def __init__(self):
         print('start simulation')
         self.data = [[0.0, 0.0, 0.0, 0.0, -1.0, 0.0]]
-        observer = TimeEvolutionObserver()
-        self.add_observer(observer)
+        #observer = TimeEvolutionObserver()
+        #self.add_observer(observer)
         
     def add_source(self, source):
         self.source = source
