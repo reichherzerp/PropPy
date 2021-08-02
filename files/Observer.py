@@ -22,7 +22,12 @@ class Observer():
         if -1 in steps:
             # the -1 is the key to say that all steps should be observed
             self.all_steps = True
-        self.steps = steps
+        unique_steps = []
+        for s in steps:
+            if s not in unique_steps:
+                unique_steps.append(s)
+        self.steps = np.array(unique_steps, dtype=np.int32)
+        print('number steps: ', len(self.steps))
         print('observer')
         
     def observe(self, i, substep, distance, pos, particle_id):
