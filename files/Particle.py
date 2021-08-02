@@ -2,6 +2,7 @@ from numba import jit, b1, float32, int32
 import numpy as np
 from numba.experimental import jitclass
 from files.Observer import Observer
+from files.Propagator import Propagator
 
 simulation_spec = [
     ('step_distance', float32),
@@ -19,6 +20,7 @@ simulation_spec = [
     ('direction', float32[:]),
     ('prob', float32[:]),
     ('observer', Observer.class_type.instance_type),
+    ('propagator', Propagator.class_type.instance_type),
 ]
 
 @jitclass(simulation_spec)
@@ -42,7 +44,7 @@ class Particle():
         self.chi_isotropic = self.step_distance / self.dimensions**0.5
         
         
-    def simulate(self, observer, nr_steps):
+    def simulate(self, observer, propagator, nr_steps):
         simulation_data = []
     
         simulation_data.append([self.particle_id, 0, self.distance, self.pos[0], self.pos[1], self.pos[2], -1.0, self.dimensions-1])
@@ -51,7 +53,7 @@ class Particle():
             self.change_direction()
             self.pos_prev = self.pos 
             for substep in range(self.dimensions):
-                self.move_substep(substep)
+                self.move_substep(propagator, substep)
                 observation = observer.observe(i, substep, self.distance, self.pos, self.particle_id)
                 if observation is not None:
                     simulation_data.append(observation)
@@ -67,9 +69,9 @@ class Particle():
                 self.direction[p] = -1*self.direction[p]
     
 
-    def move_substep(self, s):
+    def move_substep(self, propagator, s):
         self.distance = self.distance + self.step_distance / self.dimensions
-        if self.isotropic:
+        if propagator.isotropic:
             self.move_isotropic(s)
         else:
             if s == 0:
