@@ -5,7 +5,6 @@ from files.Observer import Observer
 from files.Propagator import Propagator
 
 
-
 simulation_spec = [
     ('step_distance', float32),
     ('chi_isotropic', float32),
@@ -27,12 +26,12 @@ simulation_spec = [
 
 @jitclass(simulation_spec)
 class Particle():
-    def __init__(self, particle_id, gyro_radius, pos):
+    def __init__(self, particle_id, gyro_radius, pos, dimensions):
         self.speed = 3*10**8 # [m^2/s]
         self.gyro_radius = gyro_radius
         self.particle_id = particle_id
         self.isotropic = False
-        self.dimensions = 3
+        self.dimensions = dimensions
         self.distance = 0.0
         self.pos_start = pos[:]
         self.pos = pos[:]
@@ -40,7 +39,6 @@ class Particle():
         self.direction = np.array([1.0, 1.0, 1.0], dtype=np.float32)
         self.phi = 0.0
 
-        
         
     def simulate(self, observer, propagator):
         simulation_data = []
@@ -51,14 +49,16 @@ class Particle():
             self.direction = propagator.change_direction(self.direction)
             self.pos_prev = self.pos 
             for substep in range(self.dimensions):
-                data = propagator.move_substep(self.pos, self.direction, self.phi, self.distance, self.gyro_radius, substep)
-                self.distance = data['distance']
-                self.phi = data['phi']
-                self.pos = data['pos']
-
+                self.propagate(propagator, substep)
                 observation = observer.observe(i, substep, self.distance, self.pos, self.particle_id)
                 if observation is not None:
                     simulation_data.append(observation)
                 
         return simulation_data
-                
+
+
+    def propagate(self, propagator, substep):
+        data = propagator.move_substep(self.pos, self.direction, self.phi, self.distance, self.gyro_radius, substep)
+        self.distance = data['distance']
+        self.phi = data['phi']
+        self.pos = data['pos']           

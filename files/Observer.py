@@ -28,7 +28,7 @@ class Observer():
                 unique_steps.append(s)
         self.steps = np.array(unique_steps, dtype=np.int32)
         print('number steps: ', len(self.steps))
-        print('observer')
+        print('Observer initialized')
         
     def observe(self, i, substep, distance, pos, particle_id):
         if substep == 2 and len(self.spheres) > 1:

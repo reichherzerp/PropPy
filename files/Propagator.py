@@ -28,14 +28,13 @@ class Propagator():
         self.isotropic = False
         self.nr_steps = nr_steps
         self.step_size = step_size
-        self.step_distance = 0.5*10**10 ## [m]
         self.dimensions = 3
         
         
         xi = [self.speed / mean_free_path[0] / 2.0, self.speed / mean_free_path[1] / 2.0, self.speed / mean_free_path[2] / 2.0] # [1/s] frequency of change
-        tau_step = self.step_distance / self.speed
+        tau_step = self.step_size / self.speed
         self.prob = np.array([xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step], dtype=np.float32)
-        self.chi_isotropic = self.step_distance / self.dimensions**0.5
+        self.chi_isotropic = self.step_size / self.dimensions**0.5
         
 
     def change_direction(self, direction):
@@ -48,7 +47,7 @@ class Propagator():
 
 
     def move_substep(self, pos, direction, phi, distance, gyro_radius, s):
-        distance = distance + self.step_distance / self.dimensions
+        distance = distance + self.step_size / self.dimensions
         self.gyro_radius_eff = gyro_radius / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here.
         if self.isotropic:
             pos = self.move_isotropic(pos, direction, s)
@@ -73,10 +72,9 @@ class Propagator():
         
         
     def move_phi(self, pos, direction, phi):
-        distance_in_step = self.step_distance
         phi_old = phi
         phi = phi
-        delta_phi = 2 * np.arcsin(distance_in_step / (12**0.5 * self.gyro_radius_eff))
+        delta_phi = 2 * np.arcsin(self.step_size / (12**0.5 * self.gyro_radius_eff))
         phi = phi_old + delta_phi * direction[0]
         chi_x_1 = self.gyro_radius_eff * (np.cos(phi) - np.cos(phi_old))
         chi_y_1 = self.gyro_radius_eff * (np.sin(phi) - np.sin(phi_old))
@@ -86,8 +84,7 @@ class Propagator():
 
                       
     def move_rho(self, pos, direction, phi):
-        distance_in_step = self.step_distance
-        delta_rho = distance_in_step / 3**0.5
+        delta_rho = self.chi_isotropic
         chi_x_2 = np.cos(phi) * direction[1] * delta_rho
         chi_y_2 = np.sin(phi) * direction[1] * delta_rho
         pos[0] = pos[0] + chi_x_2
