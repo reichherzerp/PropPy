@@ -4,31 +4,6 @@ from numba.experimental import jitclass
 from files.Observer import Observer
 from files.Propagator import Propagator
 
-simulation_spec = [
-    ('step_distance', float32),
-    ('chi_isotropic', float32),
-    ('speed', float32),
-    ('isotropic', b1),
-    ('distance', float32),
-    ('gyro_radius_eff', float32),
-    ('phi', float32),
-    ('particle_id', int32),
-    ('dimensions', int32),
-    ('pos_start', float32[:]),
-    ('pos', float32[:]),
-    ('pos_prev', float32[:]),
-    ('direction', float32[:]),
-    ('prob', float32[:]),
-    ('observer', Observer.class_type.instance_type),
-    ('propagator', Propagator.class_type.instance_type),
-]
-
-@jitclass(simulation_spec)
-class ParticleState():
-    def __init__(self):
-        self.pos = np.array([1.0, 1.0, 1.0], dtype=np.float32)
-        self.direction = np.array([1.0, 1.0, 1.0], dtype=np.float32)
-        self.phi = 0.0
 
 
 simulation_spec = [
