@@ -21,6 +21,7 @@ class Simulation():
     def run_simulation(self):
         if len(self.data) > 1:
             self.init_data()
+        print('init source')
         self.source.init_source()
         particles = self.source.particles[:]
         for p in particles:
