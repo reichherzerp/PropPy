@@ -44,12 +44,12 @@ class Particle():
         self.chi_isotropic = self.step_distance / self.dimensions**0.5
         
         
-    def simulate(self, observer, propagator, nr_steps):
+    def simulate(self, observer, propagator):
         simulation_data = []
     
         simulation_data.append([self.particle_id, 0, self.distance, self.pos[0], self.pos[1], self.pos[2], -1.0, self.dimensions-1])
         self.pos = np.array([self.pos_start[0], self.pos_start[1], self.pos_start[2]], dtype=np.float32)
-        for i in range(1, nr_steps): 
+        for i in range(1, propagator.nr_steps): 
             self.change_direction()
             self.pos_prev = self.pos 
             for substep in range(self.dimensions):

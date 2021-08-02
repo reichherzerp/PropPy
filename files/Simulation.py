@@ -18,13 +18,13 @@ class Simulation():
     def add_propagator(self, propagator):
         self.propagator = propagator
             
-    def run_simulation(self, nr_steps):
+    def run_simulation(self):
         if len(self.data) > 1:
             self.init_data()
         self.source.init_source()
         particles = self.source.particles[:]
         for p in particles:
-            data_particle = p.simulate(self.observer, self.propagator, nr_steps)
+            data_particle = p.simulate(self.observer, self.propagator)
             self.data = self.data + data_particle
     
     def save_data(self, file_name):
