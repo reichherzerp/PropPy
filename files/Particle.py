@@ -38,6 +38,7 @@ class Particle():
         self.pos_prev = self.pos[:]
         self.direction = np.array([1.0, 1.0, 1.0], dtype=np.float32)
         self.phi = 0.0
+        self.pitch_angle = 2*np.pi*54.74/360 # pitch angle for equal components in all directions
 
         
     def simulate(self, observer, propagator):
@@ -58,7 +59,7 @@ class Particle():
 
 
     def propagate(self, propagator, substep):
-        data = propagator.move_substep(self.pos, self.direction, self.phi, self.distance, self.gyro_radius, substep)
+        data = propagator.move_substep(self.pos, self.direction, self.phi, self.pitch_angle, self.distance, self.gyro_radius, substep)
         self.distance = data['distance']
         self.phi = data['phi']
         self.pos = data['pos']           

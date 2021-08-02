@@ -29,7 +29,7 @@ class Propagator():
         self.nr_steps = nr_steps
         self.step_size = step_size
         self.dimensions = 3
-        
+        self.pitch_angle_const = False
         
         xi = [self.speed / mean_free_path[0] / 2.0, self.speed / mean_free_path[1] / 2.0, self.speed / mean_free_path[2] / 2.0] # [1/s] frequency of change
         tau_step = self.step_size / self.speed
@@ -46,7 +46,7 @@ class Propagator():
         return direction
 
 
-    def move_substep(self, pos, direction, phi, distance, gyro_radius, s):
+    def move_substep(self, pos, direction, phi, pitch_angle, distance, gyro_radius, s):
         distance = distance + self.step_size / self.dimensions
         self.gyro_radius_eff = gyro_radius / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here.
         if self.isotropic:
