@@ -1,20 +1,19 @@
-import numpy as np
 import pandas as pd
-from files.Observer import TimeEvolutionObserver
 
 
 class Simulation():
     def __init__(self):
         print('start simulation')
         self.data = [[0.0, 0.0, 0.0, 0.0, -1.0, 0.0]]
-        #observer = TimeEvolutionObserver()
-        #self.add_observer(observer)
         
     def add_source(self, source):
         self.source = source
             
     def add_observer(self, observer):
         self.observer = observer.observer
+
+    def add_propagator(self, propagator):
+        self.propagator = propagator
             
     def run_simulation(self, nr_steps):
         particles = self.source.particles[:]
