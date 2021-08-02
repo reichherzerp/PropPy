@@ -12,7 +12,7 @@ simulation_spec = [
     ('speed', float32),
     ('isotropic', b1),
     ('distance', float32),
-    ('gyro_radius_eff', float32),
+    ('gyro_radius', float32),
     ('phi', float32),
     ('particle_id', int32),
     ('dimensions', int32),
@@ -29,7 +29,7 @@ simulation_spec = [
 class Particle():
     def __init__(self, particle_id, gyro_radius, pos):
         self.speed = 3*10**8 # [m^2/s]
-        self.gyro_radius_eff = gyro_radius / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here.
+        self.gyro_radius = gyro_radius
         self.particle_id = particle_id
         self.isotropic = False
         self.dimensions = 3
@@ -51,14 +51,14 @@ class Particle():
             self.direction = propagator.change_direction(self.direction)
             self.pos_prev = self.pos 
             for substep in range(self.dimensions):
-                self.distance, self.pos = propagator.move_substep(self.pos, self.direction, self.phi, self.distance, substep)
-                
+                data = propagator.move_substep(self.pos, self.direction, self.phi, self.distance, self.gyro_radius, substep)
+                self.distance = data['distance']
+                self.phi = data['phi']
+                self.pos = data['pos']
+
                 observation = observer.observe(i, substep, self.distance, self.pos, self.particle_id)
                 if observation is not None:
                     simulation_data.append(observation)
                 
         return simulation_data
                 
-        
-    
-    

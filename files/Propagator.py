@@ -30,7 +30,6 @@ class Propagator():
         self.step_size = step_size
         self.step_distance = 0.5*10**10 ## [m]
         self.dimensions = 3
-        self.gyro_radius_eff = 10**10 / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here.
         
         
         xi = [self.speed / mean_free_path[0] / 2.0, self.speed / mean_free_path[1] / 2.0, self.speed / mean_free_path[2] / 2.0] # [1/s] frequency of change
@@ -48,24 +47,29 @@ class Propagator():
         return direction
 
 
-    def move_substep(self, pos, direction, phi, distance, s):
+    def move_substep(self, pos, direction, phi, distance, gyro_radius, s):
         distance = distance + self.step_distance / self.dimensions
+        self.gyro_radius_eff = gyro_radius / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here.
         if self.isotropic:
-            pos1, direction = self.move_isotropic(pos, direction, s)
+            pos = self.move_isotropic(pos, direction, s)
         else:
             if s == 0:
-                pos1, phi = self.move_phi(pos, direction, phi)
+                pos, phi = self.move_phi(pos, direction, phi)
             if s == 1:
-                pos1, phi = self.move_rho(pos, direction, phi)
+                pos, phi = self.move_rho(pos, direction, phi)
             if s == 2:
-                pos1 = self.move_isotropic(pos, direction, 2)
-        return distance, np.array([pos[0], pos[1], pos[2]], dtype=np.float32)
-
-            
+                pos = self.move_isotropic(pos, direction, 2)
+        data = {
+            'distance': distance, 
+            'phi': phi,
+            'pos': self.position(pos)
+        }
+        return data
+         
             
     def move_isotropic(self, pos, direction, s):
         pos[s] = pos[s] + direction[s] * self.chi_isotropic
-        return pos
+        return self.position(pos)
         
         
     def move_phi(self, pos, direction, phi):
@@ -78,7 +82,7 @@ class Propagator():
         chi_y_1 = self.gyro_radius_eff * (np.sin(phi) - np.sin(phi_old))
         pos[0] = pos[0] + chi_x_1
         pos[1] = pos[1] + chi_y_1
-        return pos, phi
+        return self.position(pos), phi
 
                       
     def move_rho(self, pos, direction, phi):
@@ -88,4 +92,8 @@ class Propagator():
         chi_y_2 = np.sin(phi) * direction[1] * delta_rho
         pos[0] = pos[0] + chi_x_2
         pos[1] = pos[1] + chi_y_2
-        return pos, phi
+        return self.position(pos), phi
+
+
+    def position(self, pos):
+        return np.array([pos[0], pos[1], pos[2]], dtype=np.float32)
