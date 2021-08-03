@@ -79,8 +79,7 @@ class Propagator():
     def move_phi(self, pos, direction, phi, pitch_angle):
         phi_old = phi
         phi = phi
-        delta_rho = self.step_size * np.sin(pitch_angle)
-        delta_phi = 2 * np.arcsin(delta_rho / (2 * 2**0.5 * self.gyro_radius_eff))
+        delta_phi = self.compute_delta_phi(pitch_angle)
         phi = phi_old + delta_phi * direction[0]
         chi_x_1 = self.gyro_radius_eff * (np.cos(phi) - np.cos(phi_old))
         chi_y_1 = self.gyro_radius_eff * (np.sin(phi) - np.sin(phi_old))
@@ -96,6 +95,11 @@ class Propagator():
         pos[0] = pos[0] + chi_x_2
         pos[1] = pos[1] + chi_y_2
         return self.position(pos), phi
+
+    def compute_delta_phi(self, pitch_angle):
+        delta_rho = self.step_size * np.sin(pitch_angle)
+        delta_phi = 2 * np.arcsin(delta_rho / (2 * 2**0.5 * self.gyro_radius_eff))
+        return delta_phi
 
 
     def position(self, pos):
