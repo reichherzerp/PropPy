@@ -13,6 +13,7 @@ simulation_spec = [
     ('distance', float32),
     ('gyro_radius', float32),
     ('phi', float32),
+    ('pitch_angle', float32),
     ('particle_id', int32),
     ('dimensions', int32),
     ('pos_start', float32[:]),

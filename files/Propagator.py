@@ -10,6 +10,7 @@ simulation_spec = [
     ('step_size', float32),
     ('gyro_radius_eff', float32),
     ('speed', float32),
+    ('pitch_angle_const', b1),
 
     ('chi_isotropic', float32),
     ('prob', float32[:]),
