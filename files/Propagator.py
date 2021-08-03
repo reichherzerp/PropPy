@@ -54,6 +54,8 @@ class Propagator():
             pos = self.move_isotropic(pos, direction, pitch_angle, s)
         else:
             if s == 0:
+                if self.pitch_angle_const == False:
+                    pitch_angle = self.update_pitch_anlge(pitch_angle, direction)
                 pos, phi = self.move_phi(pos, direction, phi, pitch_angle)
             if s == 1:
                 pos, phi = self.move_rho(pos, direction, phi, pitch_angle)
@@ -62,6 +64,7 @@ class Propagator():
         data = {
             'distance': distance, 
             'phi': phi,
+            'pitch_angle': pitch_angle,
             'pos': self.position(pos)
         }
         return data
@@ -78,7 +81,6 @@ class Propagator():
         
     def move_phi(self, pos, direction, phi, pitch_angle):
         phi_old = phi
-        phi = phi
         delta_phi = self.compute_delta_phi(pitch_angle)
         phi = phi_old + delta_phi * direction[0]
         chi_x_1 = self.gyro_radius_eff * (np.cos(phi) - np.cos(phi_old))
@@ -95,6 +97,7 @@ class Propagator():
         pos[0] = pos[0] + chi_x_2
         pos[1] = pos[1] + chi_y_2
         return self.position(pos), phi
+
 
     def compute_delta_phi(self, pitch_angle):
         delta_rho = self.step_size * np.sin(pitch_angle)
