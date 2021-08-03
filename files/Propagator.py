@@ -54,8 +54,6 @@ class Propagator():
             pos = self.move_isotropic(pos, direction, pitch_angle, s)
         else:
             if s == 0:
-                if self.pitch_angle_const == False:
-                    pitch_angle = self.update_pitch_anlge(pitch_angle, direction)
                 pos, phi = self.move_phi(pos, direction, phi, pitch_angle)
             if s == 1:
                 pos, phi = self.move_rho(pos, direction, phi, pitch_angle)
