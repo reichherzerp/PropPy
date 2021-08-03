@@ -90,7 +90,7 @@ class Propagator():
 
                       
     def move_rho(self, pos, direction, phi, pitch_angle):
-        delta_rho = self.step_size * np.sin(pitch_angle)
+        delta_rho = self.step_size * np.sin(pitch_angle) / 2**0.5
         chi_x_2 = np.cos(phi) * direction[1] * delta_rho
         chi_y_2 = np.sin(phi) * direction[1] * delta_rho
         pos[0] = pos[0] + chi_x_2
