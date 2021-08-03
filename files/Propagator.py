@@ -68,9 +68,9 @@ class Propagator():
             
     def move_isotropic(self, pos, direction, pitch_angle, s):
         if s == 2:
-            distance_s = self.chi_isotropic * np.cos(pitch_angle)
+            distance_s = self.step_size * np.cos(pitch_angle)
         else:
-            distance_s = self.chi_isotropic * np.sin(pitch_angle)
+            distance_s = self.step_size * np.sin(pitch_angle) / 2**0.5
         pos[s] = pos[s] + direction[s] * distance_s
         return self.position(pos)
         
@@ -78,7 +78,8 @@ class Propagator():
     def move_phi(self, pos, direction, phi, pitch_angle):
         phi_old = phi
         phi = phi
-        delta_phi = 2 * np.arcsin(self.step_size / (12**0.5 * self.gyro_radius_eff))
+        delta_rho = self.step_size * np.sin(pitch_angle)
+        delta_phi = 2 * np.arcsin(delta_rho / (2 * 2**0.5 * self.gyro_radius_eff))
         phi = phi_old + delta_phi * direction[0]
         chi_x_1 = self.gyro_radius_eff * (np.cos(phi) - np.cos(phi_old))
         chi_y_1 = self.gyro_radius_eff * (np.sin(phi) - np.sin(phi_old))
@@ -88,7 +89,7 @@ class Propagator():
 
                       
     def move_rho(self, pos, direction, phi, pitch_angle):
-        delta_rho = self.chi_isotropic
+        delta_rho = self.step_size * np.sin(pitch_angle)
         chi_x_2 = np.cos(phi) * direction[1] * delta_rho
         chi_y_2 = np.sin(phi) * direction[1] * delta_rho
         pos[0] = pos[0] + chi_x_2
