@@ -18,6 +18,7 @@ simulation_spec = [
     ('pos', float32[:]),
     ('direction', float32[:]),
     ('phi', float32),
+    ('pitch_angle', float32),
     ('distance', float32),
 ]
 
@@ -30,7 +31,7 @@ class Propagator():
         self.nr_steps = nr_steps
         self.step_size = step_size
         self.dimensions = 3
-        self.pitch_angle_const = False
+        self.pitch_angle_const = True
         
         xi = [self.speed / mean_free_path[0] / 2.0, self.speed / mean_free_path[1] / 2.0, self.speed / mean_free_path[2] / 2.0] # [1/s] frequency of change
         tau_step = self.step_size / self.speed
@@ -38,13 +39,18 @@ class Propagator():
         self.chi_isotropic = self.step_size / self.dimensions**0.5
         
 
-    def change_direction(self, direction):
+    def change_direction(self, direction, pitch_angle):
         ### change in direction happens with a propability that is defined by the 
         ### mean free path
         for p in range(self.dimensions):
             if np.random.random() < self.prob[p]:
-                direction[p] = -1*direction[p]
-        return direction
+                if self.pitch_angle_const == False and p == self.dimensions-1:
+                    if np.random.random() < 0.5:
+                        direction[p] = -1*direction[p]
+                    pitch_angle = pitch_angle + direction[2] * 0.1
+                else:
+                    direction[p] = -1*direction[p]
+        return direction, pitch_angle
 
 
     def move_substep(self, pos, direction, phi, pitch_angle, distance, gyro_radius, s):
@@ -71,9 +77,13 @@ class Propagator():
     def move_isotropic(self, pos, direction, pitch_angle, s):
         if s == 2:
             distance_s = self.step_size * np.cos(pitch_angle)
+            if self.pitch_angle_const == False:
+                pos[s] = pos[s] + distance_s
+            else:
+                pos[s] = pos[s] + direction[s] * distance_s
         else:
             distance_s = self.step_size * np.sin(pitch_angle) / 2**0.5
-        pos[s] = pos[s] + direction[s] * distance_s
+            pos[s] = pos[s] + direction[s] * distance_s
         return self.position(pos)
         
         
