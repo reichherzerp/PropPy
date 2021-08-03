@@ -67,7 +67,11 @@ class Propagator():
          
             
     def move_isotropic(self, pos, direction, pitch_angle, s):
-        pos[s] = pos[s] + direction[s] * self.chi_isotropic
+        if s == 2:
+            distance_s = self.chi_isotropic * np.cos(pitch_angle)
+        else:
+            distance_s = self.chi_isotropic * np.sin(pitch_angle)
+        pos[s] = pos[s] + direction[s] * distance_s
         return self.position(pos)
         
         
