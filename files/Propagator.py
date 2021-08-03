@@ -50,14 +50,14 @@ class Propagator():
         distance = distance + self.step_size / self.dimensions
         self.gyro_radius_eff = gyro_radius / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here.
         if self.isotropic:
-            pos = self.move_isotropic(pos, direction, s)
+            pos = self.move_isotropic(pos, direction, pitch_angle, s)
         else:
             if s == 0:
-                pos, phi = self.move_phi(pos, direction, phi)
+                pos, phi = self.move_phi(pos, direction, phi, pitch_angle)
             if s == 1:
-                pos, phi = self.move_rho(pos, direction, phi)
+                pos, phi = self.move_rho(pos, direction, phi, pitch_angle)
             if s == 2:
-                pos = self.move_isotropic(pos, direction, 2)
+                pos = self.move_isotropic(pos, direction, pitch_angle, 2)
         data = {
             'distance': distance, 
             'phi': phi,
@@ -66,12 +66,12 @@ class Propagator():
         return data
          
             
-    def move_isotropic(self, pos, direction, s):
+    def move_isotropic(self, pos, direction, pitch_angle, s):
         pos[s] = pos[s] + direction[s] * self.chi_isotropic
         return self.position(pos)
         
         
-    def move_phi(self, pos, direction, phi):
+    def move_phi(self, pos, direction, phi, pitch_angle):
         phi_old = phi
         phi = phi
         delta_phi = 2 * np.arcsin(self.step_size / (12**0.5 * self.gyro_radius_eff))
@@ -83,7 +83,7 @@ class Propagator():
         return self.position(pos), phi
 
                       
-    def move_rho(self, pos, direction, phi):
+    def move_rho(self, pos, direction, phi, pitch_angle):
         delta_rho = self.chi_isotropic
         chi_x_2 = np.cos(phi) * direction[1] * delta_rho
         chi_y_2 = np.sin(phi) * direction[1] * delta_rho
