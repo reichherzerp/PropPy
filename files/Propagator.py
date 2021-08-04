@@ -127,8 +127,15 @@ class Propagator():
             if np.random.random() < self.prob[p]:
                 if self.pitch_angle_const == False and p == self.dimensions-1:
                     if np.random.random() < 0.5:
+                        # change sign of delta_pitch_angle with probability of 50%.
+                        # 
                         direction[p] = -1*direction[p]
-                    pitch_angle = pitch_angle + direction[self.dimensions-1] * 0.1
+                    # mu = cos(pitch angle) -> delta mu = cos(theta_1) - cos(theta_0)
+                    # -> theta_1 = arccos(delta_mu - cos(theta_1))
+                    delta_mu = direction[p] * 0.1 # delta mu is proportional to b/B (Kalsrud)
+                    pitch_angle_0 = pitch_angle
+                    pitch_angle_1 = np.arccos(delta_mu - np.cos(pitch_angle_0))
+                    pitch_angle = pitch_angle_1
                 else:
                     direction[p] = -1*direction[p]
         return direction, pitch_angle
