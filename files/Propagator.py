@@ -13,7 +13,6 @@ simulation_spec = [
     ('speed', float32),
     ('pitch_angle_const', b1),
 
-    ('chi_isotropic', float32),
     ('prob', float32[:]),
 
     ('pos', float32[:]),
@@ -38,7 +37,6 @@ class Propagator():
         xi = [self.speed / mean_free_path[0] / 2.0, self.speed / mean_free_path[1] / 2.0, self.speed / mean_free_path[2] / 2.0] # [1/s] frequency of change
         tau_step = self.step_size / self.speed
         self.prob = np.array([xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step], dtype=np.float32)
-        self.chi_isotropic = self.step_size / self.dimensions**0.5
 
 
     def set_pitch_angle_const(self, const_bool):
@@ -46,6 +44,8 @@ class Propagator():
 
 
     def set_dimensions(self, dimensions):
+        # default is 3d -> dimensions = 3
+        # more than 3 dimensions are not supported
         self.dimensions = dimensions
 
     
@@ -66,7 +66,38 @@ class Propagator():
 
 
     def set_speed(self, speed):
+        # units = [m/s]
+        # change the speed of the particles.
+        # the default speed is the speed of light that is valid for
+        # relativistic particles
         self.speed = speed
+
+    
+    def get_description(self):
+        # print out the discription of the object with all relevant instance parameters
+        print("""Description Propagator:
+                The propagator is responsible for the movement of the particles. 
+                It performs the change of direction and the movement in the respective direction.
+                There are two phases:
+                 - change direction with probability (see below)
+                 - move in all directions
+                The movement takes place according to the random walk (RW).\n""")
+        if self.cartesian:
+            print('coordinates: Cartesian coordinates')
+        else:
+            print('coordinates: Cylindrical coordinates')
+        print('dimensions: ', self.dimensions)
+        if self.pitch_angle_const:
+            print('pitch angle: constant')
+        else:
+            print('pitch angle: not constant')
+        print('particle speed: ' ,self.speed, ' m/s')
+        print('number steps: ', self.nr_steps)  
+        print('step size: ', self.step_size, ' m')  
+        print('step duration: ', self.step_size / self.speed, ' s') 
+        print('total distance: ', self.step_size * self.nr_steps, ' m')
+        print('total duration: ', self.step_size * self.nr_steps / self.speed, ' s')
+        print('probability to change directions in step: ', self.prob*100, '%')  
 
 
     def change_direction(self, direction, pitch_angle):
