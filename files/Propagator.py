@@ -37,7 +37,11 @@ class Propagator():
         tau_step = self.step_size / self.speed
         self.prob = np.array([xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step], dtype=np.float32)
         self.chi_isotropic = self.step_size / self.dimensions**0.5
-        
+
+
+    def set_pitch_angle_const(self, const_bool):
+        self.pitch_angle_const = const_bool
+
 
     def change_direction(self, direction, pitch_angle):
         ### change in direction happens with a propability that is defined by the 
