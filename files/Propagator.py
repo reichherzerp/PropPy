@@ -3,7 +3,8 @@ import numpy as np
 from numba.experimental import jitclass
 
 simulation_spec = [
-    ('isotropic', b1),
+    ('cartesian', b1),
+    ('cylindrical', b1),
     ('nr_steps', int32),
     ('dimensions', int32),
     ('step_distance', float32),
@@ -28,6 +29,7 @@ class Propagator():
         print('Propagator initialized')
         self.speed = 3*10**8 # [m^2/s]
         self.cartesian = False
+        self.cylindrical = True
         self.nr_steps = nr_steps
         self.step_size = step_size
         self.dimensions = 3
@@ -52,6 +54,15 @@ class Propagator():
         # cylindrical coordinates activated lead to the usage of
         # move_phi, move_rho and move_cartesian for the z-direction
         self.cartesian = cartesian
+        self.cylindrical = not cartesian
+
+    
+    def set_cylindrical_coords(self, cylindrical):
+        # there are cartesian or cylindrical coordinates available. 
+        # cylindrical coordinates activated lead to the usage of
+        # move_phi, move_rho and move_cartesian for the z-direction
+        self.cartesian = not cylindrical
+        self.cylindrical = cylindrical
 
 
     def set_speed(self, speed):
