@@ -120,25 +120,25 @@ class Propagator():
         print('probability to change directions in step: ', self.prob*100, '%')  
 
 
-    def change_direction(self, direction, pitch_angle):
+    def change_direction(self, direction):
         ### change in direction happens with a propability that is defined by the 
         ### mean free path and stored in self.prob
         for p in range(self.dimensions):
             if np.random.random() < self.prob[p]:
-                if self.pitch_angle_const == False and p == self.dimensions-1:
-                    self.change_pitch_angle()
-                else:
-                    direction[p] = -1*direction[p]
-        return direction, pitch_angle
+                direction[p] = -1*direction[p]
+        return direction
 
 
     def change_pitch_angle(self, pitch_angle):
         # changes in the pitch angle are caused by resonant scattering of particles at
         # fluctuations of the turbulence that satisfy the resonance scattering criterion.
-        # these changes in pitch angle are approximated in Kulsrud as follows:
+        # these changes in pitch angle are approximated in Kulsrud and Reichherzer et al. (2020) as follows:
         # delta mu = (b/B)^2.
         # here, b is the rms field strength of the turbulence and B the magnetic field strength of
         # the ordered magnetic field lines. Only valid for weak turbulence levels b << B.
+        if self.pitch_angle_const:
+            # if the pitch angle should be constant no calculations needed here
+            return pitch_angle
         # mu = cos(pitch angle) -> delta mu = cos(theta_1) - cos(theta_0)
         delta_mu = 0.1 # 0.1 corressponds to a weak turbulence level b/B = 0.01
         if np.random.random() < 0.5:
@@ -151,6 +151,7 @@ class Propagator():
         pitch_angle_1 = np.arccos(delta_mu - np.cos(pitch_angle_0))
         pitch_angle = pitch_angle_1
         return pitch_angle
+
 
     def move_substep(self, pos, direction, phi, pitch_angle, distance, gyro_radius, s):
         self.gyro_radius_eff = gyro_radius / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here.

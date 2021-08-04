@@ -49,6 +49,7 @@ class Particle():
         self.pos = np.array([self.pos_start[0], self.pos_start[1], self.pos_start[2]], dtype=np.float32)
         for i in range(1, propagator.nr_steps): 
             self.direction, self.pitch_angle = propagator.change_direction(self.direction, self.pitch_angle)
+            pitch_angle = propagator.change_pitch_angle(pitch_angle)
             self.pos_prev = self.pos 
             for substep in range(self.dimensions):
                 self.propagate(propagator, substep)
