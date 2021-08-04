@@ -47,6 +47,10 @@ class Propagator():
         self.dimensions = dimensions
 
 
+    def set_speed(self, speed):
+        self.speed = speed
+
+
     def change_direction(self, direction, pitch_angle):
         ### change in direction happens with a propability that is defined by the 
         ### mean free path
