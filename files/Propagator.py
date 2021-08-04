@@ -42,8 +42,9 @@ class Propagator():
     def set_pitch_angle_const(self, const_bool):
         self.pitch_angle_const = const_bool
 
-    def set_pitch_angle_const(self, const_bool):
-        self.pitch_angle_const = const_bool
+
+    def set_dimensions(self, dimensions):
+        self.dimensions = dimensions
 
 
     def change_direction(self, direction, pitch_angle):
