@@ -27,7 +27,7 @@ class Propagator():
     def __init__(self, nr_steps, step_size, mean_free_path):
         print('Propagator initialized')
         self.speed = 3*10**8 # [m^2/s]
-        self.isotropic = False
+        self.cartesian = False
         self.nr_steps = nr_steps
         self.step_size = step_size
         self.dimensions = 3
@@ -38,6 +38,9 @@ class Propagator():
         self.prob = np.array([xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step], dtype=np.float32)
         self.chi_isotropic = self.step_size / self.dimensions**0.5
 
+
+    def set_pitch_angle_const(self, const_bool):
+        self.pitch_angle_const = const_bool
 
     def set_pitch_angle_const(self, const_bool):
         self.pitch_angle_const = const_bool
@@ -60,15 +63,15 @@ class Propagator():
     def move_substep(self, pos, direction, phi, pitch_angle, distance, gyro_radius, s):
         distance = distance + self.step_size / self.dimensions
         self.gyro_radius_eff = gyro_radius / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here.
-        if self.isotropic:
-            pos = self.move_isotropic(pos, direction, pitch_angle, s)
+        if self.cartesian:
+            pos = self.move_cartesian(pos, direction, pitch_angle, s)
         else:
             if s == 0:
                 pos, phi = self.move_phi(pos, direction, phi, pitch_angle)
             if s == 1:
                 pos, phi = self.move_rho(pos, direction, phi, pitch_angle)
             if s == 2:
-                pos = self.move_isotropic(pos, direction, pitch_angle, 2)
+                pos = self.move_cartesian(pos, direction, pitch_angle, 2)
         data = {
             'distance': distance, 
             'phi': phi,
@@ -78,7 +81,7 @@ class Propagator():
         return data
          
             
-    def move_isotropic(self, pos, direction, pitch_angle, s):
+    def move_cartesian(self, pos, direction, pitch_angle, s):
         if s == 2:
             distance_s = self.step_size * np.cos(pitch_angle)
             if self.pitch_angle_const == False:
