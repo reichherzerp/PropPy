@@ -33,13 +33,12 @@ class Propagator():
         self.step_size = step_size
         self.dimensions = 3
         self.pitch_angle_const = True
+        self.set_prop(mean_free_path)
         
-        xi = [self.speed / mean_free_path[0] / 2.0, self.speed / mean_free_path[1] / 2.0, self.speed / mean_free_path[2] / 2.0] # [1/s] frequency of change
-        tau_step = self.step_size / self.speed
-        self.prob = np.array([xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step], dtype=np.float32)
-
 
     def set_pitch_angle_const(self, const_bool):
+        # keep the pitch angle either constant or allow for changes 
+        # during each propagation step.
         self.pitch_angle_const = const_bool
 
 
@@ -71,6 +70,23 @@ class Propagator():
         # the default speed is the speed of light that is valid for
         # relativistic particles
         self.speed = speed
+
+
+    def set_nr_steps(self, nr_steps):
+        # change number of steps
+        self.nr_steps = nr_steps
+
+    
+    def set_step_size(self, step_size):
+        # units = [m]
+        # change distance of each step that particles travel 
+        self.nr_steps = step_size
+
+    
+    def set_prop(self, mean_free_path):
+        xi = [self.speed / mean_free_path[0] / 2.0, self.speed / mean_free_path[1] / 2.0, self.speed / mean_free_path[2] / 2.0] # [1/s] frequency of change
+        tau_step = self.step_size / self.speed
+        self.prob = np.array([xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step], dtype=np.float32)
 
     
     def get_description(self):
