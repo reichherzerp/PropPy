@@ -53,7 +53,7 @@ class Particle():
             self.pos_prev = self.pos 
             for substep in range(self.dimensions):
                 self.propagate(propagator, substep)
-                observation = observer.observe(i, substep, self.distance, self.pos, self.particle_id)
+                observation = observer.observe(i, substep, self.distance, self.pos, self.particle_id, self.phi, self.pitch_angle)
                 if observation is not None:
                     simulation_data.append(observation)
                 
