@@ -30,13 +30,13 @@ class Observer():
         print('number steps: ', len(self.steps))
         print('Observer initialized')
         
-    def observe(self, i, substep, distance, pos, particle_id):
+    def observe(self, i, substep, distance, pos, particle_id, phi, pitch_angle):
         if substep == 2 and len(self.spheres) > 1:
             print('todo: implement spherical observer')
             #self.on_sphere()
         elif self.substeps[substep]:
             if self.all_steps or i in self.steps:
-                return [particle_id, i, distance, pos[0], pos[1], pos[2], -1.0, substep]
+                return [particle_id, i, distance, pos[0], pos[1], pos[2], -1.0, phi, pitch_angle, substep]
             else:
                 return None
         else:

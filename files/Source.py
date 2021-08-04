@@ -1,4 +1,5 @@
 from files.Particle import Particle
+import numpy as np
 
 class Source():
     def __init__(self, gyro_radius, pos, nr_particles, dimensions):
@@ -11,7 +12,9 @@ class Source():
 
     def init_source(self):
         self.particles = []
+        phi = 0.0
+        pitch_angle = 2*np.pi*54.74/360 # pitch angle for equal components in all directions
         for i in range(self.nr_particles):
             particle_id = i
-            p = Particle(particle_id, self.gyro_radius, self.pos[:], self.dimensions)
+            p = Particle(particle_id, self.gyro_radius, self.pos[:], phi, pitch_angle, self.dimensions)
             self.particles.append(p)

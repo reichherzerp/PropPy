@@ -30,5 +30,5 @@ class Simulation():
     
     def save_data(self, file_name):
         df = pd.DataFrame(self.data[1:])
-        df.columns = ['id', 'i', 'd', 'x', 'y', 'z', 'radius', 'step']
+        df.columns = ['id', 'i', 'd', 'x', 'y', 'z', 'radius', 'step', 'phi', 'pitch_angle']
         df.to_pickle(file_name+".pkl")

@@ -13,6 +13,7 @@ simulation_spec = [
     ('distance', float32),
     ('gyro_radius', float32),
     ('phi', float32),
+    ('pitch_angle', float32),
     ('particle_id', int32),
     ('dimensions', int32),
     ('pos_start', float32[:]),
@@ -26,7 +27,7 @@ simulation_spec = [
 
 @jitclass(simulation_spec)
 class Particle():
-    def __init__(self, particle_id, gyro_radius, pos, dimensions):
+    def __init__(self, particle_id, gyro_radius, pos, phi, pitch_angle, dimensions):
         self.speed = 3*10**8 # [m^2/s]
         self.gyro_radius = gyro_radius
         self.particle_id = particle_id
@@ -37,7 +38,8 @@ class Particle():
         self.pos = pos[:]
         self.pos_prev = self.pos[:]
         self.direction = np.array([1.0, 1.0, 1.0], dtype=np.float32)
-        self.phi = 0.0
+        self.phi = phi
+        self.pitch_angle = pitch_angle
 
         
     def simulate(self, observer, propagator):
@@ -47,10 +49,11 @@ class Particle():
         self.pos = np.array([self.pos_start[0], self.pos_start[1], self.pos_start[2]], dtype=np.float32)
         for i in range(1, propagator.nr_steps): 
             self.direction = propagator.change_direction(self.direction)
+            self.pitch_angle = propagator.change_pitch_angle(self.pitch_angle)
             self.pos_prev = self.pos 
             for substep in range(self.dimensions):
                 self.propagate(propagator, substep)
-                observation = observer.observe(i, substep, self.distance, self.pos, self.particle_id)
+                observation = observer.observe(i, substep, self.distance, self.pos, self.particle_id, self.phi, self.pitch_angle)
                 if observation is not None:
                     simulation_data.append(observation)
                 
@@ -58,7 +61,8 @@ class Particle():
 
 
     def propagate(self, propagator, substep):
-        data = propagator.move_substep(self.pos, self.direction, self.phi, self.distance, self.gyro_radius, substep)
+        data = propagator.move_substep(self.pos, self.direction, self.phi, self.pitch_angle, self.distance, self.gyro_radius, substep)
         self.distance = data['distance']
         self.phi = data['phi']
+        self.pitch_angle = data['pitch_angle']
         self.pos = data['pos']           
