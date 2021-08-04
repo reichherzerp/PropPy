@@ -46,6 +46,13 @@ class Propagator():
     def set_dimensions(self, dimensions):
         self.dimensions = dimensions
 
+    
+    def set_cartesian_coords(self, cartesian):
+        # there are cartesian or cylindrical coordinates available. 
+        # cylindrical coordinates activated lead to the usage of
+        # move_phi, move_rho and move_cartesian for the z-direction
+        self.cartesian = cartesian
+
 
     def set_speed(self, speed):
         self.speed = speed
@@ -69,8 +76,10 @@ class Propagator():
         distance = distance + self.step_size / self.dimensions
         self.gyro_radius_eff = gyro_radius / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here.
         if self.cartesian:
+            # cartesian coordinates -> move in x, y and z directions
             pos = self.move_cartesian(pos, direction, pitch_angle, s)
         else:
+            # cylindrical coordinates -> move in phi, rho and z directions
             if s == 0:
                 pos, phi = self.move_phi(pos, direction, phi, pitch_angle)
             if s == 1:
