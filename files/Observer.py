@@ -90,12 +90,19 @@ class Observer():
 
 
 
+class ObserverData():
+    def __init__(self):
+        self.column = ['id', 'i', 'd', 'x', 'y', 'z', 'phi', 'pitch_angle', 'radius', 'sub_step']
+
+
+
 class ObserverAllSteps():
     def __init__(self, substeps):
         substeps_bool = np.array(substeps) 
         steps = [-1]
         steps_int32 = np.array(steps, dtype=np.int32) 
-
+        
+        self.column_names = ObserverData().column
         self.observer = Observer(steps_int32, substeps_bool)
 
 
@@ -116,6 +123,7 @@ class TimeEvolutionObserverLog():
         steps = np.logspace(np.log10(min_steps), np.log10(max_steps), nr_steps)
         steps_int32 = np.array(steps, dtype=np.int32) 
 
+        self.column_names = ObserverData().column
         self.observer = Observer(steps_int32, substeps_bool)
 
 
@@ -136,6 +144,7 @@ class TimeEvolutionObserverLin():
         steps = np.linspace(min_steps, max_steps, nr_steps)
         steps_int32 = np.array(steps, dtype=np.int32) 
 
+        self.column_names = ObserverData().column
         self.observer = Observer(steps_int32, substeps_bool)
 
     
@@ -155,6 +164,7 @@ class TimeEvolutionObserver():
         substeps_bool = np.array(substeps) 
         steps_int32 = np.array(steps, dtype=np.int32)
 
+        self.column_names = ObserverData().column
         self.observer = Observer(steps_int32, substeps_bool)
 
     
