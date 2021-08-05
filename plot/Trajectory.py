@@ -21,20 +21,31 @@ class Trajectory():
             df_ids = self.df[self.df['id'] == particle_id]
             # filter the pandas dataframe for data of after each substep 
             # -> remove points from intermediate substeps
-            df_ids = df_ids[df_ids['step'] == self.dimensions-1]
+            df_ids = df_ids[df_ids['sub_step'] == self.dimensions-1]
             # color code the trajectory according to the distance travelled by the particle
-            plt.scatter(df_ids[x][:n], df_ids[y][:n], s = 4, c=df_ids[c][:n], cmap='viridis')
+            plt.scatter(df_ids[x][:n], df_ids[y][:n], s = 4, c = df_ids[c][:n], cmap = 'viridis')
         # plot colorbar next to plot
         cbar = plt.colorbar()
         cbar.set_label(c + ' [m]')
         plt.tight_layout()
-        plt.xlabel(x + ' [m]')
-        plt.ylabel(y + ' [m]')
+        xlabel = self.get_label(x)
+        ylabel = self.get_label(y)
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
         plt.tight_layout()
         if file_name is not None:
             plt.savefig(file_name)
         plt.show()
+
+
+    def get_label(self, axis):
+        # if the axis shows a distance, add the unit [m] to the label
+        label = axis
+        if axis == 'x' or axis == 'y' or axis == 'z' or axis == 'd':
+            label = label + ' [m]'
+        return label
         
+
     def plot_trjectory_substeps(self, substep_0, substep_1, particle_ids, number_steps, file_name):
         # function to visualize substeps. Two substeps can be passed, 
         # which are visualized in the x-y plane. The lines from substep_0 
@@ -46,9 +57,9 @@ class Trajectory():
         for particle_id in particle_ids:
             # filter the pandas dataframe for data of the current particle_id
             df_ids = self.df[self.df['id'] == particle_id][:n]
-            df_substep_0 = df_ids[df_ids['step'] == substep_0]
-            df_substep_1 = df_ids[df_ids['step'] == substep_1]
-            df_steps = df_ids[df_ids['step'] == self.dimensions-1]
+            df_substep_0 = df_ids[df_ids['sub_step'] == substep_0]
+            df_substep_1 = df_ids[df_ids['sub_step'] == substep_1]
+            df_steps = df_ids[df_ids['sub_step'] == self.dimensions-1]
             if len(df_substep_0) == 0 or len(df_substep_1) == 0:
                 print('Error: Data has no substeps. Please observe substeps in simulation. Afterwards you can visualize them.')
                 return
