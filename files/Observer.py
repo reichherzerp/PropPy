@@ -1,6 +1,7 @@
 from numba import jit, b1, float32, int32
 import numpy as np
 from numba.experimental import jitclass
+from abc import ABC, abstractmethod
 
 
 observer_spec = [
@@ -95,14 +96,26 @@ class ObserverData():
         self.column = ['id', 'i', 'd', 'x', 'y', 'z', 'phi', 'pitch_angle', 'radius', 'sub_step']
 
 
+class AbstractSpecialObserver(ABC):
+ 
+    def __init__(self):
+        #self.value = value
+        super().__init__()
+    
+    #@abstractmethod
+    #def do_something(self):
+    #    pass
 
-class ObserverAllSteps():
+    def get_column_names(self):
+        return ObserverData().column
+
+
+class ObserverAllSteps(AbstractSpecialObserver):
     def __init__(self, substeps):
         substeps_bool = np.array(substeps) 
         steps = [-1]
         steps_int32 = np.array(steps, dtype=np.int32) 
         
-        self.column_names = ObserverData().column
         self.observer = Observer(steps_int32, substeps_bool)
 
 
@@ -117,13 +130,12 @@ class ObserverAllSteps():
 
 
 
-class TimeEvolutionObserverLog():
+class TimeEvolutionObserverLog(AbstractSpecialObserver):
     def __init__(self, min_steps, max_steps, nr_steps, substeps):
         substeps_bool = np.array(substeps) 
         steps = np.logspace(np.log10(min_steps), np.log10(max_steps), nr_steps)
         steps_int32 = np.array(steps, dtype=np.int32) 
 
-        self.column_names = ObserverData().column
         self.observer = Observer(steps_int32, substeps_bool)
 
 
@@ -138,13 +150,12 @@ class TimeEvolutionObserverLog():
 
 
 
-class TimeEvolutionObserverLin():
+class TimeEvolutionObserverLin(AbstractSpecialObserver):
     def __init__(self, min_steps, max_steps, nr_steps, substeps):
         substeps_bool = np.array(substeps) 
         steps = np.linspace(min_steps, max_steps, nr_steps)
         steps_int32 = np.array(steps, dtype=np.int32) 
 
-        self.column_names = ObserverData().column
         self.observer = Observer(steps_int32, substeps_bool)
 
     
@@ -159,12 +170,11 @@ class TimeEvolutionObserverLin():
     
 
 
-class TimeEvolutionObserver():
+class TimeEvolutionObserver(AbstractSpecialObserver):
     def __init__(self, steps, substeps):
         substeps_bool = np.array(substeps) 
         steps_int32 = np.array(steps, dtype=np.int32)
 
-        self.column_names = ObserverData().column
         self.observer = Observer(steps_int32, substeps_bool)
 
     
