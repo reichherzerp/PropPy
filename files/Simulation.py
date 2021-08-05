@@ -22,7 +22,7 @@ class Simulation():
         if len(self.data) > 1:
             self.init_data()
         print('init source')
-        self.source.init_source()
+        self.source.inject_particles()
         particles = self.source.particles[:]
         for p in particles:
             data_particle = p.simulate(self.observer.observer, self.propagator)
