@@ -13,7 +13,7 @@ class Simulation():
         self.source = source
             
     def add_observer(self, observer):
-        self.observer = observer.observer
+        self.observer = observer
 
     def add_propagator(self, propagator):
         self.propagator = propagator
@@ -25,7 +25,7 @@ class Simulation():
         self.source.init_source()
         particles = self.source.particles[:]
         for p in particles:
-            data_particle = p.simulate(self.observer, self.propagator)
+            data_particle = p.simulate(self.observer.observer, self.propagator)
             self.data = self.data + data_particle
     
     def save_data(self, file_name):
