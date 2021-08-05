@@ -28,13 +28,24 @@ class Trajectory():
         cbar = plt.colorbar()
         cbar.set_label(c + ' [m]')
         plt.tight_layout()
-        plt.xlabel(x + ' [m]')
-        plt.ylabel(y + ' [m]')
+        xlabel = self.get_label(x)
+        ylabel = self.get_label(y)
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
         plt.tight_layout()
         if file_name is not None:
             plt.savefig(file_name)
         plt.show()
+
+
+    def get_label(self, axis):
+        # if the axis shows a distance, add the unit [m] to the label
+        label = axis
+        if axis == 'x' or axis == 'y' or axis == 'z' or axis == 'd':
+            label = label + ' [m]'
+        return label
         
+
     def plot_trjectory_substeps(self, substep_0, substep_1, particle_ids, number_steps, file_name):
         # function to visualize substeps. Two substeps can be passed, 
         # which are visualized in the x-y plane. The lines from substep_0 

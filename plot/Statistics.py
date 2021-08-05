@@ -9,6 +9,7 @@ class Statistics():
         self.df = df
         self.dimensions = dimensions
     
+
     def plot_distribution(self, axis, step, bins, file_name):
         # if user wants to plot the laast step, deduce the correct step number of the last step
         if step == -1:
@@ -32,7 +33,10 @@ class Statistics():
         p = norm.pdf(x, mu, std)*scale
         plt.plot(x, p, 'k', linewidth=2)
         
-        plt.xlabel(axis + ' [m]')
+        xlabel = axis
+        if axis == 'x' or axis == 'y' or axis == 'z' or axis == 'd':
+            xlabel = xlabel + ' [m]'
+        plt.xlabel(xlabel)
         plt.ylabel('# particles')
         label = "mu = %.2f,  std = %.2f" % (mu, std)
         #plt.legend()
@@ -40,6 +44,7 @@ class Statistics():
             plt.tight_layout()
             plt.savefig(file_name)
         plt.show()
+
         
     def plot_diffusion_coefficients(self, error):
         nr_particles = len(list(map(int, (set(self.df['id'])))))
@@ -107,3 +112,4 @@ class Statistics():
         
         d = {'d': times, 'kappa_perp':kappa_perp,'kappa_para':kappa_zz}
         return pd.DataFrame(d)
+
