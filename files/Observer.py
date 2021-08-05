@@ -87,25 +87,31 @@ class Observer():
         print('steps [-11:-1]: ' ,self.steps[-11:-1])
         print('nr steps: ' , len(self.steps))
         print('substeps: ', self.substeps)  
-        print('all_steps: ', self.all_steps) 
+        print('all_steps: ', self.all_steps)         
 
-
-
-class ObserverData():
-    def __init__(self):
-        self.column = ['id', 'i', 'd', 'x', 'y', 'z', 'phi', 'pitch_angle', 'radius', 'sub_step']
 
 
 class AbstractSpecialObserver(ABC):
  
     def __init__(self):
-        #self.value = value
         super().__init__()
+
+    def init_observer(self, substeps):
+        self.column = ['id', 'i', 'd', 'x', 'y', 'z', 'phi', 'pitch_angle', 'radius', 'sub_step']
+        self.substeps_bool = np.array(substeps)
+        self.steps = self.set_steps_int() 
+        self.observer = Observer(self.steps, self.substeps_bool)
 
     @abstractmethod
     def set_steps(self):
         # set the number of steps that should be observed
         pass
+
+    def set_steps_int(self):
+        # convert list of steps to np array of ints that is known in the @jitclass Observer()
+        steps = self.set_steps()
+        steps_int32 = np.array(steps, dtype=np.int32)
+        return steps_int32
     
     @abstractmethod
     def get_description_observer_type(self):
@@ -118,21 +124,17 @@ class AbstractSpecialObserver(ABC):
         self.observer.get_description_parameters()
 
     def get_column_names(self):
-        return ObserverData().column
+        return self.column
 
     
 
-
 class ObserverAllSteps(AbstractSpecialObserver):
     def __init__(self, substeps):
-        self.set_steps()
-        substeps_bool = np.array(substeps) 
-        self.observer = Observer(self.steps, substeps_bool)
+        self.init_observer(substeps)
 
     def set_steps(self):
         steps = [-1]
-        steps_int32 = np.array(steps, dtype=np.int32)
-        self.steps = steps_int32
+        return steps
 
     def get_description_observer_type(self):
         print('observer tpye: ObserverAllSteps')
@@ -144,14 +146,12 @@ class TimeEvolutionObserverLog(AbstractSpecialObserver):
         self.min_steps = min_steps
         self.max_steps = max_steps
         self.nr_steps = nr_steps
-        substeps_bool = np.array(substeps) 
-        self.set_steps()
-        self.observer = Observer(self.steps, substeps_bool)
 
+        self.init_observer(substeps)
+        
     def set_steps(self):
         steps = np.logspace(np.log10(self.min_steps), np.log10(self.max_steps), self.nr_steps)
-        steps_int32 = np.array(steps, dtype=np.int32)
-        self.steps = steps_int32
+        return steps
 
     def get_description_observer_type(self):
         print('observer tpye: TimeEvolutionObserverLog')
@@ -163,14 +163,12 @@ class TimeEvolutionObserverLin(AbstractSpecialObserver):
         self.min_steps = min_steps
         self.max_steps = max_steps
         self.nr_steps = nr_steps
-        self.set_steps()
-        substeps_bool = np.array(substeps) 
-        self.observer = Observer(self.steps, substeps_bool)
+
+        self.init_observer(substeps)
 
     def set_steps(self):
         steps = np.linspace(self.min_steps, self.max_steps, self.nr_steps)
-        steps_int32 = np.array(steps, dtype=np.int32) 
-        self.steps = steps_int32
+        return steps
 
     def get_description_observer_type(self):
         print('observer tpye: TimeEvolutionObserverLin')
@@ -178,16 +176,14 @@ class TimeEvolutionObserverLin(AbstractSpecialObserver):
 
 
 class TimeEvolutionObserver(AbstractSpecialObserver):
-    def __init__(self, steps, substeps):
-        self.steps = steps
-        substeps_bool = np.array(substeps) 
-        self.set_steps()
-        self.observer = Observer(self.steps, substeps_bool)
+    def __init__(self, steps_input, substeps):
+        self.steps_input = steps_input
+
+        self.init_observer(substeps)
 
     def set_steps(self):
-        steps = np.linspace(self.min_steps, self.max_steps, self.nr_steps)
-        steps_int32 = np.array(steps, dtype=np.int32) 
-        self.steps = steps_int32
+        steps = self.steps_input 
+        return steps
 
     def get_description_observer_type(self):
         print('observer tpye: TimeEvolutionObserver')
