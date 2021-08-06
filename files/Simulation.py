@@ -1,5 +1,5 @@
 import pandas as pd
-from files.MagneticField import OrderedBackgroundField
+
 
 
 class Simulation():
@@ -19,9 +19,9 @@ class Simulation():
     def add_propagator(self, propagator):
         rms = 10
         direction = [0,0,1]
-        self.magnetic_field = OrderedBackgroundField(rms, direction)
-        propagator.set_magnetic_field(self.magnetic_field.magnetic_field)
-        self.propagator = propagator
+        #self.magnetic_field = OrderedBackgroundField(rms, direction)
+        #propagator.set_magnetic_field(self.magnetic_field.magnetic_field)
+        self.propagator = propagator.propagator
             
     def run_simulation(self):
         self.init_data()

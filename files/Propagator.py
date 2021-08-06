@@ -2,6 +2,20 @@ from numba import jit, b1, float32, int32
 import numpy as np
 from numba.experimental import jitclass
 from files.MagneticField import MagneticField
+from files.MagneticField import OrderedBackgroundField
+from abc import ABC, ABCMeta, abstractmethod
+
+
+class PropagatorModule():
+    def __init__(self):
+        nr_steps = 2*10**5
+        step_size = 0.5*10**10 # [m]
+        mfp = np.array([2.13*10**12/2.0, 2.13*10**12/2.0, 2.1078*10**12], dtype=np.float32)  # [m]
+        magnetic_field = OrderedBackgroundField(10, [0,0,1]).magnetic_field
+        propagator = Propagator(nr_steps, step_size, mfp, magnetic_field)
+        self.propagator = propagator
+        
+
 
 simulation_spec = [
     ('cartesian', b1),
@@ -28,7 +42,7 @@ simulation_spec = [
 
 @jitclass(simulation_spec)
 class Propagator():
-    def __init__(self, nr_steps, step_size, mean_free_path):
+    def __init__(self, nr_steps, step_size, mean_free_path, magnetic_field):
         print('Propagator initialized')
         self.speed = 2.998*10**8 # [m/s]
         self.cartesian = False
@@ -38,6 +52,7 @@ class Propagator():
         self.dimensions = 3
         self.pitch_angle_const = True
         self.background_direction = 2 # direction of a background field
+        self.magnetic_field = magnetic_field
         self.set_prop(mean_free_path)
         
 
@@ -228,3 +243,5 @@ class Propagator():
 
     def position(self, pos):
         return np.array([pos[0], pos[1], pos[2]], dtype=np.float32)
+
+
