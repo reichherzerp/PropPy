@@ -1,7 +1,7 @@
 from numba import jit, b1, float32, int32
 import numpy as np
 from numba.experimental import jitclass
-from abc import ABC, abstractmethod
+from abc import ABC, ABCMeta, abstractmethod
 
 
 observer_spec = [
@@ -94,13 +94,38 @@ class Observer():
 
 
 
-class AbstractSpecialObserver(ABC):
+class AbstractSpecialObserverMeta(ABCMeta):
+    # required attributes that have to be implemented in __init__ of all
+    # sub classes
+    required_attributes = []
+
+    def __call__(self, *args, **kwargs):
+        # check if required attributes that have to be implemented in __init__ of all
+        # sub classes are really implemented. Raise an error if not
+        obj = super(AbstractSpecialObserverMeta, self).__call__(*args, **kwargs)
+        for attr_name in obj.required_attributes:
+            if getattr(obj, attr_name) is None:
+                raise ValueError('required attribute (%s) not set' % attr_name)
+        return obj
+
+
+
+class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
     # abstract base class for all special observers.
     # functions with the label @abstractmethod have to be implemented in 
     # the special observer classes
+
+    # all required_attributes have to be implemented in sub classes
+    required_attributes = [
+        'steps', 
+        'substeps_bool'
+    ]
  
-    def __init__(self):
-        super().__init__()
+    @abstractmethod
+    def __init__(self, order):
+        # implementation required in all sub classes.
+        # all required_attributes have to be implemented in sub classes
+        pass
 
     def init_observer(self, substeps):
         # set the important parameters and call the @abstractmethods that are implemented
