@@ -1,1 +1,3 @@
 large_data/
+__pycache__/
+rwpropa/__pycache__/
