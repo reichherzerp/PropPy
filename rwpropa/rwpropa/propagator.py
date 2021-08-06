@@ -107,7 +107,7 @@ class SimplePropagator(AbstractPropagator):
         speed = 2.998*10**8 # [m/s]
         step_size = 0.5*10**10 # [m]
         mfp = np.array([2.13*10**12/2.0, 2.13*10**12/2.0, 2.1078*10**12], dtype=np.float32)  # [m]
-        magnetic_field = OrderedBackgroundField(10, [0,0,1]).magnetic_field
+        magnetic_field = OrderedBackgroundField(1, [0,0,1]).magnetic_field
         propagator = Propagator(nr_steps, step_size, self.set_prob_init(mfp, speed, step_size), magnetic_field)
         self.propagator = propagator  
 
@@ -356,5 +356,3 @@ class Propagator():
         print('total distance: ', self.step_size * self.nr_steps, ' m')
         print('total duration: ', self.step_size * self.nr_steps / self.speed, ' s')
         print('probability to change directions in step: ', self.prob*100, '%')  
-
-
