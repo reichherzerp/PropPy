@@ -268,7 +268,16 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
     # the special observer classes
 
     # all required_attributes have to be implemented in sub classes
-    required_attributes = ['propagator', 'dimensions', 'speed']
+    required_attributes = [
+        'propagator', 
+        'dimensions', 
+        'speed', 
+        'mfp', 
+        'nr_steps', 
+        'magnetic_field', 
+        'step_size', 
+        'isotropic'
+    ]
  
     @abstractmethod
     def __init__(self, order):
@@ -276,7 +285,7 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         # all required_attributes have to be implemented in sub classes
         pass
 
-    def init_abstract_propagator(self):
+    def set_basic_parameters(self):
         self.dimensions = 3
         self.speed = 2.998*10**8 # [m/s]
 
@@ -284,12 +293,14 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
     def set_pitch_angle_const(self, const_bool):
         # keep the pitch angle either constant or allow for changes 
         # during each propagation step.
+        self.pitch_angle_const = const_bool
         self.propagator.pitch_angle_const = const_bool
 
 
     def set_dimensions(self, dimensions):
         # default is 3d -> dimensions = 3
         # more than 3 dimensions are not supported
+        self.dimensions = dimensions
         self.propagator.dimensions = dimensions
 
 
@@ -297,7 +308,7 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         # there are cartesian or cylindrical coordinates available. 
         # cylindrical coordinates activated lead to the usage of
         # move_phi, move_rho and move_cartesian for the z-direction
-        self.propagator.cartesian = cartesian
+        self.cartesian = cartesian
         self.propagator.cylindrical = not cartesian
 
     
@@ -305,6 +316,8 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         # there are cartesian or cylindrical coordinates available. 
         # cylindrical coordinates activated lead to the usage of
         # move_phi, move_rho and move_cartesian for the z-direction
+        self.cartesian = not cylindrical
+        self.cylindrical = cylindrical
         self.propagator.cartesian = not cylindrical
         self.propagator.cylindrical = cylindrical
 
@@ -314,17 +327,20 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         # change the speed of the particles.
         # the default speed is the speed of light that is valid for
         # relativistic particles
+        self.speed = speed
         self.propagator.speed = speed
 
 
     def set_nr_steps(self, nr_steps):
         # change number of steps
+        self.nr_steps = nr_steps
         self.propagator.nr_steps = nr_steps
 
     
     def set_step_size(self, step_size):
         # units = [m]
         # change distance of each step that particles travel 
+        self.nr_steps = step_size
         self.propagator.nr_steps = step_size
 
     
@@ -336,13 +352,23 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
 
     def set_prob(self, mean_free_path):
         self.propagator.prob = self.set_prob_init(mean_free_path, self.propagator.speed, self.propagator.step_size)
+        self.prob = self.propagator.prob
     
 
     def set_magnetic_field(self, magnetic_field):
+        # allow to set the propagator magnetic field
+        self.magnetic_field = magnetic_field
         self.propagator.magnetic_field = magnetic_field
 
 
     def convert_mfp_input(self, mfp_input):
+        # check the input of the mean free paths
+        if self.isotropic == False:
+            if isinstance(mfp_input, float) or isinstance(mfp_input, int) or len(mfp_input) < self.dimensions:
+                # error handeling by wrong input
+                raise ValueError('Input error: please provide a list of anisotropic mean free paths as a list with length of dimensions (default length: 3).')
+            else:
+                return mfp_input
         mfp = []
         if isinstance(mfp_input, float) or isinstance(mfp_input, int):
             for i in range(self.dimensions):
@@ -353,39 +379,52 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
 
         return mfp
 
+    
+    def init_jitclass_propagator(self):
+        self.set_basic_parameters()
+        self.mfp = self.convert_mfp_input(self.mfp)
+        mfp_final = self.set_prob_init(self.mfp, self.speed, self.step_size)
+        propagator = Propagator(self.nr_steps, self.step_size, mfp_final, self.magnetic_field)
+        self.propagator = propagator
+
 
 
 class IsotropicPropagatorDefault(AbstractPropagator):
     def __init__(self):
-        self.init_abstract_propagator()
-        nr_steps = 2*10**5
-        step_size = 0.5*10**10 # [m]
+        self.nr_steps = 2*10**5
+        self.step_size = 0.5*10**10 # [m]
         # isotropic diffusion coefficient
-        mfp = np.array([10**12, 10**12, 10**12], dtype=np.float32)  # [m]
+        self.mfp = np.array([10**12, 10**12, 10**12], dtype=np.float32)  # [m]
         # no background magnetic field
-        magnetic_field = OrderedBackgroundField(0, [0,0,1]).magnetic_field
+        self.magnetic_field = OrderedBackgroundField(0, [0,0,1]).magnetic_field
+        self.isotropic = True
 
-        propagator = Propagator(nr_steps, step_size, self.set_prob_init(mfp, self.speed, step_size), magnetic_field)
-        self.propagator = propagator  
+        self.init_jitclass_propagator() 
 
 
 
 class IsotropicPropagator(AbstractPropagator):
-    def __init__(self, magnetic_field, mfp_input, nr_steps, step_size):
-        self.init_abstract_propagator()
-        
-        mfp = self.convert_mfp_input(mfp_input)
-        propagator = Propagator(nr_steps, step_size, self.set_prob_init(mfp, self.speed, step_size), magnetic_field)
-        self.propagator = propagator  
+    def __init__(self, magnetic_field, mfp, nr_steps, step_size):
+        self.magnetic_field = magnetic_field
+        self.mfp = mfp
+        self.nr_steps = nr_steps
+        self.step_size = step_size
+        self.isotropic = True
+
+        self.init_jitclass_propagator()
+  
 
 
 
 class AnisotropicPropagator(AbstractPropagator):
     def __init__(self, magnetic_field, mfp, nr_steps, step_size):
-        self.init_abstract_propagator()
-      
-        propagator = Propagator(nr_steps, step_size, self.set_prob_init(mfp, self.speed, step_size), magnetic_field)
-        self.propagator = propagator 
+        self.magnetic_field = magnetic_field
+        self.mfp = mfp
+        self.nr_steps = nr_steps
+        self.step_size = step_size
+        self.isotropic = False
+
+        self.init_jitclass_propagator()
 
 
 
