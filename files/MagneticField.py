@@ -1,4 +1,3 @@
-from os import renames
 from numba import jit, b1, float32, int32
 import numpy as np
 from numba.experimental import jitclass
@@ -6,13 +5,8 @@ from abc import ABC, ABCMeta, abstractmethod
 
 
 observer_spec = [
-    ('substeps', b1[:]),
-    ('all_steps', b1),
-    ('pos', float32[:]),
-    ('steps', int32[:]),
-    ('pos_prev', float32[:]),
-    ('spheres', float32[:]),
-    ('box_dimensions', float32[:]),
+    ('rms', float32),
+    ('direction', float32[:]),
 ]
 
 @jitclass(observer_spec)
@@ -26,8 +20,9 @@ class MagneticField():
     # all special observer will create an Observer object and specify the relevant parameters
     # for the observation conditions (unique_steps, shperes, box_dimensions)
 
-    def __init__(self):
-        pass
+    def __init__(self, rms, direction):
+        self.rms = rms
+        self.direction = direction
     
 
 
@@ -62,13 +57,13 @@ class AbstractMagneticField(object, metaclass=AbstractMagneticFieldMeta):
         pass
 
 
-    
 
 class OrderedBackgroundField(AbstractMagneticField):
 
     def __init__(self, rms, direction):
         self.rms = rms
         self.direction = direction
+        self.magnetic_field = MagneticField(rms, np.array(direction, dtype=np.float32))
         #self.init_observer(substeps)
 
 

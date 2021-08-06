@@ -42,11 +42,12 @@ class Particle():
         self.pitch_angle = pitch_angle
 
         
-    def simulate(self, observer, propagator):
+    def simulate(self, observer, propagator, magnetic_field):
         simulation_data = []
     
         simulation_data.append([self.particle_id, 0, self.distance, self.pos[0], self.pos[1], self.pos[2], -1.0, self.dimensions-1])
         self.pos = np.array([self.pos_start[0], self.pos_start[1], self.pos_start[2]], dtype=np.float32)
+        print('magnetic_field: ', magnetic_field.rms)
         for i in range(1, propagator.nr_steps): 
             self.direction = propagator.change_direction(self.direction)
             self.pitch_angle = propagator.change_pitch_angle(self.pitch_angle)
