@@ -1,8 +1,7 @@
 from numba import jit, b1, float32, int32
 import numpy as np
 from numba.experimental import jitclass
-from files.MagneticField import MagneticField
-from files.MagneticField import OrderedBackgroundField
+from .magnetic_field import *
 from abc import ABC, ABCMeta, abstractmethod
 
 
@@ -51,7 +50,7 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         # more than 3 dimensions are not supported
         self.propagator.dimensions = dimensions
 
-    
+
     def set_cartesian_coords(self, cartesian):
         # there are cartesian or cylindrical coordinates available. 
         # cylindrical coordinates activated lead to the usage of
@@ -99,6 +98,7 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
 
     def set_magnetic_field(self, magnetic_field):
         self.propagator.magnetic_field = magnetic_field
+
 
 
 class SimplePropagator(AbstractPropagator):
@@ -266,6 +266,67 @@ class Propagator():
 
     def position(self, pos):
         return np.array([pos[0], pos[1], pos[2]], dtype=np.float32)
+
+
+    def set_pitch_angle_const(self, const_bool):
+        # keep the pitch angle either constant or allow for changes 
+        # during each propagation step.
+        self.pitch_angle_const = const_bool
+
+
+    def set_dimensions(self, dimensions):
+        # default is 3d -> dimensions = 3
+        # more than 3 dimensions are not supported
+        self.dimensions = dimensions
+
+
+    def set_cartesian_coords(self, cartesian):
+        # there are cartesian or cylindrical coordinates available. 
+        # cylindrical coordinates activated lead to the usage of
+        # move_phi, move_rho and move_cartesian for the z-direction
+        self.cartesian = cartesian
+        self.cylindrical = not cartesian
+
+    
+    def set_cylindrical_coords(self, cylindrical):
+        # there are cartesian or cylindrical coordinates available. 
+        # cylindrical coordinates activated lead to the usage of
+        # move_phi, move_rho and move_cartesian for the z-direction
+        self.cartesian = not cylindrical
+        self.cylindrical = cylindrical
+
+
+    def set_speed(self, speed):
+        # units = [m/s]
+        # change the speed of the particles.
+        # the default speed is the speed of light that is valid for
+        # relativistic particles
+        self.speed = speed
+
+
+    def set_nr_steps(self, nr_steps):
+        # change number of steps
+        self.nr_steps = nr_steps
+
+    
+    def set_step_size(self, step_size):
+        # units = [m]
+        # change distance of each step that particles travel 
+        self.nr_steps = step_size
+
+    
+    def set_prob_init(self, mean_free_path, speed, step_size):
+        xi = [speed / mean_free_path[0] / 2.0, speed / mean_free_path[1] / 2.0, speed / mean_free_path[2] / 2.0] # [1/s] frequency of change
+        tau_step = step_size / speed
+        return np.array([xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step], dtype=np.float32)
+
+
+    def set_prob(self, mean_free_path):
+        self.prob = self.set_prob_init(mean_free_path, self.propagator.speed, self.propagator.step_size)
+    
+
+    def set_magnetic_field(self, magnetic_field):
+        self.magnetic_field = magnetic_field
 
 
     def get_description(self):

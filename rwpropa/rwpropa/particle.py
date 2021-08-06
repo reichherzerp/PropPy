@@ -1,8 +1,8 @@
 from numba import jit, b1, float32, int32
 import numpy as np
 from numba.experimental import jitclass
-from files.Observer import Observer
-from files.Propagator import Propagator
+from .observer import Observer
+from .propagator import Propagator
 
 
 simulation_spec = [

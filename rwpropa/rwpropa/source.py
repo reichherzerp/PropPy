@@ -1,4 +1,4 @@
-from files.Particle import Particle
+from .particle import Particle
 import numpy as np
 from abc import ABCMeta, abstractmethod
 
