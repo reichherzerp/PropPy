@@ -6,16 +6,125 @@ from files.MagneticField import OrderedBackgroundField
 from abc import ABC, ABCMeta, abstractmethod
 
 
-class PropagatorModule():
+
+
+
+class AbstractPropagatorMeta(ABCMeta):
+    # required attributes that have to be implemented in __init__ of all
+    # sub classes
+    required_attributes = []
+
+    def __call__(self, *args, **kwargs):
+        # check if required attributes that have to be implemented in __init__ of all
+        # sub classes are really implemented. Raise an error if not
+        obj = super(AbstractPropagatorMeta, self).__call__(*args, **kwargs)
+        for attr_name in obj.required_attributes:
+            if getattr(obj, attr_name) is None:
+                raise ValueError('required attribute (%s) not set' % attr_name)
+        return obj
+
+
+
+class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
+    # abstract base class for all special observers.
+    # functions with the label @abstractmethod have to be implemented in 
+    # the special observer classes
+
+    # all required_attributes have to be implemented in sub classes
+    required_attributes = ['propagator']
+ 
+    @abstractmethod
+    def __init__(self, order):
+        # implementation required in all sub classes.
+        # all required_attributes have to be implemented in sub classes
+        pass
+
+
+    def set_pitch_angle_const(self, const_bool):
+        # keep the pitch angle either constant or allow for changes 
+        # during each propagation step.
+        self.propagator.pitch_angle_const = const_bool
+
+
+    def set_dimensions(self, dimensions):
+        # default is 3d -> dimensions = 3
+        # more than 3 dimensions are not supported
+        self.propagator.dimensions = dimensions
+
+    
+    def set_cartesian_coords(self, cartesian):
+        # there are cartesian or cylindrical coordinates available. 
+        # cylindrical coordinates activated lead to the usage of
+        # move_phi, move_rho and move_cartesian for the z-direction
+        self.propagator.cartesian = cartesian
+        self.propagator.cylindrical = not cartesian
+
+    
+    def set_cylindrical_coords(self, cylindrical):
+        # there are cartesian or cylindrical coordinates available. 
+        # cylindrical coordinates activated lead to the usage of
+        # move_phi, move_rho and move_cartesian for the z-direction
+        self.propagator.cartesian = not cylindrical
+        self.propagator.cylindrical = cylindrical
+
+
+    def set_speed(self, speed):
+        # units = [m/s]
+        # change the speed of the particles.
+        # the default speed is the speed of light that is valid for
+        # relativistic particles
+        self.propagator.speed = speed
+
+
+    def set_nr_steps(self, nr_steps):
+        # change number of steps
+        self.propagator.nr_steps = nr_steps
+
+    
+    def set_step_size(self, step_size):
+        # units = [m]
+        # change distance of each step that particles travel 
+        self.propagator.nr_steps = step_size
+
+    
+    def set_prob_init(self, mean_free_path, speed, step_size):
+        xi = [speed / mean_free_path[0] / 2.0, speed / mean_free_path[1] / 2.0, speed / mean_free_path[2] / 2.0] # [1/s] frequency of change
+        tau_step = step_size / speed
+        return np.array([xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step], dtype=np.float32)
+
+
+    def set_prob(self, mean_free_path):
+        self.propagator.prob = self.set_prob_init(mean_free_path, self.propagator.speed, self.propagator.step_size)
+    
+
+    def set_magnetic_field(self, magnetic_field):
+        self.propagator.magnetic_field = magnetic_field
+
+
+class SimplePropagator(AbstractPropagator):
     def __init__(self):
         nr_steps = 2*10**5
+        speed = 2.998*10**8 # [m/s]
         step_size = 0.5*10**10 # [m]
         mfp = np.array([2.13*10**12/2.0, 2.13*10**12/2.0, 2.1078*10**12], dtype=np.float32)  # [m]
         magnetic_field = OrderedBackgroundField(10, [0,0,1]).magnetic_field
-        propagator = Propagator(nr_steps, step_size, mfp, magnetic_field)
-        self.propagator = propagator
-        
+        propagator = Propagator(nr_steps, step_size, self.set_prob_init(mfp, speed, step_size), magnetic_field)
+        self.propagator = propagator  
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+#--------------------------------------------------------------------------------------------------------------
 
 simulation_spec = [
     ('cartesian', b1),
@@ -42,7 +151,7 @@ simulation_spec = [
 
 @jitclass(simulation_spec)
 class Propagator():
-    def __init__(self, nr_steps, step_size, mean_free_path, magnetic_field):
+    def __init__(self, nr_steps, step_size, prob, magnetic_field):
         print('Propagator initialized')
         self.speed = 2.998*10**8 # [m/s]
         self.cartesian = False
@@ -53,94 +162,8 @@ class Propagator():
         self.pitch_angle_const = True
         self.background_direction = 2 # direction of a background field
         self.magnetic_field = magnetic_field
-        self.set_prop(mean_free_path)
+        self.prob = prob
         
-
-    def set_pitch_angle_const(self, const_bool):
-        # keep the pitch angle either constant or allow for changes 
-        # during each propagation step.
-        self.pitch_angle_const = const_bool
-
-
-    def set_dimensions(self, dimensions):
-        # default is 3d -> dimensions = 3
-        # more than 3 dimensions are not supported
-        self.dimensions = dimensions
-
-    
-    def set_cartesian_coords(self, cartesian):
-        # there are cartesian or cylindrical coordinates available. 
-        # cylindrical coordinates activated lead to the usage of
-        # move_phi, move_rho and move_cartesian for the z-direction
-        self.cartesian = cartesian
-        self.cylindrical = not cartesian
-
-    
-    def set_cylindrical_coords(self, cylindrical):
-        # there are cartesian or cylindrical coordinates available. 
-        # cylindrical coordinates activated lead to the usage of
-        # move_phi, move_rho and move_cartesian for the z-direction
-        self.cartesian = not cylindrical
-        self.cylindrical = cylindrical
-
-
-    def set_speed(self, speed):
-        # units = [m/s]
-        # change the speed of the particles.
-        # the default speed is the speed of light that is valid for
-        # relativistic particles
-        self.speed = speed
-
-
-    def set_nr_steps(self, nr_steps):
-        # change number of steps
-        self.nr_steps = nr_steps
-
-    
-    def set_step_size(self, step_size):
-        # units = [m]
-        # change distance of each step that particles travel 
-        self.nr_steps = step_size
-
-    
-    def set_prop(self, mean_free_path):
-        xi = [self.speed / mean_free_path[0] / 2.0, self.speed / mean_free_path[1] / 2.0, self.speed / mean_free_path[2] / 2.0] # [1/s] frequency of change
-        tau_step = self.step_size / self.speed
-        self.prob = np.array([xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step], dtype=np.float32)
-
-    
-    def set_magnetic_field(self, magnetic_field):
-        self.magnetic_field = magnetic_field
-
-    
-    def get_description(self):
-        # print out the discription of the object with all relevant instance parameters
-        print("""Description Propagator:
-                The propagator is responsible for the movement of the particles. 
-                It performs the change of direction and the movement in the respective direction.
-                There are two phases:
-                 - change direction with probability (see below)
-                 - move in all directions
-                The movement takes place according to the random walk (RW).\n""")
-        if self.cartesian:
-            print('coordinates: Cartesian coordinates')
-        else:
-            print('coordinates: Cylindrical coordinates')
-        print('dimensions: ', self.dimensions)
-        if self.dimensions < 3:
-            print(self.dimensions, ' dimensions not supoorted yet!')
-        if self.pitch_angle_const:
-            print('pitch angle: constant')
-        else:
-            print('pitch angle: not constant')
-        print('particle speed: ' ,self.speed, ' m/s')
-        print('number steps: ', self.nr_steps)  
-        print('step size: ', self.step_size, ' m')  
-        print('step duration: ', self.step_size / self.speed, ' s') 
-        print('total distance: ', self.step_size * self.nr_steps, ' m')
-        print('total duration: ', self.step_size * self.nr_steps / self.speed, ' s')
-        print('probability to change directions in step: ', self.prob*100, '%')  
-
 
     def change_direction(self, direction):
         # change in direction happens with a propability that is defined by the 
@@ -243,5 +266,34 @@ class Propagator():
 
     def position(self, pos):
         return np.array([pos[0], pos[1], pos[2]], dtype=np.float32)
+
+
+    def get_description(self):
+        # print out the discription of the object with all relevant instance parameters
+        print("""Description Propagator:
+                The propagator is responsible for the movement of the particles. 
+                It performs the change of direction and the movement in the respective direction.
+                There are two phases:
+                 - change direction with probability (see below)
+                 - move in all directions
+                The movement takes place according to the random walk (RW).\n""")
+        if self.cartesian:
+            print('coordinates: Cartesian coordinates')
+        else:
+            print('coordinates: Cylindrical coordinates')
+        print('dimensions: ', self.dimensions)
+        if self.dimensions < 3:
+            print(self.dimensions, ' dimensions not supoorted yet!')
+        if self.pitch_angle_const:
+            print('pitch angle: constant')
+        else:
+            print('pitch angle: not constant')
+        print('particle speed: ' ,self.speed, ' m/s')
+        print('number steps: ', self.nr_steps)  
+        print('step size: ', self.step_size, ' m')  
+        print('step duration: ', self.step_size / self.speed, ' s') 
+        print('total distance: ', self.step_size * self.nr_steps, ' m')
+        print('total duration: ', self.step_size * self.nr_steps / self.speed, ' s')
+        print('probability to change directions in step: ', self.prob*100, '%')  
 
 
