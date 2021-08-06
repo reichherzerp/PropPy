@@ -19,14 +19,12 @@ class Simulation():
         self.propagator = propagator
             
     def run_simulation(self):
-        if len(self.data) > 1:
-            self.init_data()
-        print('init source')
-        self.source.inject_particles()
+        self.init_data()
         particles = self.source.particles[:]
         for p in particles:
             data_particle = p.simulate(self.observer.observer, self.propagator)
             self.data = self.data + data_particle
+        self.source.reset_source()
     
     def save_data(self, file_name):
         df = pd.DataFrame(self.data[1:])
