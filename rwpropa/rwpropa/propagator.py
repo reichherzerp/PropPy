@@ -415,7 +415,6 @@ class IsotropicPropagator(AbstractPropagator):
   
 
 
-
 class AnisotropicPropagator(AbstractPropagator):
     def __init__(self, magnetic_field, mfp, nr_steps, step_size):
         self.magnetic_field = magnetic_field
@@ -425,17 +424,3 @@ class AnisotropicPropagator(AbstractPropagator):
         self.isotropic = False
 
         self.init_jitclass_propagator()
-
-
-
-
-
-
-
-
-
-
-
-
-
-

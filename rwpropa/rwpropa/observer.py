@@ -116,7 +116,10 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
     # the special observer classes
 
     # all required_attributes have to be implemented in sub classes
-    required_attributes = ['steps', 'substeps_bool']
+    required_attributes = [
+        'steps', 
+        'substeps_bool'
+    ]
  
     @abstractmethod
     def __init__(self, order):

@@ -48,7 +48,10 @@ class AbstractMagneticField(object, metaclass=AbstractMagneticFieldMeta):
     # the special observer classes
 
     # all required_attributes have to be implemented in sub classes
-    required_attributes = ['rms', 'direction']
+    required_attributes = [
+        'rms', 
+        'direction'
+    ]
  
     @abstractmethod
     def __init__(self, order):

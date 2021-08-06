@@ -20,7 +20,12 @@ class SourceMeta(ABCMeta):
 
 class Source(object, metaclass=SourceMeta):
     # all required_attributes have to be implemented in sub classes
-    required_attributes = ['energy', 'nr_particles', 'dimensions', 'particles']  
+    required_attributes = [
+        'energy', 
+        'nr_particles', 
+        'dimensions', 
+        'particles'
+    ]  
 
     @abstractmethod
     def __init__(self, order):
@@ -28,11 +33,13 @@ class Source(object, metaclass=SourceMeta):
         # all required_attributes have to be implemented in sub classes
         pass
 
+
     def init_source(self):
         # initialize parameters that are common for all special source classes
         self.particles = []
         self.dimensions = 3
         self.inject_particles()
+
 
     @abstractmethod
     def inject_particles(self):
@@ -40,15 +47,41 @@ class Source(object, metaclass=SourceMeta):
         # self.particles will be filled
         pass
 
+
     def reset_source(self):
         # reset source after simulation in order to repeat the simulation afterwards
         self.empty_source()
         self.inject_particles()
 
+
     def empty_source(self):
         # remove all particles in the source
         self.particles = []
-    
+
+
+    def get_description(self):
+        # print the information of the relevant parameters and the description of 
+        # the special source type that was chosen
+        self.get_description_general()
+        self.get_description_parameters()
+        self.get_description_source_type()
+
+
+    def get_description_general(self):
+        # called by all special observer classes below.
+        # introduction of the description output
+        print("""Description Source:
+                The source defines the start conditions of the particles 
+                and covers the position, direction, energy, etc\n""")
+
+
+    def get_description_parameters(self):   
+        # called by all special observer classes below.
+        # print out all relevant instance parameters
+        print('position: ' , self.pos)
+        print('number particles: ' ,self.nr_particles)
+        print('energy: ' ,self.energy)
+         
 
 
 class PointSourceOriented(Source):
@@ -68,6 +101,11 @@ class PointSourceOriented(Source):
             p = Particle(particle_id, self.gyro_radius, self.pos[:], self.phi, self.pitch_angle, self.dimensions)
             self.particles.append(p)
 
+    def get_description_source_type(self):
+        print('source tpye: PointSourceOriented')
+        print('pitch angle: ' ,self.pitch_angle)
+        print('phi: ' ,self.phi)
+
 
 
 class PointSourceIsotropic(Source):
@@ -86,3 +124,6 @@ class PointSourceIsotropic(Source):
             particle_id = i
             p = Particle(particle_id, self.gyro_radius, self.pos[:], phi, pitch_angle, self.dimensions)
             self.particles.append(p)
+
+    def get_description_source_type(self):
+        print('source tpye: PointSourceIsotropic')
