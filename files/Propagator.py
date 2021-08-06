@@ -1,6 +1,7 @@
 from numba import jit, b1, float32, int32
 import numpy as np
 from numba.experimental import jitclass
+from files.MagneticField import MagneticField
 
 simulation_spec = [
     ('cartesian', b1),
@@ -21,6 +22,8 @@ simulation_spec = [
     ('phi', float32),
     ('pitch_angle', float32),
     ('distance', float32),
+
+    ('magnetic_field', MagneticField.class_type.instance_type),
 ]
 
 @jitclass(simulation_spec)
@@ -89,6 +92,10 @@ class Propagator():
         xi = [self.speed / mean_free_path[0] / 2.0, self.speed / mean_free_path[1] / 2.0, self.speed / mean_free_path[2] / 2.0] # [1/s] frequency of change
         tau_step = self.step_size / self.speed
         self.prob = np.array([xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step], dtype=np.float32)
+
+    
+    def set_magnetic_field(self, magnetic_field):
+        self.magnetic_field = magnetic_field
 
     
     def get_description(self):

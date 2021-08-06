@@ -17,17 +17,17 @@ class Simulation():
         self.observer = observer
 
     def add_propagator(self, propagator):
-        self.propagator = propagator
-
-    def add_magnetic_field(self, rms, direction):
+        rms = 10
+        direction = [0,0,1]
         self.magnetic_field = OrderedBackgroundField(rms, direction)
+        propagator.set_magnetic_field(self.magnetic_field.magnetic_field)
+        self.propagator = propagator
             
     def run_simulation(self):
         self.init_data()
-        self.add_magnetic_field(100, [0, 0, 1])
         particles = self.source.particles[:]
         for p in particles:
-            data_particle = p.simulate(self.observer.observer, self.propagator, self.magnetic_field.magnetic_field)
+            data_particle = p.simulate(self.observer.observer, self.propagator)
             self.data = self.data + data_particle
         self.source.reset_source()
     
