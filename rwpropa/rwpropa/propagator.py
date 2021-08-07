@@ -421,8 +421,7 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         print('step size: ', self.step_size, ' m')  
         print('step duration: ', self.step_size / self.speed, ' s') 
         print('total distance: ', self.step_size * self.nr_steps, ' m')
-        print('total duration: ', self.step_size * self.nr_steps / self.speed, ' s')
-        print('probability to change directions in step: ', self.prob*100, '%')  
+        print('total duration: ', self.step_size * self.nr_steps / self.speed, ' s') 
         print('call get_description directly on the propagator that was added to the simulation:\n')
         print('sim = rwpropa.Simulation()')
         print('...')
@@ -444,7 +443,7 @@ class IsotropicPropagatorDefault(AbstractPropagator):
         self.init_jitclass_propagator() 
 
 
-    def get_description_propagation_type(self):
+    def get_description_propagator_type(self):
         print('propagation tpye: IsotropicPropagatorDefault')
 
 
@@ -460,7 +459,7 @@ class IsotropicPropagator(AbstractPropagator):
         self.init_jitclass_propagator()
 
 
-    def get_description_propagation_type(self):
+    def get_description_propagator_type(self):
         print('propagation tpye: IsotropicPropagator')
   
 
@@ -476,5 +475,5 @@ class AnisotropicPropagator(AbstractPropagator):
         self.init_jitclass_propagator()
 
 
-    def get_description_propagation_type(self):
+    def get_description_propagator_type(self):
         print('propagation tpye: AnisotropicPropagator')
