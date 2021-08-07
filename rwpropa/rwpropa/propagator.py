@@ -400,6 +400,23 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
                 The movement takes place according to the random walk (RW).\n""")
 
 
+    def get_description_parameters(self):   
+        # called by all special propagator classes below.
+        # print out all relevant instance parameters
+        print('particle speed: ' ,self.speed, ' m/s')
+        print('number steps: ', self.nr_steps)  
+        print('step size: ', self.step_size, ' m')  
+        print('step duration: ', self.step_size / self.speed, ' s') 
+        print('total distance: ', self.step_size * self.nr_steps, ' m')
+        print('total duration: ', self.step_size * self.nr_steps / self.speed, ' s')
+        print('probability to change directions in step: ', self.prob*100, '%')  
+        print('call get_description directly on the propagator that was added to the simulation:\n')
+        print('sim = rwpropa.Simulation()')
+        print('...')
+        print('sim.add_propagator(propagator)')
+        print('sim.propagator.get_description()')
+
+
 
 class IsotropicPropagatorDefault(AbstractPropagator):
     def __init__(self):
