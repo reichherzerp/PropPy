@@ -264,7 +264,12 @@ class Propagator():
 # below are the abstract base class and all sub classes of the special propagators
 # that have to be added to the simulation. Each special propagator stores a
 # Propagator object in its instance parameter to be used in the simulation
-
+# This diversions is needed because numba does not support 
+# inheritance via ABC and Propagator() needs the label @jitclass as it is called 
+# during the numba optimized simulation loop of the run_simulation() function. 
+# This workaround supports both concepts with the 
+# advantages of fast code and easy addition of new propagator where the structure 
+# is now defined by the Abstract Base class and enforeced via the ABCMeta class
 
 
 
