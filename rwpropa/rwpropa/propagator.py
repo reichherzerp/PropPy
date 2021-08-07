@@ -388,6 +388,14 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         self.propagator = propagator
 
 
+    def get_description(self):
+        # print the information of the relevant parameters and the description of 
+        # the special propagation type that was chosen
+        self.get_description_general()
+        self.get_description_parameters()
+        self.get_description_source_type()
+
+
     def get_description_general(self):
         # called by all special propagator classes below.
         # introduction of the description output
