@@ -388,6 +388,18 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         self.propagator = propagator
 
 
+    def get_description_general(self):
+        # called by all special propagator classes below.
+        # introduction of the description output
+        print("""Description Propagator:
+                The propagator is responsible for the movement of the particles. 
+                It performs the change of direction and the movement in the respective direction.
+                There are two phases:
+                 - change direction with probability (see below)
+                 - move in all directions
+                The movement takes place according to the random walk (RW).\n""")
+
+
 
 class IsotropicPropagatorDefault(AbstractPropagator):
     def __init__(self):
