@@ -59,6 +59,11 @@ class Source(object, metaclass=SourceMeta):
         self.particles = []
 
 
+    @abstractmethod
+    def get_description_source_type(sefl):
+        pass
+
+
     def get_description(self):
         # print the information of the relevant parameters and the description of 
         # the special source type that was chosen
