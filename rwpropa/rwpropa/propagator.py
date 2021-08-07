@@ -387,13 +387,19 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         propagator = Propagator(self.nr_steps, self.step_size, mfp_final, self.magnetic_field)
         self.propagator = propagator
 
+    
+    @abstractmethod
+    def get_description_propagator_type(sefl):
+        pass
+
+
 
     def get_description(self):
         # print the information of the relevant parameters and the description of 
         # the special propagation type that was chosen
         self.get_description_general()
         self.get_description_parameters()
-        self.get_description_source_type()
+        self.get_description_propagator_type()
 
 
     def get_description_general(self):
