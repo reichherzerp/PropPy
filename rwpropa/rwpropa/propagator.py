@@ -209,6 +209,27 @@ class Propagator():
 
 
     def get_description(self):
+        # note: description does not contain the information of the underling special propagator 
+        # (if there was one)
+        # that was used during adding the propagator to the simulation. 
+        # To get this info, get_description(self) 
+        # has to be called directly on the instance of the used propagator (see tutorials for details)
+        self.get_description_general()
+        self.get_description_parameters()
+
+
+    def get_description_general(self):
+        # print out the discription of the object with all relevant instance parameters
+        print("""Description Propagator:
+                The propagator is responsible for the movement of the particles. 
+                It performs the change of direction and the movement in the respective direction.
+                There are two phases:
+                 - change direction with probability (see below)
+                 - move in all directions
+                The movement takes place according to the random walk (RW).\n""")
+
+
+    def get_description_parameters(self):
         # print out the discription of the object with all relevant instance parameters
         print("""Description Propagator:
                 The propagator is responsible for the movement of the particles. 
@@ -239,9 +260,10 @@ class Propagator():
 
 
 
-#--------------------------------------------------------------------------------------------------------------
-
-
+#---------------------------------------------------------------------------------
+# below are the abstract base class and all sub classes of the special propagators
+# that have to be added to the simulation. Each special propagator stores a
+# Propagator object in its instance parameter to be used in the simulation
 
 
 
@@ -396,9 +418,9 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
     def get_description(self):
         # print the information of the relevant parameters and the description of 
         # the special propagation type that was chosen
-        self.get_description_general()
-        self.get_description_parameters()
+        self.propagator.get_description_general()
         self.get_description_propagator_type()
+        self.propagator.get_description_parameters()
 
 
     def get_description_general(self):

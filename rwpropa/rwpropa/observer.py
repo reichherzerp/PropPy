@@ -94,6 +94,13 @@ class Observer():
 
 
 
+#-------------------------------------------------------------------------------
+# below are the abstract base class and all sub classes of the special observers
+# that have to be added to the simulation. Each special observer stores a
+# Observer object in its instance parameter to be used in the simulation
+
+
+
 class AbstractSpecialObserverMeta(ABCMeta):
     # required attributes that have to be implemented in __init__ of all
     # sub classes
