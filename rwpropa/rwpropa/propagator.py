@@ -393,7 +393,6 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         pass
 
 
-
     def get_description(self):
         # print the information of the relevant parameters and the description of 
         # the special propagation type that was chosen
@@ -445,6 +444,10 @@ class IsotropicPropagatorDefault(AbstractPropagator):
         self.init_jitclass_propagator() 
 
 
+    def get_description_propagation_type(self):
+        print('propagation tpye: IsotropicPropagatorDefault')
+
+
 
 class IsotropicPropagator(AbstractPropagator):
     def __init__(self, magnetic_field, mfp, nr_steps, step_size):
@@ -455,6 +458,10 @@ class IsotropicPropagator(AbstractPropagator):
         self.isotropic = True
 
         self.init_jitclass_propagator()
+
+
+    def get_description_propagation_type(self):
+        print('propagation tpye: IsotropicPropagator')
   
 
 
@@ -467,3 +474,7 @@ class AnisotropicPropagator(AbstractPropagator):
         self.isotropic = False
 
         self.init_jitclass_propagator()
+
+
+    def get_description_propagation_type(self):
+        print('propagation tpye: AnisotropicPropagator')
