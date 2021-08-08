@@ -27,7 +27,7 @@ simulation_spec = [
     ('distance', float32),
 
     ('magnetic_field', MagneticField.class_type.instance_type),
-    ('particle_state', ParticleState.class_type.instance_type),
+    #('particle_state', ParticleState.class_type.instance_type),
 ]
 
 @jitclass(simulation_spec)
