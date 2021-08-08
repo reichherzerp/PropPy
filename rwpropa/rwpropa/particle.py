@@ -64,4 +64,10 @@ class Particle():
         data = propagator.move_substep(self.pos, self.direction, self.phi, self.pitch_angle, self.distance, self.gyro_radius, substep)
         self.distance = data['distance']
         self.phi = data['phi']
-        self.pos = data['pos']           
+        self.pos = data['pos'] 
+
+
+
+class ParticleState():
+    def __init__(self):
+        pass
