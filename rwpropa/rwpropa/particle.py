@@ -5,7 +5,7 @@ from .observer import Observer
 from .propagator import Propagator
 
 
-simulation_spec = [
+particle_spec = [
     ('step_distance', float32),
     ('chi_isotropic', float32),
     ('speed', float32),
@@ -25,7 +25,7 @@ simulation_spec = [
     ('propagator', Propagator.class_type.instance_type),
 ]
 
-@jitclass(simulation_spec)
+@jitclass(particle_spec)
 class Particle():
     def __init__(self, particle_id, gyro_radius, pos, phi, pitch_angle, dimensions):
         self.speed = 3*10**8 # [m^2/s]
@@ -67,7 +67,7 @@ class Particle():
         self.pos = data['pos'] 
 
 
-
+@jitclass(particle_spec)
 class ParticleState():
     def __init__(self):
         pass
