@@ -43,6 +43,7 @@ class ParticleState():
         self.phi = phi
         self.pitch_angle = pitch_angle
 
+
     def init_position(self):
         self.pos = np.array([self.pos_start[0], self.pos_start[1], self.pos_start[2]], dtype=np.float32)
         
