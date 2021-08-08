@@ -2,7 +2,7 @@ from numba import jit, b1, float32, int32
 import numpy as np
 from numba.experimental import jitclass
 from .magnetic_field import *
-from .particle import *
+from .particle_state import *
 from abc import ABC, ABCMeta, abstractmethod
 
 
@@ -27,7 +27,7 @@ simulation_spec = [
     ('distance', float32),
 
     ('magnetic_field', MagneticField.class_type.instance_type),
-    #('particle_state', ParticleState.class_type.instance_type),
+    ('particle_state', ParticleState.class_type.instance_type),
 ]
 
 @jitclass(simulation_spec)
