@@ -28,19 +28,8 @@ particle_spec = [
 @jitclass(particle_spec)
 class Particle():
     def __init__(self, particle_id, gyro_radius, pos, phi, pitch_angle, dimensions):
-        self.speed = 3*10**8 # [m^2/s]
-        self.gyro_radius = gyro_radius
-        self.particle_id = particle_id
-        self.isotropic = False
-        self.dimensions = dimensions
-        self.distance = 0.0
-        self.pos_start = pos[:]
-        self.pos = pos[:]
-        self.pos_prev = self.pos[:]
-        self.direction = np.array([1.0, 1.0, 1.0], dtype=np.float32)
-        self.phi = phi
-        self.pitch_angle = pitch_angle
-
+        ParticleState(particle_id, gyro_radius, pos, phi, pitch_angle, dimensions)
+        
         
     def simulate(self, observer, propagator):
         simulation_data = []
