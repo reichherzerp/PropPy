@@ -43,7 +43,11 @@ class ParticleState():
         self.phi = phi
         self.pitch_angle = pitch_angle
 
+    def init_position(self):
+        self.pos = np.array([self.pos_start[0], self.pos_start[1], self.pos_start[2]], dtype=np.float32)
         
+
+
 
 particle_spec = [
     ('step_distance', float32),
@@ -76,7 +80,7 @@ class Particle():
         simulation_data = []
     
         simulation_data.append([self.particle_state.particle_id, 0, self.particle_state.distance, self.particle_state.pos[0], self.particle_state.pos[1], self.particle_state.pos[2], -1.0, self.particle_state.dimensions-1])
-        self.particle_state.pos = np.array([self.particle_state.pos_start[0], self.particle_state.pos_start[1], self.particle_state.pos_start[2]], dtype=np.float32)
+        self.particle_state.init_position()
         for i in range(1, propagator.nr_steps): 
             self.particle_state.direction = propagator.change_direction(self.particle_state.direction)
             self.particle_state.pitch_angle = propagator.change_pitch_angle(self.particle_state.pitch_angle)
