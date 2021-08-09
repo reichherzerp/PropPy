@@ -4,7 +4,6 @@ from numba.experimental import jitclass
 
 
 
-
 particle_state_spec = [
     ('step_distance', float32),
     ('chi_isotropic', float32),
@@ -20,7 +19,6 @@ particle_state_spec = [
     ('pos', float32[:]),
     ('pos_prev', float32[:]),
     ('direction', float32[:]),
-    ('prob', float32[:]),
 ]
 
 @jitclass(particle_state_spec)
