@@ -57,6 +57,7 @@ class Particle():
 
 
     def first_row(self):
+        # TODO: refactore into the observer class
         first_data_row = [
             self.particle_state.particle_id, 
             0, 
