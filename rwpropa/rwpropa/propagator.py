@@ -80,63 +80,63 @@ class Propagator():
         return pitch_angle
 
 
-    def move_substep(self, pos, direction, phi, pitch_angle, distance, gyro_radius, s):
-        self.gyro_radius_eff = gyro_radius / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here.
+    def move_substep(self, particle_state, s):
+        self.gyro_radius_eff = particle_state.gyro_radius / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here.
         if self.cartesian:
             # cartesian coordinates -> move in x, y and z directions
-            pos, distance = self.move_cartesian(pos, direction, pitch_angle, distance, s)
+            pos, distance = self.move_cartesian(particle_state, s)
         else:
             # cylindrical coordinates -> move in phi, rho and z directions
             if s == 0:
-                pos, phi, distance = self.move_phi(pos, direction, phi, pitch_angle, distance)
+                particle_state = self.move_phi(particle_state)
             if s == 1:
-                pos, phi, distance = self.move_rho(pos, direction, phi, pitch_angle, distance)
+                particle_state = self.move_rho(particle_state)
             if s == 2:
-                pos, distance = self.move_cartesian(pos, direction, pitch_angle, distance, 2)
+                particle_state = self.move_cartesian(particle_state, 2)
         data = {
             'distance': distance, 
-            'phi': phi,
+            #'phi': phi,
             'pos': self.position(pos)
         }
-        return data
+        return particle_state
          
             
-    def move_cartesian(self, pos, direction, pitch_angle, distance, s):
+    def move_cartesian(self,particle_state, s):
         if s == self.background_direction:
-            distance_s = self.step_size * np.cos(pitch_angle)
+            distance_s = self.step_size * np.cos(particle_state.pitch_angle)
             if self.pitch_angle_const == False:
-                pos[s] = pos[s] + distance_s
+                particle_state.pos[s] = particle_state.pos[s] + distance_s
             else:
-                pos[s] = pos[s] + direction[s] * distance_s
+                particle_state.pos[s] = particle_state.pos[s] + particle_state.direction[s] * distance_s
         else:
-            distance_s = self.step_size * np.sin(pitch_angle) / 2**0.5
-            pos[s] = pos[s] + direction[s] * distance_s
-        distance = distance + distance_s
-        return self.position(pos), distance
+            distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
+            particle_state.pos[s] = particle_state.pos[s] + particle_state.direction[s] * distance_s
+        distance = particle_state.distance + distance_s
+        return particle_state
         
         
-    def move_phi(self, pos, direction, phi, pitch_angle, distance):
-        phi_old = phi
-        distance_s = self.step_size * np.sin(pitch_angle) / 2**0.5
-        distance = distance + distance_s
-        delta_phi = self.compute_delta_phi(pitch_angle)
-        phi = phi_old + delta_phi * direction[0]
-        chi_x_1 = self.gyro_radius_eff * (np.cos(phi) - np.cos(phi_old))
-        chi_y_1 = self.gyro_radius_eff * (np.sin(phi) - np.sin(phi_old))
-        pos[0] = pos[0] + chi_x_1
-        pos[1] = pos[1] + chi_y_1
-        return self.position(pos), phi, distance
+    def move_phi(self, particle_state):
+        phi_old = particle_state.phi
+        distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
+        particle_state.distance = particle_state.distance + distance_s
+        delta_phi = self.compute_delta_phi(particle_state.pitch_angle)
+        particle_state.phi = phi_old + delta_phi * particle_state.direction[0]
+        chi_x_1 = self.gyro_radius_eff * (np.cos(particle_state.phi) - np.cos(phi_old))
+        chi_y_1 = self.gyro_radius_eff * (np.sin(particle_state.phi) - np.sin(phi_old))
+        particle_state.pos[0] = particle_state.pos[0] + chi_x_1
+        particle_state.pos[1] = particle_state.pos[1] + chi_y_1
+        return particle_state
 
                       
-    def move_rho(self, pos, direction, phi, pitch_angle, distance):
-        distance_s = self.step_size * np.sin(pitch_angle) / 2**0.5
-        distance = distance + distance_s
-        delta_rho = self.step_size * np.sin(pitch_angle) / 2**0.5
-        chi_x_2 = np.cos(phi) * direction[1] * delta_rho
-        chi_y_2 = np.sin(phi) * direction[1] * delta_rho
-        pos[0] = pos[0] + chi_x_2
-        pos[1] = pos[1] + chi_y_2
-        return self.position(pos), phi, distance
+    def move_rho(self, particle_state):
+        distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
+        particle_state.distance = particle_state.distance + distance_s
+        delta_rho = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
+        chi_x_2 = np.cos(particle_state.phi) * particle_state.direction[1] * delta_rho
+        chi_y_2 = np.sin(particle_state.phi) * particle_state.direction[1] * delta_rho
+        particle_state.pos[0] = particle_state.pos[0] + chi_x_2
+        particle_state.pos[1] = particle_state.pos[1] + chi_y_2
+        return particle_state
 
 
     def compute_delta_phi(self, pitch_angle):
