@@ -38,7 +38,6 @@ class Particle():
         simulation_data = []
         simulation_data.append(self.first_row())
         self.particle_state.init_position()
-        
         for i in range(1, propagator.nr_steps): 
             self.particle_state.direction = propagator.change_direction(self.particle_state.direction)
             self.particle_state.pitch_angle = propagator.change_pitch_angle(self.particle_state.pitch_angle)
@@ -46,7 +45,7 @@ class Particle():
             for substep in range(self.particle_state.dimensions):
                 self.particle_state.substep = substep
                 self.propagate(propagator)
-                observation = observer.observe(i, substep, self.particle_state.distance, self.particle_state.pos, self.particle_state.particle_id, self.particle_state.phi, self.particle_state.pitch_angle)
+                observation = observer.observe(i, self.particle_state)
                 if observation is not None:
                     simulation_data.append(observation)
                 

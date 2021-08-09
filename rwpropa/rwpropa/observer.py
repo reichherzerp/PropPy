@@ -2,6 +2,7 @@ from numba import jit, b1, float32, int32
 import numpy as np
 from numba.experimental import jitclass
 from abc import ABC, ABCMeta, abstractmethod
+from .particle_state import *
 
 
 observer_spec = [
@@ -12,6 +13,7 @@ observer_spec = [
     ('pos_prev', float32[:]),
     ('spheres', float32[:]),
     ('box_dimensions', float32[:]),
+    ('ps', ParticleState.class_type.instance_type),
 ]
 
 @jitclass(observer_spec)
@@ -51,16 +53,27 @@ class Observer():
         return np.array(unique_steps, dtype=np.int32)
         
 
-    def observe(self, i, substep, distance, pos, particle_id, phi, pitch_angle):
+    def observe(self, i, ps):
         # decide if the current particle state should be observed based on the criterions specified 
         # in the observer instance
-        if substep == 2 and len(self.spheres) > 1:
+        if ps.substep == 2 and len(self.spheres) > 1:
             print('todo: implement spherical observer')
             #self.on_sphere()
-        elif self.substeps[substep]:
+        elif self.substeps[ps.substep]:
             if self.all_steps or i in self.steps:
                 radius = -1.0 # default
-                return [particle_id, i, distance, pos[0], pos[1], pos[2], phi, pitch_angle, radius, substep]
+                return [
+                    ps.particle_id, 
+                    i, 
+                    ps.distance, 
+                    ps.pos[0], 
+                    ps.pos[1], 
+                    ps.pos[2], 
+                    ps.phi, 
+                    ps.pitch_angle, 
+                    radius, 
+                    ps.substep
+                ]
             else:
                 return None
         else:
