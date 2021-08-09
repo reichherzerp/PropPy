@@ -84,7 +84,7 @@ class Propagator():
         self.gyro_radius_eff = particle_state.gyro_radius / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here.
         if self.cartesian:
             # cartesian coordinates -> move in x, y and z directions
-            pos, distance = self.move_cartesian(particle_state, s)
+            particle_state = self.move_cartesian(particle_state, s)
         else:
             # cylindrical coordinates -> move in phi, rho and z directions
             if s == 0:
@@ -93,11 +93,6 @@ class Propagator():
                 particle_state = self.move_rho(particle_state)
             if s == 2:
                 particle_state = self.move_cartesian(particle_state, 2)
-        data = {
-            'distance': distance, 
-            #'phi': phi,
-            'pos': self.position(pos)
-        }
         return particle_state
          
             
