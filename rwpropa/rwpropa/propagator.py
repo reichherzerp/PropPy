@@ -192,7 +192,11 @@ class Propagator():
 
     
     def set_prob_init(self, mean_free_path, speed, step_size):
-        xi = [speed / mean_free_path[0] / 2.0, speed / mean_free_path[1] / 2.0, speed / mean_free_path[2] / 2.0] # [1/s] frequency of change
+        xi = [
+            speed / mean_free_path[0] / 2.0, 
+            speed / mean_free_path[1] / 2.0, 
+            speed / mean_free_path[2] / 2.0
+        ] # [1/s] frequency of change
         tau_step = step_size / speed
         return np.array([xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step], dtype=np.float32)
 

@@ -36,9 +36,9 @@ class Particle():
         
     def simulate(self, observer, propagator):
         simulation_data = []
-    
-        simulation_data.append([self.particle_state.particle_id, 0, self.particle_state.distance, self.particle_state.pos[0], self.particle_state.pos[1], self.particle_state.pos[2], -1.0, self.particle_state.dimensions-1])
+        simulation_data.append(self.first_row())
         self.particle_state.init_position()
+        
         for i in range(1, propagator.nr_steps): 
             self.particle_state.direction = propagator.change_direction(self.particle_state.direction)
             self.particle_state.pitch_angle = propagator.change_pitch_angle(self.particle_state.pitch_angle)
@@ -55,6 +55,22 @@ class Particle():
 
     def propagate(self, propagator):
         self.particle_state = propagator.move_substep(self.particle_state)
+
+
+    def first_row(self):
+        first_data_row = [
+            self.particle_state.particle_id, 
+            0, 
+            self.particle_state.distance, 
+            self.particle_state.pos[0], 
+            self.particle_state.pos[1], 
+            self.particle_state.pos[2], 
+            -1.0, 
+            self.particle_state.dimensions-1
+        ]
+        return first_data_row
+
+
 
 
 
