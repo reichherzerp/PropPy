@@ -80,19 +80,19 @@ class Propagator():
         return pitch_angle
 
 
-    def move_substep(self, particle_state, s):
+    def move_substep(self, particle_state):
         self.gyro_radius_eff = particle_state.gyro_radius / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here.
         if self.cartesian:
             # cartesian coordinates -> move in x, y and z directions
-            particle_state = self.move_cartesian(particle_state, s)
+            particle_state = self.move_cartesian(particle_state)
         else:
             # cylindrical coordinates -> move in phi, rho and z directions
-            if s == 0:
+            if particle_state.substep == 0:
                 particle_state = self.move_phi(particle_state)
-            if s == 1:
+            if particle_state.substep == 1:
                 particle_state = self.move_rho(particle_state)
-            if s == 2:
-                particle_state = self.move_cartesian(particle_state, 2)
+            if particle_state.substep == 2:
+                particle_state = self.move_cartesian(particle_state)
         return particle_state
          
             
@@ -102,10 +102,10 @@ class Propagator():
             if self.pitch_angle_const == False:
                 particle_state.pos[particle_state.substep] = particle_state.pos[particle_state.substep] + distance_s
             else:
-                particle_state.pos[particle_state.substep] = particle_state.pos[particle_state.substep] + particle_state.direction[s] * distance_s
+                particle_state.pos[particle_state.substep] = particle_state.pos[particle_state.substep] + particle_state.direction[particle_state.substep] * distance_s
         else:
             distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
-            particle_state.pos[particle_state.substep] = particle_state.pos[particle_state.substep] + particle_state.direction[s] * distance_s
+            particle_state.pos[particle_state.substep] = particle_state.pos[particle_state.substep] + particle_state.direction[particle_state.substep] * distance_s
         particle_state.distance = particle_state.distance + distance_s
         return particle_state
         
