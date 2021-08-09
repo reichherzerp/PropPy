@@ -19,6 +19,7 @@ particle_state_spec = [
     ('pos', float32[:]),
     ('pos_prev', float32[:]),
     ('direction', float32[:]),
+    ('substep', int32),
 ]
 
 @jitclass(particle_state_spec)
@@ -30,6 +31,7 @@ class ParticleState():
         self.isotropic = False
         self.dimensions = dimensions
         self.distance = 0.0
+        self.substep = 0
         self.pos_start = pos[:]
         self.pos = pos[:]
         self.pos_prev = self.pos[:]

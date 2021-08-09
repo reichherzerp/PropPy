@@ -96,17 +96,17 @@ class Propagator():
         return particle_state
          
             
-    def move_cartesian(self,particle_state, s):
-        if s == self.background_direction:
+    def move_cartesian(self, particle_state):
+        if particle_state.substep == self.background_direction:
             distance_s = self.step_size * np.cos(particle_state.pitch_angle)
             if self.pitch_angle_const == False:
-                particle_state.pos[s] = particle_state.pos[s] + distance_s
+                particle_state.pos[particle_state.substep] = particle_state.pos[particle_state.substep] + distance_s
             else:
-                particle_state.pos[s] = particle_state.pos[s] + particle_state.direction[s] * distance_s
+                particle_state.pos[particle_state.substep] = particle_state.pos[particle_state.substep] + particle_state.direction[s] * distance_s
         else:
             distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
-            particle_state.pos[s] = particle_state.pos[s] + particle_state.direction[s] * distance_s
-        distance = particle_state.distance + distance_s
+            particle_state.pos[particle_state.substep] = particle_state.pos[particle_state.substep] + particle_state.direction[s] * distance_s
+        particle_state.distance = particle_state.distance + distance_s
         return particle_state
         
         
