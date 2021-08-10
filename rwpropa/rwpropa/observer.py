@@ -67,9 +67,10 @@ class Observer():
         else:
             return None
 
+
     def data_row(self, i, ps):
         radius = -1.0 # default
-        return [
+        data_row_list = [
             ps.particle_id, 
             i, 
             ps.distance, 
@@ -81,6 +82,7 @@ class Observer():
             radius, 
             ps.substep
         ]
+        return data_row_list
  
 
     def get_description(self):
