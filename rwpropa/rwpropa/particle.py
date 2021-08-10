@@ -36,7 +36,7 @@ class Particle():
         
     def simulate(self, observer, propagator):
         simulation_data = []
-        simulation_data.append(observer.data_row(0, self.ps))
+        simulation_data.append(observer.data_row(self.ps))
         self.ps.init_position()
         for i in range(1, propagator.nr_steps): 
             self.ps.step = i
@@ -46,7 +46,7 @@ class Particle():
             for substep in range(self.ps.dimensions):
                 self.ps.substep = substep
                 self.propagate(propagator)
-                observation = observer.observe(i, self.ps)
+                observation = observer.observe(self.ps)
                 if observation is not None:
                     simulation_data.append(observation)
                 

@@ -53,26 +53,26 @@ class Observer():
         return np.array(unique_steps, dtype=np.int32)
         
 
-    def observe(self, i, ps):
+    def observe(self, ps):
         # decide if the current particle state should be observed based on the criterions specified 
         # in the observer instance
         if ps.substep == 2 and len(self.spheres) > 1:
             print('todo: implement spherical observer')
             #self.on_sphere()
         elif self.substeps[ps.substep]:
-            if self.all_steps or i in self.steps:
-                return self.data_row(i, ps)
+            if self.all_steps or ps.step in self.steps:
+                return self.data_row(ps)
             else:
                 return None
         else:
             return None
 
 
-    def data_row(self, i, ps):
+    def data_row(self, ps):
         radius = -1.0 # default
         data_row_list = [
             ps.particle_id, 
-            i, 
+            ps.step, 
             ps.distance, 
             ps.pos[0], 
             ps.pos[1], 
