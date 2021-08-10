@@ -37,6 +37,7 @@ class Particle():
     def start_step(self, propagator, step):
         self.ps.step = step
         self.ps.pos_prev = self.ps.pos
+        self.ps.gyro_radius = propagator.set_gyroradius(self.ps.energy)
         self.ps.direction = propagator.change_direction(self.ps.direction)
         self.ps.pitch_angle = propagator.change_pitch_angle(self.ps.pitch_angle)
 

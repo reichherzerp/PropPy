@@ -150,7 +150,6 @@ class Propagator():
         return gyroradius
         
 
-
     def set_pitch_angle_const(self, const_bool):
         # keep the pitch angle either constant or allow for changes 
         # during each propagation step.
