@@ -8,6 +8,7 @@ particle_state_spec = [
     ('step_distance', float32),
     ('chi_isotropic', float32),
     ('speed', float32),
+    ('energy', float32)
     ('isotropic', b1),
     ('distance', float32),
     ('gyro_radius', float32),
@@ -34,6 +35,7 @@ class ParticleState():
         self.distance = 0.0
         self.substep = 0
         self.step = 0
+        self.energy = 3*10**15 # eV
         self.pos_start = pos[:]
         self.pos = pos[:]
         self.pos_prev = self.pos[:]

@@ -144,6 +144,13 @@ class Propagator():
         return np.array([pos[0], pos[1], pos[2]], dtype=np.float32)
 
 
+    def set_gyroradius(self, energy):
+        gyroradius_0 = 3.336*10**(-5) # meters
+        gyroradius = gyroradius_0 * energy / self.magnetic_field.rms # meters
+        return gyroradius
+        
+
+
     def set_pitch_angle_const(self, const_bool):
         # keep the pitch angle either constant or allow for changes 
         # during each propagation step.
