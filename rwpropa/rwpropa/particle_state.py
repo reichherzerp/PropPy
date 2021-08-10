@@ -19,6 +19,7 @@ particle_state_spec = [
     ('pos', float32[:]),
     ('pos_prev', float32[:]),
     ('direction', float32[:]),
+    ('step', int32),
     ('substep', int32),
 ]
 
@@ -32,6 +33,7 @@ class ParticleState():
         self.dimensions = dimensions
         self.distance = 0.0
         self.substep = 0
+        self.step = 0
         self.pos_start = pos[:]
         self.pos = pos[:]
         self.pos_prev = self.pos[:]

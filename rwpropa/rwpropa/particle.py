@@ -39,9 +39,10 @@ class Particle():
         simulation_data.append(observer.data_row(0, self.ps))
         self.ps.init_position()
         for i in range(1, propagator.nr_steps): 
+            self.ps.step = i
+            self.ps.pos_prev = self.ps.pos
             self.ps.direction = propagator.change_direction(self.ps.direction)
-            self.ps.pitch_angle = propagator.change_pitch_angle(self.ps.pitch_angle)
-            self.ps.pos_prev = self.ps.pos 
+            self.ps.pitch_angle = propagator.change_pitch_angle(self.ps.pitch_angle) 
             for substep in range(self.ps.dimensions):
                 self.ps.substep = substep
                 self.propagate(propagator)
