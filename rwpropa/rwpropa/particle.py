@@ -25,27 +25,27 @@ particle_spec = [
     ('prob', float32[:]),
     ('observer', Observer.class_type.instance_type),
     ('propagator', Propagator.class_type.instance_type),
-    ('particle_state', ParticleState.class_type.instance_type),
+    ('ps', ParticleState.class_type.instance_type),
 ]
 
 @jitclass(particle_spec)
 class Particle():
     def __init__(self, particle_id, gyro_radius, pos, phi, pitch_angle, dimensions):
-        self.particle_state = ParticleState(particle_id, gyro_radius, pos, phi, pitch_angle, dimensions)
+        self.ps = ParticleState(particle_id, gyro_radius, pos, phi, pitch_angle, dimensions)
         
         
     def simulate(self, observer, propagator):
         simulation_data = []
-        simulation_data.append(self.first_row())
-        self.particle_state.init_position()
+        simulation_data.append(observer.data_row(0, self.ps))
+        self.ps.init_position()
         for i in range(1, propagator.nr_steps): 
-            self.particle_state.direction = propagator.change_direction(self.particle_state.direction)
-            self.particle_state.pitch_angle = propagator.change_pitch_angle(self.particle_state.pitch_angle)
-            self.particle_state.pos_prev = self.particle_state.pos 
-            for substep in range(self.particle_state.dimensions):
-                self.particle_state.substep = substep
+            self.ps.direction = propagator.change_direction(self.ps.direction)
+            self.ps.pitch_angle = propagator.change_pitch_angle(self.ps.pitch_angle)
+            self.ps.pos_prev = self.ps.pos 
+            for substep in range(self.ps.dimensions):
+                self.ps.substep = substep
                 self.propagate(propagator)
-                observation = observer.observe(i, self.particle_state)
+                observation = observer.observe(i, self.ps)
                 if observation is not None:
                     simulation_data.append(observation)
                 
@@ -53,22 +53,10 @@ class Particle():
 
 
     def propagate(self, propagator):
-        self.particle_state = propagator.move_substep(self.particle_state)
+        self.ps = propagator.move_substep(self.ps)
 
 
-    def first_row(self):
-        # TODO: refactore into the observer class
-        first_data_row = [
-            self.particle_state.particle_id, 
-            0, 
-            self.particle_state.distance, 
-            self.particle_state.pos[0], 
-            self.particle_state.pos[1], 
-            self.particle_state.pos[2], 
-            -1.0, 
-            self.particle_state.dimensions-1
-        ]
-        return first_data_row
+    
 
 
 

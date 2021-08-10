@@ -61,23 +61,26 @@ class Observer():
             #self.on_sphere()
         elif self.substeps[ps.substep]:
             if self.all_steps or i in self.steps:
-                radius = -1.0 # default
-                return [
-                    ps.particle_id, 
-                    i, 
-                    ps.distance, 
-                    ps.pos[0], 
-                    ps.pos[1], 
-                    ps.pos[2], 
-                    ps.phi, 
-                    ps.pitch_angle, 
-                    radius, 
-                    ps.substep
-                ]
+                return self.data_row(i, ps)
             else:
                 return None
         else:
             return None
+
+    def data_row(self, i, ps):
+        radius = -1.0 # default
+        return [
+            ps.particle_id, 
+            i, 
+            ps.distance, 
+            ps.pos[0], 
+            ps.pos[1], 
+            ps.pos[2], 
+            ps.phi, 
+            ps.pitch_angle, 
+            radius, 
+            ps.substep
+        ]
  
 
     def get_description(self):
