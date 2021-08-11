@@ -85,14 +85,13 @@ class Source(object, metaclass=SourceMeta):
         # print out all relevant instance parameters
         print('position: ' , self.pos)
         print('number particles: ' ,self.nr_particles)
-        print('energy: ' ,self.energy)
+        print('energy: ' ,self.energy, ' eV')
          
 
 
 class PointSourceOriented(Source):
-    def __init__(self, gyro_radius, pos, nr_particles, pitch_angle, phi):
-        self.energy = 10
-        self.gyro_radius = gyro_radius
+    def __init__(self, energy, pos, nr_particles, pitch_angle, phi):
+        self.energy = energy
         self.pos = pos
         self.nr_particles = nr_particles
         self.pitch_angle = pitch_angle
@@ -103,7 +102,7 @@ class PointSourceOriented(Source):
         self.particles = []
         for i in range(self.nr_particles):
             particle_id = i
-            p = Particle(particle_id, self.gyro_radius, self.pos[:], self.phi, self.pitch_angle, self.dimensions)
+            p = Particle(particle_id, self.energy, self.pos[:], self.phi, self.pitch_angle, self.dimensions)
             self.particles.append(p)
 
     def get_description_source_type(self):
@@ -114,9 +113,8 @@ class PointSourceOriented(Source):
 
 
 class PointSourceIsotropic(Source):
-    def __init__(self, gyro_radius, pos, nr_particles):
-        self.energy = 10
-        self.gyro_radius = gyro_radius
+    def __init__(self, energy, pos, nr_particles):
+        self.energy = energy
         self.pos = pos
         self.nr_particles = nr_particles
         self.init_source()
@@ -127,7 +125,7 @@ class PointSourceIsotropic(Source):
             phi = np.random * 360
             pitch_angle = np.random * 2*np.pi
             particle_id = i
-            p = Particle(particle_id, self.gyro_radius, self.pos[:], phi, pitch_angle, self.dimensions)
+            p = Particle(particle_id, self.energy, self.pos[:], phi, pitch_angle, self.dimensions)
             self.particles.append(p)
 
     def get_description_source_type(self):
