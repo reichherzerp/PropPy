@@ -14,7 +14,7 @@ simulation_spec = [
     ('background_direction', int32),
     ('step_distance', float32),
     ('step_size', float32),
-    ('gyro_radius_eff', float32),
+    ('gyroradius_eff', float32),
     ('speed', float32),
     ('pitch_angle_const', b1),
 
@@ -81,7 +81,6 @@ class Propagator():
 
 
     def move_substep(self, particle_state):
-        self.gyro_radius_eff = particle_state.gyro_radius / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here.
         if self.cartesian:
             # cartesian coordinates -> move in x, y and z directions
             particle_state = self.move_cartesian(particle_state)
@@ -116,8 +115,8 @@ class Propagator():
         particle_state.distance = particle_state.distance + distance_s
         delta_phi = self.compute_delta_phi(particle_state.pitch_angle)
         particle_state.phi = phi_old + delta_phi * particle_state.direction[0]
-        chi_x_1 = self.gyro_radius_eff * (np.cos(particle_state.phi) - np.cos(phi_old))
-        chi_y_1 = self.gyro_radius_eff * (np.sin(particle_state.phi) - np.sin(phi_old))
+        chi_x_1 = self.gyroradius_eff * (np.cos(particle_state.phi) - np.cos(phi_old))
+        chi_y_1 = self.gyroradius_eff * (np.sin(particle_state.phi) - np.sin(phi_old))
         particle_state.pos[0] = particle_state.pos[0] + chi_x_1
         particle_state.pos[1] = particle_state.pos[1] + chi_y_1
         return particle_state
@@ -136,7 +135,7 @@ class Propagator():
 
     def compute_delta_phi(self, pitch_angle):
         delta_rho = self.step_size * np.sin(pitch_angle)
-        delta_phi = 2 * np.arcsin(delta_rho / (2 * 2**0.5 * self.gyro_radius_eff))
+        delta_phi = 2 * np.arcsin(delta_rho / (2 * 2**0.5 * self.gyroradius_eff))
         return delta_phi
 
 
@@ -144,11 +143,12 @@ class Propagator():
         return np.array([pos[0], pos[1], pos[2]], dtype=np.float32)
 
 
-    def set_gyroradius(self, energy):
+    def set_gyroradius(self, ps):
         # default gyroradius for protons (v=c) with 1eV in magnetic field with strength 1Gaus
         gyroradius_0 = 3.336*10**(-5) # meters
-        gyroradius = gyroradius_0 * energy / self.magnetic_field.rms # meters
-        return gyroradius
+        ps.gyroradius = gyroradius_0 * ps.energy / self.magnetic_field.rms # meters
+        ps.gyroradius_eff = ps.gyroradius / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here. 
+        return ps
         
 
     def set_pitch_angle_const(self, const_bool):
