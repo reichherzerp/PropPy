@@ -15,8 +15,8 @@ particle_spec = [
 
 @jitclass(particle_spec)
 class Particle():
-    def __init__(self, particle_id, gyro_radius, pos, phi, pitch_angle, dimensions):
-        self.ps = ParticleState(particle_id, gyro_radius, pos, phi, pitch_angle, dimensions)
+    def __init__(self, particle_id, energy, pos, phi, pitch_angle, dimensions):
+        self.ps = ParticleState(particle_id, energy, pos, phi, pitch_angle, dimensions)
         
         
     def simulate(self, observer, propagator):
