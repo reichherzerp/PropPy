@@ -145,6 +145,7 @@ class Propagator():
 
 
     def set_gyroradius(self, energy):
+        # default gyroradius for protons (v=c) with 1eV in magnetic field with strength 1Gaus
         gyroradius_0 = 3.336*10**(-5) # meters
         gyroradius = gyroradius_0 * energy / self.magnetic_field.rms # meters
         return gyroradius
