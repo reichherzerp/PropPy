@@ -11,7 +11,8 @@ particle_state_spec = [
     ('energy', float32),
     ('isotropic', b1),
     ('distance', float32),
-    ('gyro_radius', float32),
+    ('gyroradius', float32),
+    ('gyroradius_eff', float32),
     ('phi', float32),
     ('pitch_angle', float32),
     ('particle_id', int32),
@@ -29,7 +30,8 @@ class ParticleState():
     def __init__(self, particle_id, energy, pos, phi, pitch_angle, dimensions):
         self.speed = 3*10**8 # [m^2/s]
         self.energy = energy
-        self.gyro_radius = 0.0
+        self.gyroradius = 0.0
+        self.gyroradius_eff = 0.0
         self.particle_id = particle_id
         self.isotropic = False
         self.dimensions = dimensions

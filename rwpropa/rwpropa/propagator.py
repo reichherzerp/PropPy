@@ -113,10 +113,10 @@ class Propagator():
         phi_old = particle_state.phi
         distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
         particle_state.distance = particle_state.distance + distance_s
-        delta_phi = self.compute_delta_phi(particle_state.pitch_angle)
+        delta_phi = self.compute_delta_phi(particle_state)
         particle_state.phi = phi_old + delta_phi * particle_state.direction[0]
-        chi_x_1 = self.gyroradius_eff * (np.cos(particle_state.phi) - np.cos(phi_old))
-        chi_y_1 = self.gyroradius_eff * (np.sin(particle_state.phi) - np.sin(phi_old))
+        chi_x_1 = particle_state.gyroradius_eff * (np.cos(particle_state.phi) - np.cos(phi_old))
+        chi_y_1 = particle_state.gyroradius_eff * (np.sin(particle_state.phi) - np.sin(phi_old))
         particle_state.pos[0] = particle_state.pos[0] + chi_x_1
         particle_state.pos[1] = particle_state.pos[1] + chi_y_1
         return particle_state
@@ -133,9 +133,9 @@ class Propagator():
         return particle_state
 
 
-    def compute_delta_phi(self, pitch_angle):
-        delta_rho = self.step_size * np.sin(pitch_angle)
-        delta_phi = 2 * np.arcsin(delta_rho / (2 * 2**0.5 * self.gyroradius_eff))
+    def compute_delta_phi(self, ps):
+        delta_rho = self.step_size * np.sin(ps.pitch_angle)
+        delta_phi = 2 * np.arcsin(delta_rho / (2 * 2**0.5 * ps.gyroradius_eff))
         return delta_phi
 
 
