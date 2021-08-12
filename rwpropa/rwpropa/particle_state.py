@@ -13,6 +13,7 @@ particle_state_spec = [
     ('distance', float32),
     ('gyroradius', float32),
     ('gyroradius_eff', float32),
+    ('local_move', float32[:]),
     ('phi', float32),
     ('pitch_angle', float32),
     ('particle_id', int32),
