@@ -94,32 +94,28 @@ class Propagator():
             if particle_state.substep == 2:
                 particle_state, move_local = self.move_cartesian(particle_state)
         # global step
-        particle_state = self.move_global(particle_state)
+        particle_state = self.move_global(particle_state, move_local)
         
         return particle_state
 
 
-    def move_global(self, ps):
+    def move_global(self, ps, move_local):
         for s in range(self.dimensions):
-            ps.pos[s] = ps.pos[s]
+            ps.pos[s] = ps.pos[s] + move_local[s]
         return ps
     
                  
     def move_cartesian(self, particle_state):
         if particle_state.substep == self.background_direction:
             distance_s = self.step_size * np.cos(particle_state.pitch_angle)
-            if self.pitch_angle_const == False:
-                particle_state.pos[particle_state.substep] = particle_state.pos[particle_state.substep] + distance_s
-            else:
-                particle_state.pos[particle_state.substep] = particle_state.pos[particle_state.substep] + particle_state.direction[particle_state.substep] * distance_s
         else:
             distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
-            particle_state.pos[particle_state.substep] = particle_state.pos[particle_state.substep] + particle_state.direction[particle_state.substep] * distance_s
+        particle_state.pos[particle_state.substep] = particle_state.pos[particle_state.substep] + particle_state.direction[particle_state.substep] * distance_s
         particle_state.distance = particle_state.distance + distance_s
         move_local = [0,0,0]
         for s in range(self.dimensions):
             if s == particle_state.substep:
-                move_local[s] = 1
+                move_local[s] = distance_s
         return particle_state, move_local
         
         
@@ -131,8 +127,8 @@ class Propagator():
         particle_state.phi = phi_old + delta_phi * particle_state.direction[0]
         chi_x_1 = particle_state.gyroradius_eff * (np.cos(particle_state.phi) - np.cos(phi_old))
         chi_y_1 = particle_state.gyroradius_eff * (np.sin(particle_state.phi) - np.sin(phi_old))
-        particle_state.pos[0] = particle_state.pos[0] + chi_x_1
-        particle_state.pos[1] = particle_state.pos[1] + chi_y_1
+        #particle_state.pos[0] = particle_state.pos[0] + chi_x_1
+        #particle_state.pos[1] = particle_state.pos[1] + chi_y_1
         return particle_state, [chi_x_1, chi_y_1, 0]
 
                       
@@ -142,8 +138,8 @@ class Propagator():
         delta_rho = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
         chi_x_2 = np.cos(particle_state.phi) * particle_state.direction[1] * delta_rho
         chi_y_2 = np.sin(particle_state.phi) * particle_state.direction[1] * delta_rho
-        particle_state.pos[0] = particle_state.pos[0] + chi_x_2
-        particle_state.pos[1] = particle_state.pos[1] + chi_y_2
+        #particle_state.pos[0] = particle_state.pos[0] + chi_x_2
+        #particle_state.pos[1] = particle_state.pos[1] + chi_y_2
         return particle_state, [chi_x_2, chi_y_2, 0]
 
 
