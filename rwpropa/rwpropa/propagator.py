@@ -81,18 +81,22 @@ class Propagator():
 
 
     def move_substep(self, particle_state):
+        # local step
         if self.cartesian:
             # cartesian coordinates -> move in x, y and z directions
-            particle_state = self.move_cartesian(particle_state)
+            particle_state, move_local = self.move_cartesian(particle_state)
         else:
             # cylindrical coordinates -> move in phi, rho and z directions
             if particle_state.substep == 0:
-                particle_state = self.move_phi(particle_state)
+                particle_state, move_local = self.move_phi(particle_state)
             if particle_state.substep == 1:
-                particle_state = self.move_rho(particle_state)
+                particle_state, move_local = self.move_rho(particle_state)
             if particle_state.substep == 2:
-                particle_state = self.move_cartesian(particle_state)
+                particle_state, move_local = self.move_cartesian(particle_state)
+        # global step
+        
         return particle_state
+    
          
             
     def move_cartesian(self, particle_state):
@@ -106,7 +110,11 @@ class Propagator():
             distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
             particle_state.pos[particle_state.substep] = particle_state.pos[particle_state.substep] + particle_state.direction[particle_state.substep] * distance_s
         particle_state.distance = particle_state.distance + distance_s
-        return particle_state
+        move_local = [0,0,0]
+        for s in range(self.dimensions):
+            if s == particle_state.substep:
+                move_local[s] = 1
+        return particle_state, move_local
         
         
     def move_phi(self, particle_state):
@@ -119,7 +127,7 @@ class Propagator():
         chi_y_1 = particle_state.gyroradius_eff * (np.sin(particle_state.phi) - np.sin(phi_old))
         particle_state.pos[0] = particle_state.pos[0] + chi_x_1
         particle_state.pos[1] = particle_state.pos[1] + chi_y_1
-        return particle_state
+        return particle_state, [chi_x_1, chi_y_1, 0]
 
                       
     def move_rho(self, particle_state):
@@ -130,7 +138,7 @@ class Propagator():
         chi_y_2 = np.sin(particle_state.phi) * particle_state.direction[1] * delta_rho
         particle_state.pos[0] = particle_state.pos[0] + chi_x_2
         particle_state.pos[1] = particle_state.pos[1] + chi_y_2
-        return particle_state
+        return particle_state, [chi_x_2, chi_y_2, 0]
 
 
     def compute_delta_phi(self, ps):
