@@ -82,6 +82,13 @@ class Propagator():
 
     def move_substep(self, particle_state):
         # local step
+        particle_state, move_local_array = self.move_local(particle_state)
+        # global step
+        particle_state = self.move_global(particle_state, move_local_array)
+        return particle_state
+
+
+    def move_local(self, particle_state):
         if self.cartesian:
             # cartesian coordinates -> move in x, y and z directions
             particle_state, move_local = self.move_cartesian(particle_state)
@@ -93,14 +100,12 @@ class Propagator():
                 particle_state, move_local = self.move_rho(particle_state)
             if particle_state.substep == 2:
                 particle_state, move_local = self.move_cartesian(particle_state)
-        # global step
-        particle_state = self.move_global(particle_state, move_local)
-        
-        return particle_state
+        return particle_state, move_local
 
 
     def move_global(self, ps, move_local):
         for s in range(self.dimensions):
+            # TODO: make transformation from local to global frame
             ps.pos[s] = ps.pos[s] + move_local[s]
         return ps
     
