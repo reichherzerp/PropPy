@@ -94,11 +94,17 @@ class Propagator():
             if particle_state.substep == 2:
                 particle_state, move_local = self.move_cartesian(particle_state)
         # global step
+        particle_state = self.move_global(particle_state)
         
         return particle_state
+
+
+    def move_global(self, ps):
+        for s in range(self.dimensions):
+            ps.pos[s] = ps.pos[s]
+        return ps
     
-         
-            
+                 
     def move_cartesian(self, particle_state):
         if particle_state.substep == self.background_direction:
             distance_s = self.step_size * np.cos(particle_state.pitch_angle)
