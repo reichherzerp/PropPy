@@ -118,12 +118,12 @@ class Propagator():
 
 
     def find_rotation_matrix(self):
-        rotation_matrix = [[]]
+        rotation_matrix = [[0,0,0],[0,0,0],[0,0,0]]
         return rotation_matrix
 
 
     def rotate(self, rotation_matrix, move_local):
-        move_global = []
+        move_global = move_local
         return move_global
     
                  
