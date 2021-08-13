@@ -106,6 +106,8 @@ class Propagator():
     def move_global(self, ps, move_local):
         # find the roation matrix to roate magnetic field of local frame (0,0,1)
         # into global frame (self.magnetic_field.direction) 
+        # follow procedure described in:
+        # https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311
         for s in range(self.dimensions):
             # TODO: make transformation from local to global frame
             self.magnetic_field.direction
