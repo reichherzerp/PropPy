@@ -104,8 +104,11 @@ class Propagator():
 
 
     def move_global(self, ps, move_local):
+        # find the roation matrix to roate magnetic field of local frame (0,0,1)
+        # into global frame (self.magnetic_field.direction) 
         for s in range(self.dimensions):
             # TODO: make transformation from local to global frame
+            self.magnetic_field.direction
             ps.pos[s] = ps.pos[s] + move_local[s]
         return ps
     
