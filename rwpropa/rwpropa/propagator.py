@@ -81,6 +81,7 @@ class Propagator():
 
 
     def move_substep(self, particle_state):
+        # division into local and global step is slow... TODO: check for performance optimization
         # local step
         particle_state, move_local_array = self.move_local(particle_state)
         # global step
@@ -108,6 +109,9 @@ class Propagator():
         # into global frame (self.magnetic_field.direction) 
         # follow procedure described in:
         # https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311
+        # python: https://stackoverflow.com/questions/45142959/calculate-rotation-matrix-to-align-two-vectors-in-3d-space
+        
+        # TODO: the following two function calls are really slow...
         rotation_matrix = self.find_rotation_matrix()
         move_global = self.rotate(rotation_matrix, move_local)
         for s in range(self.dimensions):
