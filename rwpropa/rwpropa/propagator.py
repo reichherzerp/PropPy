@@ -109,7 +109,7 @@ class Propagator():
         # follow procedure described in:
         # https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311
         rotation_matrix = self.find_rotation_matrix()
-        #move_global = self.rotat
+        move_global = self.rotate(rotation_matrix, move_local)
         for s in range(self.dimensions):
             # TODO: make transformation from local to global frame
             self.magnetic_field.direction
@@ -118,7 +118,13 @@ class Propagator():
 
 
     def find_rotation_matrix(self):
-        return [[]]
+        rotation_matrix = [[]]
+        return rotation_matrix
+
+
+    def rotate(self, rotation_matrix, move_local):
+        move_global = []
+        return move_global
     
                  
     def move_cartesian(self, particle_state):
