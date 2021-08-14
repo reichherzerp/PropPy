@@ -110,7 +110,7 @@ class Propagator():
         # follow procedure described in:
         # https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311
         # python: https://stackoverflow.com/questions/45142959/calculate-rotation-matrix-to-align-two-vectors-in-3d-space
-        
+
         # TODO: the following two function calls are really slow...
         rotation_matrix = self.find_rotation_matrix()
         move_global = self.rotate(rotation_matrix, move_local)
@@ -127,6 +127,8 @@ class Propagator():
 
 
     def rotate(self, rotation_matrix, move_local):
+        # using the rotation matrix to transform the local movement 
+        # into the global frame
         move_global = move_local
         return move_global
     
