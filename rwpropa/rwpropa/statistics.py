@@ -4,10 +4,10 @@ import pandas as pd
 from scipy.stats import norm
 
 class Statistics():    
-    def __init__(self, df, dimensions):
+    def __init__(self, df):
         print('init statistics plotting class')
         self.df = df
-        self.dimensions = dimensions
+        self.dimensions = 3
     
 
     def plot_distribution(self, axis, step, bins, file_name):
