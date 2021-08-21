@@ -8,6 +8,10 @@ class Statistics():
         print('init statistics plotting class')
         self.df = df
         self.dimensions = 3
+
+
+    def set_dimensions(self, dimensions):
+        self.dimensions = dimensions
     
 
     def plot_distribution(self, axis, step, bins, file_name):
