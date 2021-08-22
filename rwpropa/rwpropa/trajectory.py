@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 
 
 class Trajectory():
-    def __init__(self, df, dimensions):
+    def __init__(self, df):
         print('init trajectory plotting class')
         self.df = df
-        self.dimensions = dimensions
+        self.dimensions = 3
         
     def get_particle_ids(self):
         return list(map(int, (set(self.df['id']))))
