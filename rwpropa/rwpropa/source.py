@@ -102,12 +102,14 @@ class PointSourceOriented(Source):
         self.phi = phi
         self.init_source()
 
+
     def inject_particles(self):
         self.particles = []
         for i in range(self.nr_particles):
             particle_id = i
             p = Particle(particle_id, self.energy, self.pos[:], self.phi, self.pitch_angle, self.dimensions)
             self.particles.append(p)
+
 
     def get_description_source_type(self):
         print('source tpye: PointSourceOriented')
@@ -123,6 +125,7 @@ class PointSourceIsotropic(Source):
         self.nr_particles = nr_particles
         self.init_source()
 
+
     def inject_particles(self):
         self.particles = []
         for i in range(self.nr_particles):
@@ -131,6 +134,7 @@ class PointSourceIsotropic(Source):
             particle_id = i
             p = Particle(particle_id, self.energy, self.pos[:], phi, pitch_angle, self.dimensions)
             self.particles.append(p)
+
 
     def get_description_source_type(self):
         print('source tpye: PointSourceIsotropic')
