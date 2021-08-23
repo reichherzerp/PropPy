@@ -40,6 +40,10 @@ class Source(object, metaclass=SourceMeta):
         self.dimensions = 3
         self.inject_particles()
 
+    
+    def set_dimensions(self, dimensions):
+        self.dimensions = dimensions
+
 
     @abstractmethod
     def inject_particles(self):
