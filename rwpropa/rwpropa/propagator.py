@@ -80,7 +80,7 @@ class Propagator():
         return pitch_angle
 
 
-    def local_propagtion(self, particle_state):
+    def propagate(self, particle_state):
         for substep in range(particle_state.dimensions):
             particle_state.substep = substep
             particle_state = self.move_substep(particle_state)

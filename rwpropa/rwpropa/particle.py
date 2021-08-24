@@ -25,13 +25,13 @@ class Particle():
         self.ps.init_position()
         for step in range(1, propagator.nr_steps): 
             self.start_step(propagator, step)
-            propagator.local_propagation(self.ps)
+            propagator.propagate(self.ps)
             # TODO: do the substeps in the propagator. substeps only needed for local propagation.
-            for substep in range(self.ps.dimensions):
-                self.propagate_substep(propagator, substep)
-                observation = observer.observe(self.ps)
-                if observation is not None:
-                    simulation_data.append(observation)
+            #for substep in range(self.ps.dimensions):
+            #    self.propagate_substep(propagator, substep)
+            observation = observer.observe(self.ps)
+            if observation is not None:
+                simulation_data.append(observation)
                 
         return simulation_data
 
