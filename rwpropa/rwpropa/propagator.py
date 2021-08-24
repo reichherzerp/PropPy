@@ -80,10 +80,13 @@ class Propagator():
         return pitch_angle
 
 
+    def local_propagtion(self):
+        pass
+
+
     def move_substep(self, particle_state):
         # adapt phi and pitch angle in case the b-field vector changed: issue 26
         
-
         # division into local and global step is slow... TODO: check for performance optimization
         # local step
         particle_state, move_local_array = self.move_local(particle_state)
