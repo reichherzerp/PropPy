@@ -85,6 +85,8 @@ class Propagator():
         self.compute_bfield_angles()
         # 2. step 
         self.compute_rotation_matrix()
+        # 3. step
+        self.transform_into_local_frame()
 
         for substep in range(particle_state.dimensions):
             particle_state.substep = substep
@@ -97,11 +99,20 @@ class Propagator():
         # 1. alignment B vector and z axis
         # - compute angle theta_B between z-axis and B-field
         # - compute angle phi of B-filed
+        # TODO: implement
         pass
 
 
     def compute_rotation_matrix(self):
         # 2. find rotation matrix to project vector B onto the z-axis
+        # use angles theta_B and phi from first step
+        # TODO: implement
+        pass
+
+
+    def transform_into_local_frame(self):
+        # 3. rotate particle state into local frame
+        # TODO: implement
         pass
 
 
