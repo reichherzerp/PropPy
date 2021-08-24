@@ -83,7 +83,9 @@ class Propagator():
     def propagate(self, particle_state):
         # 1. step
         self.compute_bfield_angles()
-        
+        # 2. step 
+        self.compute_rotation_matrix()
+
         for substep in range(particle_state.dimensions):
             particle_state.substep = substep
             particle_state = self.move_substep(particle_state)
@@ -95,6 +97,11 @@ class Propagator():
         # 1. alignment B vector and z axis
         # - compute angle theta_B between z-axis and B-field
         # - compute angle phi of B-filed
+        pass
+
+
+    def compute_rotation_matrix(self):
+        # 2. find rotation matrix to project vector B onto the z-axis
         pass
 
 
