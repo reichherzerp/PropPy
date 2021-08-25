@@ -87,6 +87,8 @@ class Propagator():
         self.compute_rotation_matrix()
         # 3. step
         self.transform_into_local_frame()
+        # 4. step
+        self.compute_local_angles()
 
         for substep in range(particle_state.dimensions):
             particle_state.substep = substep
@@ -112,6 +114,15 @@ class Propagator():
 
     def transform_into_local_frame(self):
         # 3. rotate particle state into local frame
+        # TODO: implement
+        pass
+
+
+    def compute_local_angles(self):
+        # 4. compute pitch angle and phi in the local frame
+        # (note that the pitch angle should be the same in the local and the global frame)
+        # - compute phi
+        # - compute pithc angle
         # TODO: implement
         pass
 
