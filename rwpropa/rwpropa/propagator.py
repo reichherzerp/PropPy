@@ -89,6 +89,8 @@ class Propagator():
         self.transform_into_local_frame()
         # 4. step
         self.compute_local_angles()
+        # 5. step
+        self.update_directions()
 
         for substep in range(particle_state.dimensions):
             particle_state.substep = substep
@@ -123,6 +125,13 @@ class Propagator():
         # (note that the pitch angle should be the same in the local and the global frame)
         # - compute phi
         # - compute pithc angle
+        # TODO: implement
+        pass
+
+
+    def update_directions(self):
+        # 5. update the directions 
+        # should be function change_directio(self) from above
         # TODO: implement
         pass
 
