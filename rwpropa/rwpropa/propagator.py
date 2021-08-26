@@ -97,6 +97,8 @@ class Propagator():
         self.compute_local_movements()
         # 8. step
         self.transform_into_global_frame()
+        # finally update the pitch angle, as it may have changed ? check if needed
+        self.update_pitch_angle()
 
         for substep in range(particle_state.dimensions):
             particle_state.substep = substep
@@ -143,7 +145,7 @@ class Propagator():
 
 
     def update_pitch_angle(self):
-        # 6. update the directions 
+        # 6. update the pitch angle
         # should be function change_pitch_angle(self) from above
         # TODO: implement
         pass
