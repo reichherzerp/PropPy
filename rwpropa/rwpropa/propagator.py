@@ -93,6 +93,8 @@ class Propagator():
         self.update_directions()
         # 6 .step
         self.update_pitch_angle()
+        # 7. step
+        self.compute_local_movements()
 
         for substep in range(particle_state.dimensions):
             particle_state.substep = substep
@@ -141,6 +143,13 @@ class Propagator():
     def update_pitch_angle(self):
         # 6. update the directions 
         # should be function change_pitch_angle(self) from above
+        # TODO: implement
+        pass
+
+
+    def compute_local_movements(self):
+        # 7. compute movement in local frame, where b field aligns z-axis
+        # in 3d, this should be thre substeps
         # TODO: implement
         pass
 
