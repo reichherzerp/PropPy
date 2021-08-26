@@ -95,6 +95,8 @@ class Propagator():
         self.update_pitch_angle()
         # 7. step
         self.compute_local_movements()
+        # 8. step
+        self.transform_into_global_frame()
 
         for substep in range(particle_state.dimensions):
             particle_state.substep = substep
@@ -150,6 +152,13 @@ class Propagator():
     def compute_local_movements(self):
         # 7. compute movement in local frame, where b field aligns z-axis
         # in 3d, this should be thre substeps
+        # TODO: implement
+        pass
+
+
+    def transform_into_global_frame(self):
+        # 8. transform local movement into global frame
+        # apply rotation matrix from 2. step onto local movements
         # TODO: implement
         pass
 
