@@ -113,6 +113,8 @@ class Propagator():
         # - compute angle theta_B between z-axis and B-field
         # - compute angle phi of B-filed
         # TODO: implement
+        self.magnetic_field.direction
+
         pass
 
 
@@ -164,6 +166,13 @@ class Propagator():
         # apply rotation matrix from 2. step onto local movements
         # TODO: implement
         pass
+
+
+    def angle(v1, v2, acute):
+        # v1 is your firsr vector
+        # v2 is your second vector
+        angle = np.arccos(np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2)))
+        return angle
 
 
     def move_substep(self, particle_state):
