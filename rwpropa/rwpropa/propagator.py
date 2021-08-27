@@ -113,7 +113,8 @@ class Propagator():
         # - compute angle theta_B between z-axis and B-field
         # - compute angle phi of B-filed
         # TODO: implement
-        self.magnetic_field.direction
+        theta_B = self.angle(np.array([0,0,1]), self.magnetic_field.direction)
+        #phi_b = self.angle(np.array([1,0,0]), np.array([]))
 
         pass
 
@@ -168,8 +169,9 @@ class Propagator():
         pass
 
 
-    def angle(v1, v2, acute):
-        # v1 is your firsr vector
+    def angle(self, v1, v2):
+        # function to compute angle between two 3d vectors
+        # v1 is your first vector
         # v2 is your second vector
         angle = np.arccos(np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2)))
         return angle
