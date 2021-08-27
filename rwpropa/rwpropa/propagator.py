@@ -97,6 +97,7 @@ class Propagator():
         self.compute_local_movements()
         # 8. step
         self.transform_into_global_frame()
+        # 9. step
         # finally update the pitch angle, as it may have changed ? check if needed
         self.update_pitch_angle()
 
