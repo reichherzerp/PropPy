@@ -113,9 +113,12 @@ class Propagator():
         # - compute angle theta_B between z-axis and B-field
         # - compute angle phi of B-filed
         # TODO: implement
-        theta_B = self.angle(np.array([0,0,1]), self.magnetic_field.direction)
-        #phi_b = self.angle(np.array([1,0,0]), np.array([]))
-
+        x_axis = np.array([1,0,0])
+        z_axis = np.array([0,0,1])
+        magnetic_field_xy_plane = np.array([self.magnetic_field.direction[0] , self.magnetic_field.direction[1], 0])
+        theta_B = self.angle(z_axis, self.magnetic_field.direction)
+        phi_b = self.angle(x_axis, magnetic_field_xy_plane)
+        
         pass
 
 
