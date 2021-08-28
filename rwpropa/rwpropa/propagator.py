@@ -117,9 +117,8 @@ class Propagator():
         z_axis = np.array([0,0,1])
         magnetic_field_xy_plane = np.array([self.magnetic_field.direction[0] , self.magnetic_field.direction[1], 0])
         theta_B = self.angle(z_axis, self.magnetic_field.direction)
-        phi_b = self.angle(x_axis, magnetic_field_xy_plane)
-        
-        pass
+        phi_B = self.angle(x_axis, magnetic_field_xy_plane)
+        return theta_B, phi_B
 
 
     def compute_rotation_matrix(self):
