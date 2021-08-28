@@ -81,8 +81,6 @@ class Propagator():
 
 
     def propagate(self, particle_state):
-        # 1. step
-        self.compute_bfield_angles()
         # 2. step 
         self.compute_rotation_matrix()
         # 3. step
@@ -108,23 +106,11 @@ class Propagator():
         return particle_state
 
 
-    def compute_bfield_angles(self):
-        # 1. alignment B vector and z axis
-        # - compute angle theta_B between z-axis and B-field
-        # - compute angle phi of B-filed
-        # TODO: implement
-        x_axis = np.array([1,0,0])
-        z_axis = np.array([0,0,1])
-        magnetic_field_xy_plane = np.array([self.magnetic_field.direction[0] , self.magnetic_field.direction[1], 0])
-        theta_B = self.angle(z_axis, self.magnetic_field.direction)
-        phi_B = self.angle(x_axis, magnetic_field_xy_plane)
-        return theta_B, phi_B
-
-
     def compute_rotation_matrix(self):
         # 2. find rotation matrix to project vector B onto the z-axis
         # use angles theta_B and phi from first step
         # TODO: implement
+        theta_B, phi_B = self.compute_bfield_angles
         pass
 
 
@@ -177,6 +163,19 @@ class Propagator():
         # v2 is your second vector
         angle = np.arccos(np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2)))
         return angle
+
+
+    def compute_bfield_angles(self):
+        # alignment B vector and z axis
+        # - compute angle theta_B between z-axis and B-field
+        # - compute angle phi of B-filed
+        # TODO: implement
+        x_axis = np.array([1,0,0])
+        z_axis = np.array([0,0,1])
+        magnetic_field_xy_plane = np.array([self.magnetic_field.direction[0] , self.magnetic_field.direction[1], 0])
+        theta_B = self.angle(z_axis, self.magnetic_field.direction)
+        phi_B = self.angle(x_axis, magnetic_field_xy_plane)
+        return theta_B, phi_B
 
 
     def move_substep(self, particle_state):
