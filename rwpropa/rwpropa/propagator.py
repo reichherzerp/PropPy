@@ -81,21 +81,21 @@ class Propagator():
 
 
     def propagate(self, particle_state):
-        # 2. step 
+        # 1. step 
         self.compute_rotation_matrix()
-        # 3. step
+        # 2. step
         self.transform_into_local_frame()
-        # 4. step
+        # 3. step
         self.compute_local_angles()
-        # 5. step
+        # 4. step
         self.update_directions()
-        # 6 .step
+        # 5 .step
         self.update_pitch_angle()
-        # 7. step
+        # 6. step
         self.compute_local_movements()
-        # 8. step
+        # 7. step
         self.transform_into_global_frame()
-        # 9. step
+        # 8. step
         # finally update the pitch angle, as it may have changed ? check if needed
         self.update_pitch_angle()
 
@@ -107,7 +107,7 @@ class Propagator():
 
 
     def compute_rotation_matrix(self):
-        # 2. find rotation matrix to project vector B onto the z-axis
+        # 1. find rotation matrix to project vector B onto the z-axis
         # use angles theta_B and phi from first step
         # TODO: implement
         theta_B, phi_B = self.compute_bfield_angles
@@ -115,13 +115,13 @@ class Propagator():
 
 
     def transform_into_local_frame(self):
-        # 3. rotate particle state into local frame
+        # 2. rotate particle state into local frame
         # TODO: implement
         pass
 
 
     def compute_local_angles(self):
-        # 4. compute pitch angle and phi in the local frame
+        # 3. compute pitch angle and phi in the local frame
         # (note that the pitch angle should be the same in the local and the global frame)
         # - compute phi
         # - compute pithc angle
@@ -130,28 +130,28 @@ class Propagator():
 
 
     def update_directions(self):
-        # 5. update the directions 
+        # 4. update the directions 
         # should be function change_directio(self) from above
         # TODO: implement
         pass
 
 
     def update_pitch_angle(self):
-        # 6. update the pitch angle
+        # 5. update the pitch angle
         # should be function change_pitch_angle(self) from above
         # TODO: implement
         pass
 
 
     def compute_local_movements(self):
-        # 7. compute movement in local frame, where b field aligns z-axis
+        # 6. compute movement in local frame, where b field aligns z-axis
         # in 3d, this should be thre substeps
         # TODO: implement
         pass
 
 
     def transform_into_global_frame(self):
-        # 8. transform local movement into global frame
+        # 7. transform local movement into global frame
         # apply rotation matrix from 2. step onto local movements
         # TODO: implement
         pass
