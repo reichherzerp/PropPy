@@ -288,7 +288,7 @@ class SphericalObserver(AbstractSpecialObserver):
 
     def __init__(self, substeps):
         self.steps_input = []
-        spheres = [-1.0, 10**12]
+        spheres = [-1.0, 10**10]
 
         self.init_observer(substeps, spheres)
 
