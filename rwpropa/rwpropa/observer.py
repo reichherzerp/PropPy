@@ -286,11 +286,11 @@ class TimeEvolutionObserver(AbstractSpecialObserver):
 
 class SphericalObserver(AbstractSpecialObserver):
 
-    def __init__(self, substeps):
+    def __init__(self, substeps, spheres):
         self.steps_input = []
-        spheres = [-1.0, 10**10]
+        self.spheres = [-1.0] + spheres
 
-        self.init_observer(substeps, spheres)
+        self.init_observer(substeps, self.spheres)
 
     def set_steps(self):
         steps = self.steps_input 

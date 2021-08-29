@@ -21,7 +21,7 @@ class Particle():
         
     def simulate(self, observer, propagator):
         simulation_data = []
-        simulation_data.append(observer.data_row(self.ps, -1.0))
+
         self.ps.init_position()
         for step in range(1, propagator.nr_steps): 
             self.start_step(propagator, step)
