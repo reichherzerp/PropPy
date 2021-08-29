@@ -65,9 +65,17 @@ class OrderedBackgroundField(AbstractMagneticField):
 
     def __init__(self, rms, direction):
         self.rms = rms
-        self.direction = direction
-        self.magnetic_field = MagneticField(rms, np.array(direction, dtype=np.float32))
-        #self.init_observer(substeps)
+        self.direction = np.array(direction, dtype=np.float32)
+        self.magnetic_field = MagneticField(self.rms, self.direction)
+
+
+
+class DefaultBackgroundField(AbstractMagneticField):
+
+    def __init__(self, rms):
+        self.rms = rms
+        self.direction = np.array([0,0,1], dtype=np.float32)
+        self.magnetic_field = MagneticField(self.rms, self.direction)
 
 
 
