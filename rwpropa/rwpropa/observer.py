@@ -57,9 +57,9 @@ class Observer():
         # decide if the current particle state should be observed based on the criterions specified 
         # in the observer instance
         if ps.substep == 2 and len(self.spheres) > 1:
-            on_sphere = self.check_on_sphere(ps)
-            if on_sphere != None:
-                return on_sphere
+            data_on_sphere = self.check_on_sphere(ps)
+            if data_on_sphere != None:
+                return data_on_sphere
         if self.substeps[ps.substep]:
             if self.all_steps or ps.step in self.steps:
                 return self.data_row(ps, -1.0)
@@ -116,6 +116,7 @@ class Observer():
     def get_description_parameters(self):   
         # called by all special observer classes below.
         # print out all relevant instance parameters
+        print('spheres: ' , self.spheres)
         print('steps [0:10]: ' , self.steps[0:10])
         print('steps [-11:-1]: ' ,self.steps[-11:-1])
         print('nr steps: ' , len(self.steps))
@@ -213,7 +214,7 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
 class ObserverAllSteps(AbstractSpecialObserver):
 
     def __init__(self, substeps):
-        spheres = [-1,0]
+        spheres = [-1.0]
         self.init_observer(substeps, spheres)
 
     def set_steps(self):
@@ -231,7 +232,7 @@ class TimeEvolutionObserverLog(AbstractSpecialObserver):
         self.min_steps = min_steps
         self.max_steps = max_steps
         self.nr_steps = nr_steps
-        spheres = [-1,0]
+        spheres = [-1.0]
 
         self.init_observer(substeps, spheres)
         
@@ -250,7 +251,7 @@ class TimeEvolutionObserverLin(AbstractSpecialObserver):
         self.min_steps = min_steps
         self.max_steps = max_steps
         self.nr_steps = nr_steps
-        spheres = [-1,0]
+        spheres = [-1.0]
 
         self.init_observer(substeps, spheres)
 
@@ -267,7 +268,7 @@ class TimeEvolutionObserver(AbstractSpecialObserver):
 
     def __init__(self, steps_input, substeps):
         self.steps_input = steps_input
-        spheres = [-1,0]
+        spheres = [-1.0]
 
         self.init_observer(substeps, spheres)
 
