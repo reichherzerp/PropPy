@@ -77,10 +77,12 @@ class Observer():
             radius_prev_2 = radius_prev_2 + ps.pos_prev[i]**2
         radius = radius_2**0.5
         radius_prev = radius_prev_2**0.5
-        if (radius > self.spheres[1] and radius_prev < self.spheres[1]) or (radius < self.spheres[1] and radius_prev > self.spheres[1]):
-            return self.data_row(ps, self.spheres[1])
-        else: 
-            return None
+        for j in range(1, len(self.spheres)):
+            r_s = self.spheres[j]
+            if (radius > r_s and radius_prev < r_s) or (radius < r_s and radius_prev > r_s):
+                return self.data_row(ps, r_s)
+        
+        return None
 
 
     def data_row(self, ps, radius):
