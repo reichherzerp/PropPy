@@ -29,7 +29,7 @@ class Observer():
 
     def __init__(self, steps, substeps):
         self.substeps = substeps
-        self.spheres = np.array([0.0], dtype=np.float32)
+        self.spheres = np.array([-1.0, 10**5], dtype=np.float32)
         # distance of the box boundaries in cartesian coords. [x, y, z]
         self.box_dimensions = np.array([0.0], dtype=np.float32)
         self.all_steps = False
@@ -57,19 +57,31 @@ class Observer():
         # decide if the current particle state should be observed based on the criterions specified 
         # in the observer instance
         if ps.substep == 2 and len(self.spheres) > 1:
-            print('todo: implement spherical observer')
-            #self.on_sphere()
-        elif self.substeps[ps.substep]:
+            on_sphere = self.check_on_sphere(ps)
+            if on_sphere != None:
+                return on_sphere
+        if self.substeps[ps.substep]:
             if self.all_steps or ps.step in self.steps:
-                return self.data_row(ps)
+                return self.data_row(ps, -1.0)
             else:
                 return None
         else:
             return None
 
 
-    def data_row(self, ps):
-        radius = -1.0 # default
+    def check_on_sphere(self, ps):
+        radius = 0
+        for i in range(ps.dimensions):
+            radius = radius + ps.pos[i]**2
+
+        if radius**0.5 > self.spheres[1]:
+            return self.data_row(ps, self.spheres[1])
+        else: 
+            return None
+
+
+    def data_row(self, ps, radius):
+        radius = radius
         data_row_list = [
             ps.particle_id, 
             ps.step, 
