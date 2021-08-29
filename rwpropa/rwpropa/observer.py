@@ -70,11 +70,14 @@ class Observer():
 
 
     def check_on_sphere(self, ps):
-        radius = 0
+        radius_2 = 0
+        radius_prev_2 = 0
         for i in range(ps.dimensions):
-            radius = radius + ps.pos[i]**2
-
-        if radius**0.5 > self.spheres[1]:
+            radius_2 = radius_2 + ps.pos[i]**2
+            radius_prev_2 = radius_prev_2 + ps.pos_prev[i]**2
+        radius = radius_2**0.5
+        radius_prev = radius_prev_2**0.5
+        if (radius > self.spheres[1] and radius_prev < self.spheres[1]) or (radius < self.spheres[1] and radius_prev > self.spheres[1]):
             return self.data_row(ps, self.spheres[1])
         else: 
             return None
