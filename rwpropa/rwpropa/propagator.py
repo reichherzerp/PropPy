@@ -80,104 +80,6 @@ class Propagator():
         return pitch_angle
 
 
-    def propagate(self, particle_state):
-        # 1. step 
-        #self.compute_rotation_matrix()
-        # 2. step
-        self.transform_into_local_frame()
-        # 3. step
-        self.compute_local_angles()
-        # 4. step
-        self.update_directions()
-        # 5 .step
-        self.update_pitch_angle()
-        # 6. step
-        self.compute_local_movements()
-        # 7. step
-        self.transform_into_global_frame()
-        # 8. step
-        # finally update the pitch angle, as it may have changed ? check if needed
-        self.update_pitch_angle()
-
-        for substep in range(particle_state.dimensions):
-            particle_state.substep = substep
-            particle_state = self.move_substep(particle_state)
-        
-        return particle_state
-
-
-    def compute_rotation_matrix(self):
-        # 1. find rotation matrix to project vector B onto the z-axis
-        # use angles theta_B and phi from first step
-        # TODO: implement
-        theta_B, phi_B = self.compute_bfield_angles
-        pass
-
-
-    def transform_into_local_frame(self):
-        # 2. rotate particle state into local frame
-        # TODO: implement
-        pass
-
-
-    def compute_local_angles(self):
-        # 3. compute pitch angle and phi in the local frame
-        # (note that the pitch angle should be the same in the local and the global frame)
-        # - compute phi
-        # - compute pithc angle
-        # TODO: implement
-        pass
-
-
-    def update_directions(self):
-        # 4. update the directions 
-        # should be function change_directio(self) from above
-        # TODO: implement
-        pass
-
-
-    def update_pitch_angle(self):
-        # 5. update the pitch angle
-        # should be function change_pitch_angle(self) from above
-        # TODO: implement
-        pass
-
-
-    def compute_local_movements(self):
-        # 6. compute movement in local frame, where b field aligns z-axis
-        # in 3d, this should be thre substeps
-        # TODO: implement
-        pass
-
-
-    def transform_into_global_frame(self):
-        # 7. transform local movement into global frame
-        # apply rotation matrix from 2. step onto local movements
-        # TODO: implement
-        pass
-
-
-    def angle(self, v1, v2):
-        # function to compute angle between two 3d vectors
-        # v1 is your first vector
-        # v2 is your second vector
-        angle = np.arccos(np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2)))
-        return angle
-
-
-    def compute_bfield_angles(self):
-        # alignment B vector and z axis
-        # - compute angle theta_B between z-axis and B-field
-        # - compute angle phi of B-filed
-        # TODO: implement
-        x_axis = np.array([1,0,0])
-        z_axis = np.array([0,0,1])
-        magnetic_field_xy_plane = np.array([self.magnetic_field.direction[0] , self.magnetic_field.direction[1], 0])
-        theta_B = self.angle(z_axis, self.magnetic_field.direction)
-        phi_B = self.angle(x_axis, magnetic_field_xy_plane)
-        return theta_B, phi_B
-
-
     def move_substep(self, particle_state):
         # adapt phi and pitch angle in case the b-field vector changed: issue 26
         
@@ -205,32 +107,10 @@ class Propagator():
 
 
     def move_global(self, ps, move_local):
-        # find the roation matrix to roate magnetic field of local frame (0,0,1)
-        # into global frame (self.magnetic_field.direction) 
-        # follow procedure described in:
-        # https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311
-        # python: https://stackoverflow.com/questions/45142959/calculate-rotation-matrix-to-align-two-vectors-in-3d-space
-
-        # TODO: the following two function calls are really slow...
-        rotation_matrix = self.find_rotation_matrix()
-        move_global = self.rotate(rotation_matrix, move_local)
         for s in range(self.dimensions):
-            # TODO: make transformation from local to global frame
             self.magnetic_field.direction
             ps.pos[s] = ps.pos[s] + move_local[s]
         return ps
-
-
-    def find_rotation_matrix(self):
-        rotation_matrix = [[0,0,0],[0,0,0],[0,0,0]]
-        return rotation_matrix
-
-
-    def rotate(self, rotation_matrix, move_local):
-        # using the rotation matrix to transform the local movement 
-        # into the global frame
-        move_global = move_local
-        return move_global
     
                  
     def move_cartesian(self, particle_state):
