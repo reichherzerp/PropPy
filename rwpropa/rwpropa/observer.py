@@ -27,9 +27,9 @@ class Observer():
     # all special observer will create an Observer object and specify the relevant parameters
     # for the observation conditions (unique_steps, shperes, box_dimensions)
 
-    def __init__(self, steps, substeps):
+    def __init__(self, steps, substeps, spheres):
         self.substeps = substeps
-        self.spheres = np.array([-1.0, 10**5], dtype=np.float32)
+        self.spheres = spheres
         # distance of the box boundaries in cartesian coords. [x, y, z]
         self.box_dimensions = np.array([0.0], dtype=np.float32)
         self.all_steps = False
@@ -161,7 +161,8 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
     # all required_attributes have to be implemented in sub classes
     required_attributes = [
         'steps', 
-        'substeps_bool'
+        'substeps_bool',
+        'spheres'
     ]
  
     @abstractmethod
@@ -170,17 +171,18 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
         # all required_attributes have to be implemented in sub classes
         pass
 
-    def init_observer(self, substeps):
+    def init_observer(self, substeps, spheres):
         # set the important parameters and call the @abstractmethods that are implemented
         # in each special observer class that are derived from the current abstract base class
         self.column = ['id', 'i', 'd', 'x', 'y', 'z', 'phi', 'pitch_angle', 'radius', 'sub_step']
         self.substeps_bool = np.array(substeps)
         self.steps = self.set_steps_int() 
+        self.spheres = np.array(spheres, dtype=np.float32)
         # have to store all relevant observation parameters in the Observer class that 
         # has the @jitclass label from numba. This is important, as the Particle class is also 
         # labeled with @jitclass and can thus only call @jitclass classes. This is for
         # performance resaons.
-        self.observer = Observer(self.steps, self.substeps_bool)
+        self.observer = Observer(self.steps, self.substeps_bool, self.spheres)
 
     @abstractmethod
     def set_steps(self):
@@ -211,7 +213,8 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
 class ObserverAllSteps(AbstractSpecialObserver):
 
     def __init__(self, substeps):
-        self.init_observer(substeps)
+        spheres = [-1,0]
+        self.init_observer(substeps, spheres)
 
     def set_steps(self):
         steps = [-1]
@@ -228,8 +231,9 @@ class TimeEvolutionObserverLog(AbstractSpecialObserver):
         self.min_steps = min_steps
         self.max_steps = max_steps
         self.nr_steps = nr_steps
+        spheres = [-1,0]
 
-        self.init_observer(substeps)
+        self.init_observer(substeps, spheres)
         
     def set_steps(self):
         steps = np.logspace(np.log10(self.min_steps), np.log10(self.max_steps), self.nr_steps)
@@ -246,8 +250,9 @@ class TimeEvolutionObserverLin(AbstractSpecialObserver):
         self.min_steps = min_steps
         self.max_steps = max_steps
         self.nr_steps = nr_steps
+        spheres = [-1,0]
 
-        self.init_observer(substeps)
+        self.init_observer(substeps, spheres)
 
     def set_steps(self):
         steps = np.linspace(self.min_steps, self.max_steps, self.nr_steps)
@@ -262,8 +267,9 @@ class TimeEvolutionObserver(AbstractSpecialObserver):
 
     def __init__(self, steps_input, substeps):
         self.steps_input = steps_input
+        spheres = [-1,0]
 
-        self.init_observer(substeps)
+        self.init_observer(substeps, spheres)
 
     def set_steps(self):
         steps = self.steps_input 
