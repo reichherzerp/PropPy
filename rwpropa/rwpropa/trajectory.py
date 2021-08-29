@@ -3,13 +3,19 @@ import matplotlib.pyplot as plt
 
 
 class Trajectory():
-    def __init__(self, df, dimensions):
+    def __init__(self, df):
         print('init trajectory plotting class')
         self.df = df
+        self.dimensions = 3
+
+
+    def set_dimensions(self, dimensions):
         self.dimensions = dimensions
+
         
     def get_particle_ids(self):
         return list(map(int, (set(self.df['id']))))
+        
         
     def plot_trajectory(self, x, y, c, particle_ids, n, file_name):
         if isinstance(particle_ids, int):

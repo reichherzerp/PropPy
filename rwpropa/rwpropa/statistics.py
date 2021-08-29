@@ -4,9 +4,13 @@ import pandas as pd
 from scipy.stats import norm
 
 class Statistics():    
-    def __init__(self, df, dimensions):
+    def __init__(self, df):
         print('init statistics plotting class')
         self.df = df
+        self.dimensions = 3
+
+
+    def set_dimensions(self, dimensions):
         self.dimensions = dimensions
     
 
