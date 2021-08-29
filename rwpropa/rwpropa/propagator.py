@@ -82,8 +82,7 @@ class Propagator():
 
     def move_substep(self, particle_state):
         # adapt phi and pitch angle in case the b-field vector changed: issue 26
-        
-        # division into local and global step is slow... TODO: check for performance optimization
+    
         # local step
         particle_state, move_local_array = self.move_local(particle_state)
         # global step
@@ -108,7 +107,6 @@ class Propagator():
 
     def move_global(self, ps, move_local):
         for s in range(self.dimensions):
-            self.magnetic_field.direction
             ps.pos[s] = ps.pos[s] + move_local[s]
         return ps
     
@@ -119,7 +117,6 @@ class Propagator():
             distance_s = self.step_size * np.cos(particle_state.pitch_angle) * particle_state.direction[particle_state.substep]
         else:
             distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
-        #particle_state.pos[particle_state.substep] = particle_state.pos[particle_state.substep] + particle_state.direction[particle_state.substep] * distance_s
         particle_state.distance = particle_state.distance + distance_s
         move_local = [0,0,0]
         for s in range(self.dimensions):
@@ -136,8 +133,6 @@ class Propagator():
         particle_state.phi = phi_old + delta_phi * particle_state.direction[0]
         chi_x_1 = particle_state.gyroradius_eff * (np.cos(particle_state.phi) - np.cos(phi_old))
         chi_y_1 = particle_state.gyroradius_eff * (np.sin(particle_state.phi) - np.sin(phi_old))
-        #particle_state.pos[0] = particle_state.pos[0] + chi_x_1
-        #particle_state.pos[1] = particle_state.pos[1] + chi_y_1
         return particle_state, self.float_array([chi_x_1, chi_y_1, 0])
 
                       
@@ -147,8 +142,6 @@ class Propagator():
         delta_rho = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
         chi_x_2 = np.cos(particle_state.phi) * particle_state.direction[1] * delta_rho
         chi_y_2 = np.sin(particle_state.phi) * particle_state.direction[1] * delta_rho
-        #particle_state.pos[0] = particle_state.pos[0] + chi_x_2
-        #particle_state.pos[1] = particle_state.pos[1] + chi_y_2
         return particle_state, self.float_array([chi_x_2, chi_y_2, 0])
 
 
@@ -491,7 +484,8 @@ class IsotropicPropagatorDefault(AbstractPropagator):
         # isotropic diffusion coefficient
         self.mfp = np.array([10**12, 10**12, 10**12], dtype=np.float32)  # [m]
         # no background magnetic field
-        self.magnetic_field = OrderedBackgroundField(0, [0,0,1]).magnetic_field
+        rms = 0
+        self.magnetic_field = DefaultBackgroundField(rms).magnetic_field
         self.isotropic = True
 
         self.init_jitclass_propagator() 
