@@ -82,7 +82,7 @@ class Propagator():
 
     def propagate(self, particle_state):
         # 1. step 
-        self.compute_rotation_matrix()
+        #self.compute_rotation_matrix()
         # 2. step
         self.transform_into_local_frame()
         # 3. step
