@@ -10,7 +10,8 @@ import rwpropa as rw
 class TestSource(unittest.TestCase):
 
     def test_point_source_oriented(self):
-        print('\n-> test_point_source_oriented')
+        print('\n----------------------------------')
+        print('-> test_point_source_oriented')
         energy = 10**10 #eV
         pos = [0,0,0]
         nr_particles = 10**2
@@ -32,12 +33,13 @@ class TestSource(unittest.TestCase):
             np.sin(phi)*np.sin(pitch_angle), 
             np.cos(pitch_angle)
         ], dtype=np.float32), precision))
-        actual_direction = list(np.around(np.array(point_source_oriented.particles[0].ps.direction), precision))
+        actual_direction = list(np.around(np.array(point_source_oriented.particles[0].ps.dir), precision))
         self.assertListEqual(expected_direction, actual_direction)
 
     
     def test_point_source_isotropic(self):
-        print('\n-> test_point_source_isotropic')
+        print('\n----------------------------------')
+        print('-> test_point_source_isotropic')
         energy = 10**10 #eV
         pos = [0,0,0]
         nr_particles = 10**2
@@ -56,7 +58,8 @@ class TestSource(unittest.TestCase):
 class TestObserver(unittest.TestCase):
 
     def test_time_evolution_observer(self):
-        print('\n-> test_time_evolution_observer')
+        print('\n----------------------------------')
+        print('-> test_time_evolution_observer')
 
         sim = rw.Simulation()
 
