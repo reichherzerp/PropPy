@@ -1,3 +1,4 @@
+# run script via "python3 -m unittest tests.py"
 import unittest
 import numpy as np
 import pandas as pd
@@ -91,9 +92,7 @@ class TestObserver(unittest.TestCase):
         self.assertEqual(nr_obs_steps*nr_particles, len(df[0]))
 
         # check if the step_number of the first observed step is correct
-        #print(df[1].tolist())
+        self.assertEqual(min_step, df[1].tolist()[0])
 
-
-        
-
-    
+        # check if the step_number of the last observed step is correct
+        self.assertEqual(max_step, df[1].tolist()[-1])
