@@ -1,3 +1,26 @@
+"""Customized ordered magnetic fields.
+
+Ordered magnetic fields determine the directions of the parallel and perpendicular 
+diffusion coefficients of the diffusion tensor. The parallel diffusion coefficient
+is used for the parallel direction to the ordered background magnetic field. 
+The magnetic fields are used by the propagation class to determine the orientation 
+of the field and how to align the diffusion tensor. 
+
+    Typical usage example:
+
+    nr_steps = 10**4
+    step_size = 10**10 # [m]
+    mfp = np.array([2.13*10**12/2.0, 2.13*10**12/2.0, 2.1078*10**12], dtype=np.float32)  # [m]
+    b_rms = 1 # Gaus
+    b_direction = [0,0,1]
+    magnetic_field = rw.OrderedBackgroundField(b_rms, b_direction).magnetic_field
+
+    propagator = rw.AnisotropicPropagator(magnetic_field, mfp, nr_steps, step_size)
+    sim.add_propagator(propagator)
+    sim.propagator.get_description()
+
+"""
+
 from numba import jit, b1, float32, int32
 import numpy as np
 from numba.experimental import jitclass
