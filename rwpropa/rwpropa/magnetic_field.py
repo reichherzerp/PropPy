@@ -88,9 +88,9 @@ class AbstractMagneticField(object, metaclass=AbstractMagneticFieldMeta):
     Attributes:
         rms: A float32 indicating the root-mean square value of the magnetic field.
         direction: An float32 array indicating the direction of the ordered magnetic field.
+        required_attributes: A list with attributes that have to be implemented in sub classes.
     """
 
-    # all required_attributes have to be implemented in sub classes
     required_attributes = [
         'rms', 
         'direction'
