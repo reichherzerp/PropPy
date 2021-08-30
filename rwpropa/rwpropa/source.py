@@ -38,6 +38,7 @@ class Source(object, metaclass=SourceMeta):
         # initialize parameters that are common for all special source classes
         self.particles = []
         self.dimensions = 3
+        self.pos = np.array(self.pos, dtype=np.float32)
         self.inject_particles()
 
     
