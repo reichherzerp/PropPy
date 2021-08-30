@@ -27,9 +27,9 @@ class Observer():
     # all special observer will create an Observer object and specify the relevant parameters
     # for the observation conditions (unique_steps, shperes, box_dimensions)
 
-    def __init__(self, steps, substeps):
+    def __init__(self, steps, substeps, spheres):
         self.substeps = substeps
-        self.spheres = np.array([0.0], dtype=np.float32)
+        self.spheres = spheres
         # distance of the box boundaries in cartesian coords. [x, y, z]
         self.box_dimensions = np.array([0.0], dtype=np.float32)
         self.all_steps = False
@@ -57,19 +57,36 @@ class Observer():
         # decide if the current particle state should be observed based on the criterions specified 
         # in the observer instance
         if ps.substep == 2 and len(self.spheres) > 1:
-            print('todo: implement spherical observer')
-            #self.on_sphere()
-        elif self.substeps[ps.substep]:
+            data_on_sphere = self.check_on_sphere(ps)
+            if data_on_sphere != None:
+                return data_on_sphere
+        if self.substeps[ps.substep]:
             if self.all_steps or ps.step in self.steps:
-                return self.data_row(ps)
+                return self.data_row(ps, -1.0)
             else:
                 return None
         else:
             return None
 
 
-    def data_row(self, ps):
-        radius = -1.0 # default
+    def check_on_sphere(self, ps):
+        radius_2 = 0
+        radius_prev_2 = 0
+        for i in range(ps.dimensions):
+            radius_2 = radius_2 + ps.pos[i]**2
+            radius_prev_2 = radius_prev_2 + ps.pos_prev[i]**2
+        radius = radius_2**0.5
+        radius_prev = radius_prev_2**0.5
+        for j in range(1, len(self.spheres)):
+            r_s = self.spheres[j]
+            if (radius > r_s and radius_prev < r_s) or (radius < r_s and radius_prev > r_s):
+                return self.data_row(ps, r_s)
+        
+        return None
+
+
+    def data_row(self, ps, radius):
+        radius = radius
         data_row_list = [
             ps.particle_id, 
             ps.step, 
@@ -104,6 +121,7 @@ class Observer():
     def get_description_parameters(self):   
         # called by all special observer classes below.
         # print out all relevant instance parameters
+        print('spheres: ' , self.spheres)
         print('steps [0:10]: ' , self.steps[0:10])
         print('steps [-11:-1]: ' ,self.steps[-11:-1])
         print('nr steps: ' , len(self.steps))
@@ -149,7 +167,8 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
     # all required_attributes have to be implemented in sub classes
     required_attributes = [
         'steps', 
-        'substeps_bool'
+        'substeps_bool',
+        'spheres'
     ]
  
     @abstractmethod
@@ -158,17 +177,18 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
         # all required_attributes have to be implemented in sub classes
         pass
 
-    def init_observer(self, substeps):
+    def init_observer(self, substeps, spheres):
         # set the important parameters and call the @abstractmethods that are implemented
         # in each special observer class that are derived from the current abstract base class
         self.column = ['id', 'i', 'd', 'x', 'y', 'z', 'phi', 'pitch_angle', 'radius', 'sub_step']
         self.substeps_bool = np.array(substeps)
         self.steps = self.set_steps_int() 
+        self.spheres = np.array(spheres, dtype=np.float32)
         # have to store all relevant observation parameters in the Observer class that 
         # has the @jitclass label from numba. This is important, as the Particle class is also 
         # labeled with @jitclass and can thus only call @jitclass classes. This is for
         # performance resaons.
-        self.observer = Observer(self.steps, self.substeps_bool)
+        self.observer = Observer(self.steps, self.substeps_bool, self.spheres)
 
     @abstractmethod
     def set_steps(self):
@@ -199,7 +219,8 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
 class ObserverAllSteps(AbstractSpecialObserver):
 
     def __init__(self, substeps):
-        self.init_observer(substeps)
+        spheres = [-1.0]
+        self.init_observer(substeps, spheres)
 
     def set_steps(self):
         steps = [-1]
@@ -216,8 +237,9 @@ class TimeEvolutionObserverLog(AbstractSpecialObserver):
         self.min_steps = min_steps
         self.max_steps = max_steps
         self.nr_steps = nr_steps
+        spheres = [-1.0]
 
-        self.init_observer(substeps)
+        self.init_observer(substeps, spheres)
         
     def set_steps(self):
         steps = np.logspace(np.log10(self.min_steps), np.log10(self.max_steps), self.nr_steps)
@@ -234,8 +256,9 @@ class TimeEvolutionObserverLin(AbstractSpecialObserver):
         self.min_steps = min_steps
         self.max_steps = max_steps
         self.nr_steps = nr_steps
+        spheres = [-1.0]
 
-        self.init_observer(substeps)
+        self.init_observer(substeps, spheres)
 
     def set_steps(self):
         steps = np.linspace(self.min_steps, self.max_steps, self.nr_steps)
@@ -250,8 +273,9 @@ class TimeEvolutionObserver(AbstractSpecialObserver):
 
     def __init__(self, steps_input, substeps):
         self.steps_input = steps_input
+        spheres = [-1.0]
 
-        self.init_observer(substeps)
+        self.init_observer(substeps, spheres)
 
     def set_steps(self):
         steps = self.steps_input 
@@ -259,3 +283,20 @@ class TimeEvolutionObserver(AbstractSpecialObserver):
 
     def get_description_observer_type(self):
         print('observer tpye: TimeEvolutionObserver')
+
+
+
+class SphericalObserver(AbstractSpecialObserver):
+
+    def __init__(self, substeps, spheres):
+        self.steps_input = []
+        self.spheres = [-1.0] + spheres
+
+        self.init_observer(substeps, self.spheres)
+
+    def set_steps(self):
+        steps = self.steps_input 
+        return steps
+
+    def get_description_observer_type(self):
+        print('observer tpye: SphericalObserver')

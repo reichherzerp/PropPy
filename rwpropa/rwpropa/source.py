@@ -129,8 +129,8 @@ class PointSourceIsotropic(Source):
     def inject_particles(self):
         self.particles = []
         for i in range(self.nr_particles):
-            phi = np.random * 360
-            pitch_angle = np.random * 2*np.pi
+            phi = np.random.rand() * 360
+            pitch_angle = np.random.rand() * 2*np.pi
             particle_id = i
             p = Particle(particle_id, self.energy, self.pos[:], phi, pitch_angle, self.dimensions)
             self.particles.append(p)

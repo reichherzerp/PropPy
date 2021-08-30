@@ -72,7 +72,7 @@ class Statistics():
         nr_steps =  int(len(d)/nr_particles)
         # calculate the running diffusion coefficient kappa_i(t) for each step
         # running diffusion coefficients: kappa_i(t) = <x_i>^2/(2t) = <x_i>^2/(2d/c)
-        for j in range(1, nr_steps):
+        for j in range(nr_steps):
             d_j = d[j*nr_particles]
             # get list of x_i^2 for all particles at the current step
             x_squared = np.array(x[j*nr_particles : (1+j)*nr_particles])**2
