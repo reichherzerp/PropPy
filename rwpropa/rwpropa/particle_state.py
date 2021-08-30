@@ -42,7 +42,7 @@ class ParticleState():
         self.pos_start = pos[:]
         self.pos = pos[:]
         self.pos_prev = self.pos[:]
-        self.direction = np.array([1.0, 1.0, 1.0], dtype=np.float32)
+        self.direction = np.array([np.cos(phi)*np.sin(pitch_angle), np.sin(phi)*np.sin(pitch_angle), np.cos(pitch_angle)], dtype=np.float32)
         self.phi = phi
         self.pitch_angle = pitch_angle
 
