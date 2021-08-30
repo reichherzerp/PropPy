@@ -1,5 +1,6 @@
 import unittest
 import numpy as np
+import pandas as pd
 import os
 os.chdir('..')
 import rwpropa as rw
@@ -48,6 +49,51 @@ class TestSource(unittest.TestCase):
         expected_pos = list(np.array(pos, dtype=np.float32))
         actual_pos = point_source_oriented.particles[0].ps.pos.tolist()
         self.assertListEqual(expected_pos, actual_pos)
+
+
+
+class TestObserver(unittest.TestCase):
+
+    def test_time_evolution_observer(self):
+        print('\n-> test_time_evolution_observer')
+
+        sim = rw.Simulation()
+
+        # adding a particle source
+        energy = 10**10 #eV
+        pos = [0,0,0]
+        nr_particles = 10**1
+        source = rw.PointSourceIsotropic(energy, pos, nr_particles)
+        sim.add_source(source)
+        
+        # adding a propagator to simulation
+        nr_steps = 10**3
+        step_size = 0.5*10**10 # [m]
+        mfp = np.array([2.13*10**12/2.0, 2.13*10**12/2.0, 2.1078*10**12], dtype=np.float32)  # [m]
+        rms = 1 # Gaus
+        magnetic_field = rw.OrderedBackgroundField(rms, [0,0,1]).magnetic_field
+        propagator = rw.AnisotropicPropagator(magnetic_field, mfp, nr_steps, step_size)
+        sim.add_propagator(propagator)
+
+        # adding a TimeEvolutionObserver
+        substeps = [False, False, True] # observe only steps (no substeps)
+        min_step = 1
+        max_step = nr_steps
+        nr_obs_steps = 30
+        observer = rw.TimeEvolutionObserverLin(min_step, max_step, nr_obs_steps, substeps)
+        sim.add_observer(observer)
+
+        # simulate
+        sim.run_simulation()
+        df = pd.DataFrame(sim.data[1:])
+
+        # check if the number of observations is correct
+        self.assertEqual(nr_obs_steps*nr_particles, len(df[0]))
+
+        # check if the step_number of the first observed step is correct
+        #print(df[1].tolist())
+
+
         
 
     
