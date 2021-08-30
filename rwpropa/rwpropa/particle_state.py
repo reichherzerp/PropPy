@@ -20,6 +20,7 @@ particle_state_spec = [
     ('dimensions', int32),
     ('pos_start', float32[:]),
     ('pos', float32[:]),
+    ('dir', float32[:]),
     ('pos_prev', float32[:]),
     ('direction', float32[:]),
     ('step', int32),
@@ -42,7 +43,10 @@ class ParticleState():
         self.pos_start = pos[:]
         self.pos = pos[:]
         self.pos_prev = self.pos[:]
+        # directions for the random walk
         self.direction = np.array([1.0, 1.0, 1.0], dtype=np.float32)
+        # direction into which particle points
+        self.dir = np.array([np.cos(phi)*np.sin(pitch_angle), np.sin(phi)*np.sin(pitch_angle), np.cos(pitch_angle)], dtype=np.float32)
         self.phi = phi
         self.pitch_angle = pitch_angle
 
