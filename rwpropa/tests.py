@@ -11,7 +11,7 @@ class TestSource(unittest.TestCase):
 
     def test_point_source_oriented(self):
         print('\n----------------------------------')
-        print('-> test_point_source_oriented')
+        print('-> unit_test_point_source_oriented')
         energy = 10**10 #eV
         pos = [0,0,0]
         nr_particles = 10**2
@@ -39,7 +39,7 @@ class TestSource(unittest.TestCase):
     
     def test_point_source_isotropic(self):
         print('\n----------------------------------')
-        print('-> test_point_source_isotropic')
+        print('-> unit_test_point_source_isotropic')
         energy = 10**10 #eV
         pos = [0,0,0]
         nr_particles = 10**2
@@ -57,9 +57,26 @@ class TestSource(unittest.TestCase):
 
 class TestObserver(unittest.TestCase):
 
-    def test_time_evolution_observer(self):
+    def test_time_evolution_observer_unit(self):
         print('\n----------------------------------')
-        print('-> test_time_evolution_observer')
+        print('-> unit_test_time_evolution_observer')
+        sim = rw.Simulation()
+        substeps = [False, False, True] # observe only steps (no substeps)
+        min_step = 1
+        max_step = 100
+        nr_obs_steps = 10
+        observer = rw.TimeEvolutionObserverLin(min_step, max_step, nr_obs_steps, substeps)
+        sim.add_observer(observer)
+        self.assertEqual(min_step, sim.observer.steps[0])
+        self.assertEqual(max_step, sim.observer.steps[-1])
+
+
+
+class TestIntegration(unittest.TestCase):
+
+    def test_basic_propagation(self):
+        print('\n----------------------------------')
+        print('-> integration_test_basic_propagation')
 
         sim = rw.Simulation()
 
