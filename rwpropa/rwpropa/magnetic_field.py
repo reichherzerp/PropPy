@@ -8,6 +8,8 @@ of the field and how to align the diffusion tensor.
 
     Typical usage example:
 
+    import rwpropa as rw
+
     nr_steps = 10**4
     step_size = 10**10 # [m]
     mfp = np.array([2.13*10**12/2.0, 2.13*10**12/2.0, 2.1078*10**12], dtype=np.float32)  # [m]
@@ -34,14 +36,21 @@ observer_spec = [
 
 @jitclass(observer_spec)
 class MagneticField():
-    # base observer class that is called in the simulation by the particle class to
-    # determine when to write out (observe) data. The conditions to observe can be based 
-    # on the time (or step) or the coordinates of the particle.
-    # - step number [unique_steps] -> time (TimeEvolutionObservers)
-    # - radius of observer sphere [shperes] -> sphere around source (SphericalObservers)
-    # - cartesian coordinates [box_dimensions] -> box around source (BoxObserver)
-    # all special observer will create an Observer object and specify the relevant parameters
-    # for the observation conditions (unique_steps, shperes, box_dimensions)
+    """ Base observer class that is called in the simulation by the particle class to
+    determine when to write out (observe) data. 
+     
+    The conditions to observe can be based 
+    on the time (or step) or the coordinates of the particle.
+    - step number [unique_steps] -> time (TimeEvolutionObservers)
+    - radius of observer sphere [shperes] -> sphere around source (SphericalObservers)
+    - cartesian coordinates [box_dimensions] -> box around source (BoxObserver)
+    all special observer will create an Observer object and specify the relevant parameters
+    for the observation conditions (unique_steps, shperes, box_dimensions)
+
+    Attributes:
+        rms: A float32 indicating the root-mean square value of the magnetic field.
+        direction: An float32 array indicating the direction of the ordered magnetic field.
+    """
 
     def __init__(self, rms, direction):
         self.rms = rms
@@ -50,13 +59,17 @@ class MagneticField():
 
 
 class AbstractMagneticFieldMeta(ABCMeta):
-    # required attributes that have to be implemented in __init__ of all
-    # sub classes
+    """ Abstract meta class to check if all required attributes are implemented.
+    """
     required_attributes = []
 
     def __call__(self, *args, **kwargs):
-        # check if required attributes that have to be implemented in __init__ of all
-        # sub classes are really implemented. Raise an error if not
+        """ Checks if required attributes that have to be implemented in __init__ of all
+        sub classes are really implemented. 
+
+        Raises:
+            ValueError: an error if not all required attributes are implemented.
+        """
         obj = super(AbstractMagneticFieldMeta, self).__call__(*args, **kwargs)
         for attr_name in obj.required_attributes:
             if getattr(obj, attr_name) is None:
@@ -66,9 +79,15 @@ class AbstractMagneticFieldMeta(ABCMeta):
 
 
 class AbstractMagneticField(object, metaclass=AbstractMagneticFieldMeta):
-    # abstract base class for all special observers.
-    # functions with the label @abstractmethod have to be implemented in 
-    # the special observer classes
+    """Abstract base class for all special observers.
+    
+    Functions with the label @abstractmethod have to be implemented in the special 
+    observer classes.
+
+    Attributes:
+        rms: A float32 indicating the root-mean square value of the magnetic field.
+        direction: An float32 array indicating the direction of the ordered magnetic field.
+    """
 
     # all required_attributes have to be implemented in sub classes
     required_attributes = [
