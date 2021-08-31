@@ -39,14 +39,24 @@ observer_spec = [
 
 @jitclass(observer_spec)
 class Observer():
-    # base observer class that is called in the simulation by the particle class to
-    # determine when to write out (observe) data. The conditions to observe can be based 
-    # on the time (or step) or the coordinates of the particle.
-    # - step number [unique_steps] -> time (TimeEvolutionObservers)
-    # - radius of observer sphere [shperes] -> sphere around source (SphericalObservers)
-    # - cartesian coordinates [box_dimensions] -> box around source (BoxObserver)
-    # all special observer will create an Observer object and specify the relevant parameters
-    # for the observation conditions (unique_steps, shperes, box_dimensions)
+    """ Base observer class that is called in the simulation by the particle class to
+    determine when to write out (observe) data. 
+     
+    The conditions to observe can be based 
+    on the time (or step) or the coordinates of the particle.
+    - step number [unique_steps] -> time (TimeEvolutionObservers)
+    - radius of observer sphere [shperes] -> sphere around source (SphericalObservers)
+    - cartesian coordinates [box_dimensions] -> box around source (BoxObserver)
+    all special observer will create an Observer object and specify the relevant parameters
+    for the observation conditions (unique_steps, shperes, box_dimensions)
+
+    Attributes:
+        substeps: A b1 array
+        all_steps: 
+        .
+        .
+        .
+    """
 
     def __init__(self, steps, substeps, spheres):
         self.substeps = substeps
@@ -151,27 +161,33 @@ class Observer():
 
 
 
-#-------------------------------------------------------------------------------
-# below are the abstract base class and all sub classes of the special observers
-# that have to be added to the simulation. Each special observer stores a
-# Observer object in its instance parameter to be used in the simulation.
-# This diversions is needed because numba does not support 
-# inheritance via ABC and Propagator() needs the label @jitclass as it is called 
-# during the numba optimized simulation loop of the run_simulation() function. 
-# This workaround supports both concepts with the 
-# advantages of fast code and easy addition of new observers where the structure 
-# is now defined by the Abstract Base class and enforeced via the ABCMeta class
+"""Special observer classes
 
+Below are the abstract base class and all sub classes of the special observers
+that have to be added to the simulation. Each special observer stores a
+Observer object in its instance parameter to be used in the simulation.
+This diversions is needed because numba does not support 
+inheritance via ABC and Propagator() needs the label @jitclass as it is called 
+during the numba optimized simulation loop of the run_simulation() function. 
+This workaround supports both concepts with the 
+advantages of fast code and easy addition of new observers where the structure 
+is now defined by the Abstract Base class and enforeced via the ABCMeta class
+"""
 
 
 class AbstractSpecialObserverMeta(ABCMeta):
-    # required attributes that have to be implemented in __init__ of all
-    # sub classes
+    """ Abstract meta class to check if all required attributes are implemented in the 
+    sub classes.
+    """
     required_attributes = []
 
     def __call__(self, *args, **kwargs):
-        # check if required attributes that have to be implemented in __init__ of all
-        # sub classes are really implemented. Raise an error if not
+        """ Checks if required attributes that have to be implemented in __init__ of all
+        sub classes are really implemented. 
+
+        Raises:
+            ValueError: an error if not all required attributes are implemented.
+        """
         obj = super(AbstractSpecialObserverMeta, self).__call__(*args, **kwargs)
         for attr_name in obj.required_attributes:
             if getattr(obj, attr_name) is None:

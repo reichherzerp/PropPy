@@ -37,16 +37,12 @@ observer_spec = [
 
 @jitclass(observer_spec)
 class MagneticField():
-    """ Base observer class that is called in the simulation by the particle class to
-    determine when to write out (observe) data. 
+    """ Magnetic jitclass that is called by other numba jitclasses.
      
-    The conditions to observe can be based 
-    on the time (or step) or the coordinates of the particle.
-    - step number [unique_steps] -> time (TimeEvolutionObservers)
-    - radius of observer sphere [shperes] -> sphere around source (SphericalObservers)
-    - cartesian coordinates [box_dimensions] -> box around source (BoxObserver)
-    all special observer will create an Observer object and specify the relevant parameters
-    for the observation conditions (unique_steps, shperes, box_dimensions)
+    The magnetic field is used in each propagation step and evaluated at the current
+    particle position. The direction determines the orientation of the diffusion
+    tensor. The magnetic field strength is important for the gyroradius of the particles
+    and directly influences the trajectories.
 
     Attributes:
         rms: A float32 indicating the root-mean square value of the magnetic field.
