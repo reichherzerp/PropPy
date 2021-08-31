@@ -158,7 +158,7 @@ class Observer():
         print('all_steps: ', self.all_steps)         
 
 
-
+#-----------------------------------------------------------------------------
 """Special observer classes
 
 Below are the abstract base class and all sub classes of the special observers
@@ -195,11 +195,20 @@ class AbstractSpecialObserverMeta(ABCMeta):
 
 
 class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
-    # abstract base class for all special observers.
-    # functions with the label @abstractmethod have to be implemented in 
-    # the special observer classes
+    """Abstract base class for all special observers.
+    
+    Functions with the label @abstractmethod have to be implemented in the special 
+    observer classes.
 
-    # all required_attributes have to be implemented in sub classes
+    Attributes:
+        substeps_bool: An b1 array specifying observed substeps [1_substep,2_substep,3_substep].
+                  Only observing once per step: substeps = [False, False, True].
+        steps: A float32 array specifying all steps that should be observed.
+        spheres: A float32 array for specifying the radii of the observer spheres.
+        column: A float32 array for specifying the column names of the data output.
+        observer: 
+    """
+    
     required_attributes = [
         'steps', 
         'substeps_bool',
@@ -208,13 +217,22 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
  
     @abstractmethod
     def __init__(self, order):
-        # implementation required in all sub classes.
-        # all required_attributes have to be implemented in sub classes
+        """ Implementation required in all sub classes. All required_attributes have to 
+        be implemented in sub classes.
+        """
         pass
 
     def init_observer(self, substeps, spheres):
-        # set the important parameters and call the @abstractmethods that are implemented
-        # in each special observer class that are derived from the current abstract base class
+        """Initialize the Observer 
+        
+        Sets the important parameters and calls the @abstractmethods that are implemented
+        in each special observer class that are derived from the current abstract base class.
+
+        Args:
+            substeps (float32[:]): Specifying which substeps need to be observed.
+            spheres (float32[:]): Specifying the radii of the observer spheres.
+        """
+
         self.column = ['id', 'i', 'd', 'x', 'y', 'z', 'phi', 'pitch_angle', 'radius', 'sub_step']
         self.substeps_bool = np.array(substeps)
         self.steps = self.set_steps_int() 

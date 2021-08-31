@@ -30,12 +30,12 @@ from numba.experimental import jitclass
 from abc import ABC, ABCMeta, abstractmethod
 
 
-observer_spec = [
+magnetic_spec = [
     ('rms', float32),
     ('direction', float32[:]),
 ]
 
-@jitclass(observer_spec)
+@jitclass(magnetic_spec)
 class MagneticField():
     """ Magnetic jitclass that is called by other numba jitclasses.
      
@@ -77,10 +77,10 @@ class AbstractMagneticFieldMeta(ABCMeta):
 
 
 class AbstractMagneticField(object, metaclass=AbstractMagneticFieldMeta):
-    """Abstract base class for all special observers.
+    """Abstract base class for all special magnetic fields.
     
     Functions with the label @abstractmethod have to be implemented in the special 
-    observer classes.
+    magnetic field classes.
 
     Attributes:
         rms: A float32 indicating the root-mean square value of the magnetic field.
