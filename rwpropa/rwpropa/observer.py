@@ -71,10 +71,19 @@ class Observer():
     
 
     def get_unique_steps(self, steps):
-        # remove all step number duplicates. Special observer such as the 
-        # TimeEvolutionObserverLog() may introduce duplicate step numbers [1,1,1,...] 
-        # that lead to a wrong number of steps during the description output because the step 1
-        # will be only observed once, while it is counted several times in the description output
+        """Remove all step number duplicates. 
+
+        Special observer such as the TimeEvolutionObserverLog() may introduce duplicate 
+        step numbers [1,1,1,...] that lead to a wrong number of steps during the description 
+        output because the step 1 will be only observed once, while it is counted several 
+        times in the description output.
+
+        Args:
+            steps (int32[:]): All step numbers that should be observed.
+        Returns:
+            unique_steps (int32[:]): steps but removed all duplicates.
+        """
+
         unique_steps = []
         for s in steps:
             if s not in unique_steps:
@@ -83,8 +92,17 @@ class Observer():
         
 
     def observe(self, ps):
-        # decide if the current particle state should be observed based on the criterions specified 
-        # in the observer instance
+        """Check if and what to observe.
+        
+        Decides if the current particle state should be observed based on the criterions specified 
+        in the observer instance.
+
+        Args:
+            ps (ParticleState): Current particle state.
+        Returns:
+            new data row or None
+        """
+
         if ps.substep == 2 and len(self.spheres) > 1:
             data_on_sphere = self.check_on_sphere(ps)
             if data_on_sphere != None:
@@ -99,6 +117,17 @@ class Observer():
 
 
     def check_on_sphere(self, ps):
+        """Check if particle passes a sphere during the propagation step.
+        
+        Checks if the particle crosses through a sphere with radii r in the current
+        propagation step. As there may be many spheres, a loop over all user-
+        specifyed radii is needed.
+
+        Args:
+            ps (ParticleState): Current particle state.
+        Returns:
+            new data row or None
+        """
         radius_2 = 0
         radius_prev_2 = 0
         for i in range(ps.dimensions):
@@ -115,6 +144,15 @@ class Observer():
 
 
     def data_row(self, ps, radius):
+        """List of particle parameters that should be observed.
+
+        Args:
+            ps (ParticleState): Current particle state.
+            radius (float32): Radius of the sphere that the particle is located at.
+        Returns:
+            data_row_list (list): All items that should be observed. 
+        """
+
         radius = radius
         data_row_list = [
             ps.particle_id, 
