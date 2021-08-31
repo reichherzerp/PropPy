@@ -277,32 +277,39 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
         self.spheres = np.array(spheres, dtype=np.float32)
         # have to store all relevant observation parameters in the Observer class that 
         # has the @jitclass label from numba. This is important, as the Particle class is also 
-        # labeled with @jitclass and can thus only call @jitclass classes. This is for
-        # performance resaons.
+        # labeled with @jitclass and can thus only call @jitclass classes. The usage of numba is 
+        # for performance resaons.
         self.observer = Observer(self.steps, self.substeps_bool, self.spheres)
 
     @abstractmethod
     def set_steps(self):
-        # set the number of steps that should be observed
+        """Sets the number of steps that should be observed.
+        """
         pass
 
     def set_steps_int(self):
-        # convert list of steps to np array of ints that is known in the @jitclass Observer()
+        """Converts list of steps to np array of ints that is known in the @jitclass Observer().
+        """
         steps = self.set_steps()
         steps_int32 = np.array(steps, dtype=np.int32)
         return steps_int32
     
     @abstractmethod
     def get_description_observer_type(self):
-        # give the name of each special observer
+        """Gives the name of each special observer.
+        """
         pass
 
     def get_description(self):
+        """Prints a description of the observer with the status of all attributes.
+        """
         self.observer.get_description_general()
         self.get_description_observer_type()
         self.observer.get_description_parameters()
 
     def get_column_names(self):
+        """Gets called in the simulation script and returns the column names of the data output.
+        """
         return self.column
 
     
