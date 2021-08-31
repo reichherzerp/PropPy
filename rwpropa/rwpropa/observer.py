@@ -29,11 +29,9 @@ from .particle_state import *
 observer_spec = [
     ('substeps', b1[:]),
     ('all_steps', b1),
-    ('pos', float32[:]),
     ('steps', int32[:]),
-    ('pos_prev', float32[:]),
+    ('pos', float32[:]),
     ('spheres', float32[:]),
-    ('box_dimensions', float32[:]),
     ('ps', ParticleState.class_type.instance_type),
 ]
 
@@ -42,33 +40,33 @@ class Observer():
     """ Base observer class that is called in the simulation by the particle class to
     determine when to write out (observe) data. 
      
-    The conditions to observe can be based 
-    on the time (or step) or the coordinates of the particle.
+    The conditions to observe can be based on the time (or step) or the coordinates of 
+    the particle.
     - step number [unique_steps] -> time (TimeEvolutionObservers)
     - radius of observer sphere [shperes] -> sphere around source (SphericalObservers)
-    - cartesian coordinates [box_dimensions] -> box around source (BoxObserver)
-    all special observer will create an Observer object and specify the relevant parameters
+    - cartesian coordinates [box_dimensions] -> box around source (BoxObserver) (not yet implemented)
+    All special observer will create an Observer object and specify the relevant parameters
     for the observation conditions (unique_steps, shperes, box_dimensions)
 
     Attributes:
-        substeps: A b1 array
-        all_steps: 
-        .
-        .
-        .
+        substeps: An b1 array specifying observed substeps [1_substep,2_substep,3_substep].
+                  Only observing once per step: substeps = [False, False, True].
+        all_steps: A bool that determines if all steps should be observed, independet of steps array.
+        steps: A float32 array specifying all steps that should be observed.
+        pos: A float32 array for the position of the current particle.
+        spheres: A float32 array for specifying the radii of the observer spheres.
+        ps: ParticleState of the current particle.
+ 
     """
 
     def __init__(self, steps, substeps, spheres):
         self.substeps = substeps
         self.spheres = spheres
-        # distance of the box boundaries in cartesian coords. [x, y, z]
-        self.box_dimensions = np.array([0.0], dtype=np.float32)
         self.all_steps = False
         if -1 in steps:
             # the -1 is the key to say that all steps should be observed
             self.all_steps = True
         self.steps = self.get_unique_steps(steps)
-        print('number steps: ', len(self.steps))
         print('Observer initialized')
     
 
