@@ -1,3 +1,24 @@
+"""The Observer determines during the simulation when and what data to write out (observe).
+
+In each simulation step, the current particle state is evaluated by the Observer to check
+if one of the observing contions is satisfyed. The conditions to observe can be based 
+on the time (-> step) or the coordinates of the particle.
+
+    Typical usage example:
+
+    import rwpropa as rw
+    
+    substeps = [False, False, True] # observe only steps (no substeps)
+    spheres = [1*10**13, 5*10**12]
+
+    observer = rw.SphericalObserver(substeps, spheres)
+
+    sim = rw.Simulation()
+    sim.add_observer(observer)
+    sim.observer.get_description()
+"""
+
+
 from numba import jit, b1, float32, int32
 import numpy as np
 from numba.experimental import jitclass

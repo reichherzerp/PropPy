@@ -18,10 +18,11 @@ of the field and how to align the diffusion tensor.
     magnetic_field = rw.OrderedBackgroundField(b_rms, b_direction).magnetic_field
 
     propagator = rw.AnisotropicPropagator(magnetic_field, mfp, nr_steps, step_size)
+    sim = rw.Simulation()
     sim.add_propagator(propagator)
     sim.propagator.get_description()
-
 """
+
 
 from numba import jit, b1, float32, int32
 import numpy as np
