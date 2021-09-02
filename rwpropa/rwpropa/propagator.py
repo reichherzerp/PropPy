@@ -410,7 +410,7 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
 
     def convert_mfp_input(self, mfp_input):
         # check the input of the mean free paths
-        if self.isotropic == False:
+        if self.isotropic_diffusion == False:
             if isinstance(mfp_input, float) or isinstance(mfp_input, int) or len(mfp_input) < self.dimensions:
                 # error handeling by wrong input
                 raise ValueError('Input error: please provide a list of anisotropic mean free paths as a list with length of dimensions (default length: 3).')
@@ -486,7 +486,7 @@ class IsotropicPropagatorDefault(AbstractPropagator):
         # no background magnetic field
         rms = 0
         self.magnetic_field = DefaultBackgroundField(rms).magnetic_field
-        self.isotropic = True
+        self.isotropic_diffusion = True
 
         self.init_jitclass_propagator() 
 
@@ -502,7 +502,7 @@ class IsotropicPropagator(AbstractPropagator):
         self.mfp = mfp
         self.nr_steps = nr_steps
         self.step_size = step_size
-        self.isotropic = True
+        self.isotropic_diffusion = True
 
         self.init_jitclass_propagator()
 
@@ -518,7 +518,7 @@ class AnisotropicPropagator(AbstractPropagator):
         self.mfp = mfp
         self.nr_steps = nr_steps
         self.step_size = step_size
-        self.isotropic = False
+        self.isotropic_diffusion = False
 
         self.init_jitclass_propagator()
 
