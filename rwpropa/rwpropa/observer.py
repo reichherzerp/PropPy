@@ -340,6 +340,12 @@ class TimeEvolutionObserverLog(AbstractSpecialObserver):
         self.init_observer(substeps, spheres)
         
     def set_steps(self):
+        """Sets the number of steps that should be observed.
+
+        Takes the minimum and maximum step numbers into account to generate the list of
+        step numbers based on the given number of steps. Here, the steps are spaced 
+        logarithmically.
+        """
         steps = np.logspace(np.log10(self.min_steps), np.log10(self.max_steps), self.nr_steps)
         return steps
 
@@ -359,6 +365,12 @@ class TimeEvolutionObserverLin(AbstractSpecialObserver):
         self.init_observer(substeps, spheres)
 
     def set_steps(self):
+        """Sets the number of steps that should be observed.
+
+        Takes the minimum and maximum step numbers into account to generate the list of
+        step numbers based on the given number of steps. Here, the steps are spaced 
+        linearly.
+        """
         steps = np.linspace(self.min_steps, self.max_steps, self.nr_steps)
         return steps
 
@@ -376,6 +388,8 @@ class TimeEvolutionObserver(AbstractSpecialObserver):
         self.init_observer(substeps, spheres)
 
     def set_steps(self):
+        """Sets the number of steps that should be observed.
+        """
         steps = self.steps_input 
         return steps
 
@@ -393,6 +407,8 @@ class SphericalObserver(AbstractSpecialObserver):
         self.init_observer(substeps, self.spheres)
 
     def set_steps(self):
+        """Sets the number of steps that should be observed.
+        """
         steps = self.steps_input 
         return steps
 
