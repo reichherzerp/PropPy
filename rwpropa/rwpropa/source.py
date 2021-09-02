@@ -27,13 +27,19 @@ from abc import ABCMeta, abstractmethod
 
 
 class SourceMeta(ABCMeta):
-    # required attributes that have to be implemented in __init__ of all
-    # sub classes
+    """ Abstract meta class to check if all required attributes are implemented in the 
+    sub classes.
+    """
+
     required_attributes = []
 
     def __call__(self, *args, **kwargs):
-        # check if required attributes that have to be implemented in __init__ of all
-        # sub classes are really implemented. Raise an error if not
+        """ Checks if required attributes that have to be implemented in __init__ of all
+        sub classes are really implemented. 
+
+        Raises:
+            ValueError: an error if not all required attributes are implemented.
+        """
         obj = super(SourceMeta, self).__call__(*args, **kwargs)
         for attr_name in obj.required_attributes:
             if getattr(obj, attr_name) is None:
@@ -42,7 +48,19 @@ class SourceMeta(ABCMeta):
 
 
 class Source(object, metaclass=SourceMeta):
-    # all required_attributes have to be implemented in sub classes
+    """Abstract base class for all special sources.
+    
+    Functions with the label @abstractmethod have to be implemented in the special 
+    observer classes.
+
+    Attributes:
+        energy: Initial energy of the particle.
+        nr_particles: Number of particles emitted from the source.
+        dimensions: Number of dimensions.
+        particles: Particles with the initial particle state.
+        source: Special source.
+    """
+
     required_attributes = [
         'energy', 
         'nr_particles', 

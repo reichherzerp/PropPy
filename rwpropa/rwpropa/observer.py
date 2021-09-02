@@ -253,7 +253,7 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
         steps: A float32 array specifying all steps that should be observed.
         spheres: A float32 array for specifying the radii of the observer spheres.
         column: A float32 array for specifying the column names of the data output.
-        observer: 
+        observer: The special observer.
     """
     
     required_attributes = [
