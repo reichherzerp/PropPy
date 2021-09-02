@@ -324,6 +324,13 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
     
 
 class ObserverAllSteps(AbstractSpecialObserver):
+    """Observes particles in all steps.
+
+    Attributes:
+        substeps: An b array specifying observed substeps [1_substep,2_substep,3_substep].
+                  Only observing once per step: substeps = [False, False, True].
+        steps_input: A float array specifying all steps that should be observed.
+    """
 
     def __init__(self, substeps):
         spheres = [-1.0]
@@ -339,6 +346,19 @@ class ObserverAllSteps(AbstractSpecialObserver):
 
 
 class TimeEvolutionObserverLog(AbstractSpecialObserver):
+    """Observes particles at the user specifyed step numbers.
+
+    The user only gives the minum, the maximum and the total step numbers. The
+    TimeEvolutionObserverLin computes the list (logarithmically).
+
+    Attributes:
+        substeps: An b array specifying observed substeps [1_substep,2_substep,3_substep].
+                  Only observing once per step: substeps = [False, False, True].
+        min_steps: An int that gives the minimal step number that should be observed.
+        max_steps: An int that gives the maximal step number that should be observed.
+        nr_steps: An int that gives the number of steps that should be observed.
+        steps_input: A float array specifying all steps that should be observed.
+    """
 
     def __init__(self, min_steps, max_steps, nr_steps, substeps):
         self.min_steps = min_steps
@@ -364,6 +384,19 @@ class TimeEvolutionObserverLog(AbstractSpecialObserver):
 
 
 class TimeEvolutionObserverLin(AbstractSpecialObserver):
+    """Observes particles at the user specifyed step numbers.
+
+    The user only gives the minum, the maximum and the total step numbers. The
+    TimeEvolutionObserverLin computes the list (linearly).
+
+    Attributes:
+        substeps: An b array specifying observed substeps [1_substep,2_substep,3_substep].
+                  Only observing once per step: substeps = [False, False, True].
+        min_steps: An int that gives the minimal step number that should be observed.
+        max_steps: An int that gives the maximal step number that should be observed.
+        nr_steps: An int that gives the number of steps that should be observed.
+        steps_input: A float array specifying all steps that should be observed.
+    """
 
     def __init__(self, min_steps, max_steps, nr_steps, substeps):
         self.min_steps = min_steps
@@ -389,6 +422,15 @@ class TimeEvolutionObserverLin(AbstractSpecialObserver):
 
 
 class TimeEvolutionObserver(AbstractSpecialObserver):
+    """Observes particles at the user specifyed step numbers.
+
+    The user passes the list of steps to the TimeEvolutionObserver.
+
+    Attributes:
+        substeps: An b array specifying observed substeps [1_substep,2_substep,3_substep].
+                  Only observing once per step: substeps = [False, False, True].
+        steps_input: A float array specifying all steps that should be observed.
+    """
 
     def __init__(self, steps_input, substeps):
         self.steps_input = steps_input
@@ -408,18 +450,21 @@ class TimeEvolutionObserver(AbstractSpecialObserver):
 
 
 class SphericalObserver(AbstractSpecialObserver):
+    """Observes particles on a spheres with given radii.
+    
+    When particles pass through the sphere, they will be observed.
+
+    Attributes:
+        substeps: An b array specifying observed substeps [1_substep,2_substep,3_substep].
+                  Only observing once per step: substeps = [False, False, True].
+        spheres: A float array for specifying the radii of the observer spheres.
+    """
 
     def __init__(self, substeps, spheres):
         self.steps_input = []
         self.spheres = [-1.0] + spheres
 
         self.init_observer(substeps, self.spheres)
-
-    def set_steps(self):
-        """Sets the number of steps that should be observed.
-        """
-        steps = self.steps_input 
-        return steps
 
     def get_description_observer_type(self):
         print('observer tpye: SphericalObserver')

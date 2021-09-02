@@ -70,13 +70,15 @@ class Source(object, metaclass=SourceMeta):
 
     @abstractmethod
     def __init__(self, order):
-        # implementation required in all sub classes.
-        # all required_attributes have to be implemented in sub classes
+        """ Implementation required in all sub classes. All required_attributes have to 
+        be implemented in sub classes.
+        """
         pass
 
 
     def init_source(self):
-        # initialize parameters that are common for all special source classes
+        """Initialize parameters that are common for all special source classes.
+        """
         self.particles = []
         self.dimensions = 3
         self.pos = np.array(self.pos, dtype=np.float32)
@@ -89,19 +91,22 @@ class Source(object, metaclass=SourceMeta):
 
     @abstractmethod
     def inject_particles(self):
-        # each sub class (special source) has to implement how particles should be injected. Here,
-        # self.particles will be filled
+        """Each sub class (special source) has to implement how particles should be injected. Here,
+        self.particles will be filled
+        """
         pass
 
 
     def reset_source(self):
-        # reset source after simulation in order to repeat the simulation afterwards
+        """Reset source after simulation in order to repeat the simulation afterwards.
+        """
         self.empty_source()
         self.inject_particles()
 
 
     def empty_source(self):
-        # remove all particles in the source
+        """Remove all particles in the source.
+        """
         self.particles = []
 
 
@@ -111,24 +116,27 @@ class Source(object, metaclass=SourceMeta):
 
 
     def get_description(self):
-        # print the information of the relevant parameters and the description of 
-        # the special source type that was chosen
+        """Print the information of the relevant parameters and the description of 
+        the special source type that was chosen
+        """
         self.get_description_general()
         self.get_description_parameters()
         self.get_description_source_type()
 
 
     def get_description_general(self):
-        # called by all special observer classes below.
-        # introduction of the description output
+        """Called by all special observer classes below.
+        Introduction of the description output.
+        """
         print("""Description Source:
                 The source defines the start conditions of the particles 
                 and covers the position, direction, energy, etc\n""")
 
 
     def get_description_parameters(self):   
-        # called by all special observer classes below.
-        # print out all relevant instance parameters
+        """Called by all special observer classes below.
+        print out all relevant instance parameters.
+        """
         print('position: ' , self.pos)
         print('number particles: ' ,self.nr_particles)
         print('energy: ' ,self.energy, ' eV')
