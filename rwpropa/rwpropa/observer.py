@@ -170,24 +170,33 @@ class Observer():
  
 
     def get_description(self):
-        # note: description does not contain the information of the underling special observer 
-        # (if there was one)
-        # that was used during the observer initialization. To get this info, get_description(self) 
-        # has to be called directly on the instance of the special observer class (see tutorials for details)
+        """Description including that of the parameters.
+        
+        Note: description does not contain the information of the underling special observer 
+        (if there was one) that was used during the observer initialization. To get 
+        this info, get_description(self) has to be called directly on the instance of 
+        the special observer class (see tutorials for details).
+        """
         self.get_description_general()
         self.get_description_parameters()
 
 
     def get_description_general(self):
-        # called by all special observer classes below.
-        # introduction of the description output
+        """General description.
+
+        Called by all special observer classes below.
+        Introduction of the description output.
+        """
         print("""Description Observer:
                 The observer defines the conditions for when to write data to the output.\n""")
 
 
     def get_description_parameters(self):   
-        # called by all special observer classes below.
-        # print out all relevant instance parameters
+        """Paremeters description including the values set.
+
+        Called by all special observer classes below.
+        Introduction of the description output.
+        """
         print('spheres: ' , self.spheres)
         print('steps [0:10]: ' , self.steps[0:10])
         print('steps [-11:-1]: ' ,self.steps[-11:-1])
