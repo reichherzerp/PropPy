@@ -1,9 +1,38 @@
+"""Scripts to compute statistical quantities of the particles.
+
+As the particles propagate via a random walk, statistical properties 
+of many particles are interesting, such as the diffusion coefficients and
+particle distributions. These quantities can be compared to analytical 
+predictions.
+
+
+    Typical usage example:
+
+    df = pd.read_pickle("data/data_sim.pkl")
+    df_time_evolution_observer = df.loc[df['radius'] == -1.0]
+    sta = rw.Statistics(df_time_evolution_observer)
+    errors = False
+    df_kappas = sta.plot_diffusion_coefficients(errors)
+"""
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.stats import norm
 
-class Statistics():    
+
+class Statistics():   
+    """Statistics class for visualizing statistical properties of particle transport.
+
+    After loading the simlation data, distributions of particles and running diffusion
+    coefficients can be plotted.
+
+    Attributes:
+        dimensions: An int for defining the dimensions.
+        df: A pandas dataftrame with the simulation data.
+    """
+
     def __init__(self, df):
         print('init statistics plotting class')
         self.df = df
@@ -51,6 +80,15 @@ class Statistics():
 
         
     def plot_diffusion_coefficients(self, error):
+        """Plotting the running diffusion coefficients.
+        
+        The computation is described in:
+        [1]Reichherzer, P., Becker Tjus, J., Zweibel, E. G., Merten, L., and Pueschel, M. J., 
+        “Turbulence-level dependence of cosmic ray parallel diffusion”, 
+        Monthly Notices of the Royal Astronomical Society, vol. 498, no. 4, pp. 5051–5064, 2020. 
+        doi:10.1093/mnras/staa2533.
+        """
+        
         nr_particles = len(list(map(int, (set(self.df['id'])))))
         # sort the pandas dataframe so that the df can be distributed in packages of length=nr_particles
         df = self.df.sort_values('d')
