@@ -8,6 +8,8 @@ predictions.
 
     Typical usage example:
 
+    import rwpropa as rw
+
     df = pd.read_pickle("data/data_sim.pkl")
     df_time_evolution_observer = df.loc[df['radius'] == -1.0]
     sta = rw.Statistics(df_time_evolution_observer)

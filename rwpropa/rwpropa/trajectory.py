@@ -1,8 +1,39 @@
+"""Scripts to visualize simulated particle trajectories.
+
+The simulated particles can be visualized here by shwing their trajectories
+or other properties.
+
+
+    Typical usage example:
+
+    import rwpropa as rw
+
+    df = pd.read_pickle("data.pkl")
+    df_time_evolution_observer = df.loc[df['radius'] == -1.0]
+    tra = rw.Trajectory(df_time_evolution_observer)
+    particle_ids = tra.get_particle_ids()
+
+    nr_steps = 2*10**2
+    tra.plot_trajectory('x', 'y', 'd', particle_ids[0], nr_steps, None)
+    tra.plot_trajectory('d', 'z', 'd', particle_ids[0], nr_steps, None)
+"""
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 
 
 class Trajectory():
+    """Trajectory class for visualizing particle trajectories.
+
+    After loading the simlation data, the simulated particles can be visualized 
+    here by shwing their trajectories or other properties.
+
+    Attributes:
+        dimensions: An int for defining the dimensions.
+        df: A pandas dataftrame with the simulation data.
+    """
+
     def __init__(self, df):
         print('init trajectory plotting class')
         self.df = df
@@ -17,7 +48,17 @@ class Trajectory():
         return list(map(int, (set(self.df['id']))))
         
         
-    def plot_trajectory(self, x, y, c, particle_ids, n, file_name):
+    def plot_trajectory(self, x, y, c, particle_ids, nr_steps, file_name):
+        """Plot the particle trajectory.
+        
+        Args:
+            x: A String that specifies which column to plot on the x-axis.
+            y: A String that specifies which column to plot on the y-axis.
+            c: A String that specifies which column to use for color-coding the plot and the color-bar.
+            particle_ids: List of particle ids that should be plotted.
+            nr_steps: An int tha defines the number of steps to be plotted.
+            file_name: String or None. If not None, the plot will be saved with the given String as a name.
+        """
         if isinstance(particle_ids, int):
             # create a list if only one id was passed to particle_ids
             particle_ids = [particle_ids]
@@ -29,7 +70,7 @@ class Trajectory():
             # -> remove points from intermediate substeps
             df_ids = df_ids[df_ids['sub_step'] == self.dimensions-1]
             # color code the trajectory according to the distance travelled by the particle
-            plt.scatter(df_ids[x][:n], df_ids[y][:n], s = 4, c = df_ids[c][:n], cmap = 'viridis')
+            plt.scatter(df_ids[x][:nr_steps], df_ids[y][:nr_steps], s = 4, c = df_ids[c][:nr_steps], cmap = 'viridis')
         # plot colorbar next to plot
         cbar = plt.colorbar()
         cbar.set_label(c + ' [m]')
@@ -45,7 +86,8 @@ class Trajectory():
 
 
     def get_label(self, axis):
-        # if the axis shows a distance, add the unit [m] to the label
+        """If the axis shows a distance, add the unit [m] to the label.
+        """
         label = axis
         if axis == 'x' or axis == 'y' or axis == 'z' or axis == 'd':
             label = label + ' [m]'
@@ -53,9 +95,10 @@ class Trajectory():
         
 
     def plot_trjectory_substeps(self, substep_0, substep_1, particle_ids, number_steps, file_name):
-        # function to visualize substeps. Two substeps can be passed, 
-        # which are visualized in the x-y plane. The lines from substep_0 
-        # to substep_1 as well as the lines substep_1 to aubstep_0 are marked in color
+        """Function to visualize substeps. Two substeps can be passed, 
+        which are visualized in the x-y plane. The lines from substep_0 
+        to substep_1 as well as the lines substep_1 to aubstep_0 are marked in color
+        """
         if isinstance(particle_ids, int):
             # create a list if only one id was passed to particle_ids
             particle_ids = [particle_ids]
