@@ -43,7 +43,20 @@ class Statistics():
         self.dimensions = dimensions
     
 
-    def plot_distribution(self, axis, step, bins, file_name):
+    def plot_distribution(self, column, step, bins, file_name):
+        """Plotting particle distributions at a given step number.
+        
+        The column of the df that should be plotted can be choosen freely. 
+        Possible is to plot the particle distribution along directions, but
+        also all other dataframe (df) columns are possible and sometimes usefull.
+
+        Args:
+            column: An int that specifies which column to plot.
+            step: An int that defines the step number -> row of the df.
+            bins: An int that defines the number of bins in the plotted histogram.
+            file_name: String or None. If not None, the plot will be saved with the given String as a name.
+        """
+
         # if user wants to plot the laast step, deduce the correct step number of the last step
         if step == -1:
             # get last step
@@ -52,12 +65,12 @@ class Statistics():
         df_i = self.df[self.df['i'] == step]
         
         # fit a normal distribution to the data:
-        mu, std = norm.fit(df_i[axis])
+        mu, std = norm.fit(df_i[column])
         
         plt.figure(figsize=(4,4))
         # compute the factor between the original and normalized hists
-        x_norm, b, p = plt.hist(df_i[axis], bins, density=True)
-        x_original, b, p = plt.hist(df_i[axis], bins)
+        x_norm, b, p = plt.hist(df_i[column], bins, density=True)
+        x_original, b, p = plt.hist(df_i[column], bins)
         scale = max(x_original)/max(x_norm)
     
         # plot the PDF scaled with the factor between the original and normalized hists
@@ -66,8 +79,8 @@ class Statistics():
         p = norm.pdf(x, mu, std)*scale
         plt.plot(x, p, 'k', linewidth=2)
         
-        xlabel = axis
-        if axis == 'x' or axis == 'y' or axis == 'z' or axis == 'd':
+        xlabel = column
+        if column == 'x' or column == 'y' or column == 'z' or column == 'd':
             xlabel = xlabel + ' [m]'
         plt.xlabel(xlabel)
         plt.ylabel('# particles')
@@ -87,8 +100,11 @@ class Statistics():
         “Turbulence-level dependence of cosmic ray parallel diffusion”, 
         Monthly Notices of the Royal Astronomical Society, vol. 498, no. 4, pp. 5051–5064, 2020. 
         doi:10.1093/mnras/staa2533.
+
+        Args:
+            error: A bool to define if the error bars should be plotted
         """
-        
+
         nr_particles = len(list(map(int, (set(self.df['id'])))))
         # sort the pandas dataframe so that the df can be distributed in packages of length=nr_particles
         df = self.df.sort_values('d')
