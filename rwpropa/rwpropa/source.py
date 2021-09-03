@@ -92,7 +92,7 @@ class Source(object, metaclass=SourceMeta):
     @abstractmethod
     def inject_particles(self):
         """Each sub class (special source) has to implement how particles should be injected. Here,
-        self.particles will be filled
+        self.particles will be filled.
         """
         pass
 
@@ -144,6 +144,22 @@ class Source(object, metaclass=SourceMeta):
 
 
 class PointSourceOriented(Source):
+    """A point source that emitts particles into a user-defined direction.
+
+    All particles start from a single point defined by the source position in 
+    the user-defined direction. All particles have the exact same state in the 
+    beginning.
+
+    Attributes:
+        energy: An b array specifying observed substeps [1_substep,2_substep,3_substep].
+                  Only observing once per step: substeps = [False, False, True].
+        pos: A list that specify the source position. 
+        nr_particles: An int that defines how many particles should be emitted.
+        pitch_angle: The initial pitch angle of the particle -> angle between B-field and particle direction.
+        phi: The initial angle between the particle direction in the xy-plane and the x-axis.
+        particles: List of particles in the source. This list will be used in the simulation.
+    """
+
     def __init__(self, energy, pos, nr_particles, pitch_angle, phi):
         self.energy = energy
         self.pos = pos
@@ -169,6 +185,20 @@ class PointSourceOriented(Source):
 
 
 class PointSourceIsotropic(Source):
+    """A point source that emitts particles into isotropically.
+
+    All particles start from a single point defined by the source position in 
+    the user-defined direction. All particles have the exact same state in the 
+    beginning, except for the direction, which is isotropic.
+
+    Attributes:
+        energy: An b array specifying observed substeps [1_substep,2_substep,3_substep].
+                  Only observing once per step: substeps = [False, False, True].
+        pos: A list that specify the source position. 
+        nr_particles: An int that defines how many particles should be emitted.
+        particles: List of particles in the source. This list will be used in the simulation.
+    """
+
     def __init__(self, energy, pos, nr_particles):
         self.energy = energy
         self.pos = pos
