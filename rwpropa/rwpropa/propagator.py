@@ -1,3 +1,57 @@
+"""The Source initializes the particles in the beginning of the simulation.
+
+Background information:
+    Current simulation codes propagate charged particles through magnetic fields 
+    either by ballistic codes solving the Lorentz force at each step or by using 
+    particle distributions arising from the solution of the classical diffusion 
+    equation. Whereas the former method provides an accurate description of the 
+    particle trajectories using small step sizes, this method is computationally 
+    expensive, especially for low particle energies. The method based on the 
+    diffusion equation, on the other hand, is extremely fast since the particle 
+    distribution is analytically given at each time point, but by the nature of 
+    the method, particles can only be described statistically. Even using quasi-
+    particles, the individual trajectories are useless. For applications in which 
+    statistical statements and averaging over many particles are intended, this 
+    method is preferred in many areas of astronomy because of the short 
+    simulation times.
+    It is important to note, however, that the diffusion equation guarantees an 
+    adequate description of the particles only in the limit of infinitely large 
+    times. Numerically, however, this approach can also be used starting from 
+    times for which a diffusive behavior occurs. This typically happens after a 
+    simulation time which is in the order of magnitude of the mean free path 
+    length. 
+    Consequently, the use of propagation codes based on the diffusion equation 
+    is not suitable in compact objects. Examples include AGNs, supernovas, 
+    pulsars, etc.
+
+Explanation:
+    In analogy to existing diffusion codes, the following routine requires the 
+    information of the diffusion coefficients. Here, however, we do not use the 
+    solution of the diffusion equation, since this only provides a particle 
+    distribution and makes statistical statements about individual particle 
+    trajectories. Instead, we propagate particles according to the two-step 
+    propagation routine specified in Section 2. For strong turbulence levels we 
+    use the correlated random walk (CRW) in Cartesian coordinates and for weak 
+    turbulence levels the CRW in cylindrical coordinates.
+
+Typical usage example:
+
+    import rwpropa as rw
+    
+    nr_steps = 1*10**4
+    step_size = 0.5*10**10 # [m]
+    mfp = np.array([2.13*10**12/2.0, 2.13*10**12/2.0, 2.1078*10**12], dtype=np.float32)  # [m]
+    rms = 1 # Gaus
+    magnetic_field = rw.OrderedBackgroundField(rms, [0,0,1]).magnetic_field
+
+    propagator = rw.AnisotropicPropagator(magnetic_field, mfp, nr_steps, step_size)
+    
+    sim = rw.Simulation()
+    sim.add_propagator(propagator)
+    sim.propagator.get_description()
+"""
+
+
 from numba import jit, b1, float32, int32
 import numpy as np
 from numba.experimental import jitclass
