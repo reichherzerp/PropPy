@@ -16,7 +16,7 @@ particle_state_spec = [
     ('chi_isotropic', float32),
     ('speed', float32),
     ('energy', float32),
-    ('isotropic', b1),
+    ('isotropic_diffusion', b1),
     ('distance', float32),
     ('gyroradius', float32),
     ('gyroradius_eff', float32),

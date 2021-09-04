@@ -235,10 +235,11 @@ class Propagator():
         without any transformations.
         
         Args:
-            particle_state: Current particle state.
+            ps: Current particle state.
+            move_local: An array that describes the local move in the substep.
             
         Returns: 
-            new_particles_state: New particle state after propagation of substep in global frame.
+            ps: New particle state after propagation of substep in global frame.
         """
         for s in range(self.dimensions):
             ps.pos[s] = ps.pos[s] + move_local[s]
@@ -246,6 +247,18 @@ class Propagator():
     
                  
     def move_cartesian(self, particle_state):
+        """Movement in substep in Cartesian coords. or in z-axis in cylindrical coords.
+        
+        During the complete propagation step, the particle moves one step size further.
+        In components in each axis depends on the pitch angle of the particle.
+        
+        Args:
+            particle_state: Current particle state.
+            
+        Returns: 
+            particles_state: New particle state after propagation of substep in global frame.
+            move_local: An array that describes the local move in the substep.
+        """
         distance_s = 0.0
         if particle_state.substep == self.background_direction:
             distance_s = self.step_size * np.cos(particle_state.pitch_angle) * particle_state.direction[particle_state.substep]
@@ -260,6 +273,19 @@ class Propagator():
         
         
     def move_phi(self, particle_state):
+        """Movement in substep along the phi-direction in cylindrical coords.
+        
+        Here, the particles phi angle is increased or decreased as defined in the current
+        direction array for the phi angle. The particle moves in positive or negative 
+        direction in the circle with a radius that is defined by the effective gyroradius.
+        
+        Args:
+            particle_state: Current particle state.
+            
+        Returns: 
+            particles_state: New particle state after propagation of substep in global frame.
+            move_local: An array that describes the local move in the substep.
+        """
         phi_old = particle_state.phi
         distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
         particle_state.distance = particle_state.distance + np.abs(distance_s)
@@ -267,19 +293,41 @@ class Propagator():
         particle_state.phi = phi_old + delta_phi * particle_state.direction[0]
         chi_x_1 = particle_state.gyroradius_eff * (np.cos(particle_state.phi) - np.cos(phi_old))
         chi_y_1 = particle_state.gyroradius_eff * (np.sin(particle_state.phi) - np.sin(phi_old))
-        return particle_state, self.float_array([chi_x_1, chi_y_1, 0])
+        move_local = [chi_x_1, chi_y_1, 0]
+        return particle_state, self.float_array(move_local)
 
                       
     def move_rho(self, particle_state):
+        """Movement in substep along the rho-direction in cylindrical coords.
+        
+        Here, the particle move in the rho direction that is specifyed by the current
+        direction array.
+        
+        Args:
+            particle_state: Current particle state.
+            
+        Returns: 
+            particles_state: New particle state after propagation of substep in global frame.
+            move_local: An array that describes the local move in the substep.
+        """
         distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
         particle_state.distance = particle_state.distance + np.abs(distance_s)
         delta_rho = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
         chi_x_2 = np.cos(particle_state.phi) * particle_state.direction[1] * delta_rho
         chi_y_2 = np.sin(particle_state.phi) * particle_state.direction[1] * delta_rho
-        return particle_state, self.float_array([chi_x_2, chi_y_2, 0])
+        move_local = [chi_x_2, chi_y_2, 0]
+        return particle_state, self.float_array(move_local)
 
 
     def compute_delta_phi(self, ps):
+        """Compute the change in the phi angle that is needed based on the pitch angle.
+        
+        Args:
+            particle_state: Current particle state.
+            
+        Returns: 
+            delta_phi: Change in phi angle needed during the phi substep in cylindrical coords.
+        """
         delta_rho = self.step_size * np.sin(ps.pitch_angle)
         delta_phi = 2 * np.arcsin(delta_rho / (2 * 2**0.5 * ps.gyroradius_eff))
         return delta_phi
@@ -290,22 +338,41 @@ class Propagator():
 
 
     def set_gyroradius(self, ps):
-        # default gyroradius for protons (v=c) with 1eV in magnetic field with strength 1Gaus
-        gyroradius_0 = 3.336*10**(-5) # meters
-        ps.gyroradius = gyroradius_0 * ps.energy / self.magnetic_field.rms # meters
-        ps.gyroradius_eff = ps.gyroradius / 3**0.5 # correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5, which is why we have to divide here. 
+        """Compute gyroradius given the magnetic field strength and the particle energy.
+        
+        It is important to notice that we have to consider an effective gyroradius for the
+        movement of the particle in phi direction, because combining the movement in phi and
+        rho directions gives an effective gyromation with a larger gyroradius than the one
+        used or the phi movement. In order to have a gyromotion with the correct gyroradius
+        of the combined substeps in rho and phi direction, the gyroradius used for the phi
+        movement has to be smaller -> effective gyrorradius.
+        Correcting for moving in rho direction (perp to phi) --> gyration increases by 2**0.5,
+        which is why we have to divide here. 
+
+        Args:
+            ps: Current particle state.
+            
+        Returns: 
+            ps: New particle state with an effective gyroradius for the current energy and b-field strength.
+        """
+        # Normalization factor for gyroradius for protons (v=c) with 1eV in magnetic 
+        # field with strength 1Gaus.
+        gyroradius_0 = 3.336*10**(-5) # in [m]
+        ps.gyroradius = gyroradius_0 * ps.energy / self.magnetic_field.rms # in [m]
+        ps.gyroradius_eff = ps.gyroradius / 3**0.5 
         return ps
         
 
     def set_pitch_angle_const(self, const_bool):
-        # keep the pitch angle either constant or allow for changes 
-        # during each propagation step.
+        """Keep the pitch angle either constant or allow for changes 
+        during each propagation step.
+        """
         self.pitch_angle_const = const_bool
 
 
     def set_dimensions(self, dimensions):
-        # default is 3d -> dimensions = 3
-        # more than 3 dimensions are not supported
+        """Default is 3d -> dimensions = 3. More than 3 dimensions are not supported.
+        """
         self.dimensions = dimensions
 
 
@@ -457,7 +524,7 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         'nr_steps', 
         'magnetic_field', 
         'step_size', 
-        'isotropic'
+        'isotropic_diffusion'
     ]
  
     @abstractmethod
