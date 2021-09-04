@@ -376,49 +376,74 @@ class Propagator():
         self.dimensions = dimensions
 
 
-    def set_cartesian_coords(self, cartesian):
-        # there are cartesian or cylindrical coordinates available. 
-        # cylindrical coordinates activated lead to the usage of
-        # move_phi, move_rho and move_cartesian for the z-direction
-        self.cartesian = cartesian
-        self.cylindrical = not cartesian
+    def set_cartesian_coords(self, cartesian_bool):
+        """Choose Cartesian coords or not.
+        
+        There are cartesian or cylindrical coordinates available. 
+        cylindrical coordinates activated lead to the usage of
+        move_phi, move_rho and move_cartesian for the z-direction
+        """
+        self.cartesian = cartesian_bool
+        self.cylindrical = not cartesian_bool
 
     
     def set_cylindrical_coords(self, cylindrical):
-        # there are cartesian or cylindrical coordinates available. 
-        # cylindrical coordinates activated lead to the usage of
-        # move_phi, move_rho and move_cartesian for the z-direction
+        """Choose cylindrical coords or not.
+
+        There are cartesian or cylindrical coordinates available. 
+        Cylindrical coordinates activated lead to the usage of
+        move_phi, move_rho and move_cartesian for the z-direction
+        """
         self.cartesian = not cylindrical
         self.cylindrical = cylindrical
 
 
     def set_speed(self, speed):
-        # units = [m/s]
-        # change the speed of the particles.
-        # the default speed is the speed of light that is valid for
-        # relativistic particles
+        """Set particle speed.
+        
+        units = [m/s]
+        change the speed of the particles. The default speed is the speed of light 
+        that is valid for relativistic particles.
+        """
         self.speed = speed
 
 
     def set_nr_steps(self, nr_steps):
-        # change number of steps
+        """Change number of steps.
+        """
         self.nr_steps = nr_steps
 
     
     def set_step_size(self, step_size):
-        # units = [m]
-        # change distance of each step that particles travel 
+        """Change distance of each step that particles travel.
+        
+        units = [m]
+        """
         self.nr_steps = step_size
 
     
     def set_prob_init(self, mean_free_path, speed, step_size):
+        """Calculate the propabilities to change directions.
+
+        The propabilities to change directions are based on the mean free paths
+        that depend on the diffusion coefficients.
+
+        Args:
+            mean_free_path: Mean free paths of particles in each direction in [m].
+            speed: Speed of the particles in [m/s]
+            step_size: Size of the steps in [m]
+
+        Returns:
+            probabilities: Probability to change the direction in one prop. step.
+        """
         xi = [
             speed / mean_free_path[0] / 2.0, 
             speed / mean_free_path[1] / 2.0, 
             speed / mean_free_path[2] / 2.0
         ] # [1/s] frequency of change
         tau_step = step_size / speed
-        return np.array([xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step], dtype=np.float32)
+        propabilities = [xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step]
+        return np.array(propabilities, dtype=np.float32)
 
 
     def set_prob(self, mean_free_path):
@@ -430,17 +455,20 @@ class Propagator():
 
 
     def get_description(self):
-        # note: description does not contain the information of the underling special propagator 
-        # (if there was one)
-        # that was used during adding the propagator to the simulation. 
-        # To get this info, get_description(self) 
-        # has to be called directly on the instance of the used propagator (see tutorials for details)
+        """Description.
+        
+        Note: description does not contain the information of the underling special propagator 
+        (if there was one) that was used during adding the propagator to the simulation. To get 
+        this info, get_description(self) has to be called directly on the instance of the used 
+        propagator (see tutorials for details).
+        """
         self.get_description_general()
         self.get_description_parameters()
 
 
     def get_description_general(self):
-        # print out the discription of the object with all relevant instance parameters
+        """Print out the discription of the object with all relevant instance parameters.
+        """
         print("""Description Propagator:
                 The propagator is responsible for the movement of the particles. 
                 It performs the change of direction and the movement in the respective direction.
@@ -451,7 +479,8 @@ class Propagator():
 
 
     def get_description_parameters(self):
-        # print out the discription of the object with all relevant instance parameters
+        """Print out the discription of the object with all relevant instance parameters.
+        """
         print("""Description Propagator:
                 The propagator is responsible for the movement of the particles. 
                 It performs the change of direction and the movement in the respective direction.
