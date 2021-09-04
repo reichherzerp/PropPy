@@ -101,23 +101,27 @@ class Propagator():
 
     Attributes: (for types, see the propagation_spec above)
         speed: Speed of particle in [m/s].
-        all_steps: A bool that determines if all steps should be observed, independet of steps array.
-        steps: A float32 array specifying all steps that should be observed.
-        pos: A float32 array for the position of the current particle.
-        spheres: A float32 array for specifying the radii of the observer spheres.
-        ps: ParticleState of the current particle.
+        cartesian: Should use Cartesian coordinates?
+        cartesian: Should use cylindrical coordinates?
+        nr_steps: Number of steps for each particle in simulation.
+        step_size: Size of each individual step in [m].
+        dimensions: Number of dimensions.
+        pitch_angle_const: Should the pitch angle remain const or should there be pitch angle scattering?
+        background_direction: Direction of a background field (0=x-axis,...).
+        magnetic_field: The magnetic field.
+        self.prob: Probability to change in each direction in a step.
     """
 
     def __init__(self, nr_steps, step_size, prob, magnetic_field):
         print('Propagator initialized')
-        self.speed = 2.998*10**8 # [m/s]
+        self.speed = 2.998*10**8 # speed of light
         self.cartesian = False
         self.cylindrical = True
         self.nr_steps = nr_steps
         self.step_size = step_size # [m]
         self.dimensions = 3
         self.pitch_angle_const = True
-        self.background_direction = 2 # direction of a background field
+        self.background_direction = 2
         self.magnetic_field = magnetic_field
         self.prob = prob
         
