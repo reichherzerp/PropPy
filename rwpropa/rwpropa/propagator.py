@@ -127,8 +127,18 @@ class Propagator():
         
 
     def change_direction(self, direction):
-        # change in direction happens with a propability that is defined by the 
-        # mean free path and stored in self.prob
+        """Change particle direction during step in random walk.
+        
+        Change in direction happens with a propability that is defined by the 
+        diffusion coeffcients (used to compute the mean free paths). The 
+        information about the probabilities is stored in self.prob.
+
+        Args:
+            direction: Current direction of particle.
+
+        Returns:
+            direction: New direction of particle that is the same as the input direction (-> correlated random walk).
+        """
         for p in range(self.dimensions):
             if np.random.random() < self.prob[p]:
                 direction[p] = -1*direction[p]
@@ -136,13 +146,23 @@ class Propagator():
 
 
     def change_pitch_angle(self, pitch_angle):
-        # changes in the pitch angle are caused by resonant scattering of particles at
-        # fluctuations of the turbulence that satisfy the resonance scattering criterion.
-        # these changes in pitch angle are approximated in Kulsrud & Pearce (1969, ApJ, 156, 445) 
-        # and Reichherzer et al. (2020, MNRAS) as follows:
-        # delta mu = b/B.
-        # here, b is the rms field strength of the turbulence and B the magnetic field strength of
-        # the ordered magnetic field lines. Only valid for weak turbulence levels b << B.
+        """Change pitch angle of particles.
+
+        Only used when pitch angle shouldn't kept constant! Changes in the pitch angle are 
+        caused by resonant scattering of particles at fluctuations of the turbulence that 
+        satisfy the resonance scattering criterion. These changes in pitch angle are 
+        approximated in Kulsrud & Pearce (1969, ApJ, 156, 445) and 
+        Reichherzer et al. (2020, MNRAS) as follows:
+        delta mu = b/B.
+        Here, b is the rms field strength of the turbulence and B the magnetic field strength 
+        of the ordered magnetic field lines. Only valid for weak turbulence levels b << B.
+        
+        Args:
+            pitch_angle: Current pitch angle of particle.
+
+        Returns:
+            new_pitch_angle: New pitch angle caused by pitch angle scattering.
+        """
         if self.pitch_angle_const or np.random.random() >= self.prob[self.background_direction]:
             # if the pitch angle should be constant no calculations needed here
             return pitch_angle
@@ -156,21 +176,42 @@ class Propagator():
         # -> theta_1 = arccos(delta_mu - cos(theta_1))
         pitch_angle_0 = pitch_angle
         pitch_angle_1 = np.arccos(delta_mu + np.cos(pitch_angle_0))
-        pitch_angle = pitch_angle_1
-        return pitch_angle
+        new_pitch_angle = pitch_angle_1
+        return new_pitch_angle
 
 
     def move_substep(self, particle_state):
-        # adapt phi and pitch angle in case the b-field vector changed: issue 26
-    
+        """Move one substep.
+        
+        The number of the current substep is stored in the particle state.
+        
+        Args:
+            particle_state: Current particle state.
+            
+        Returns: 
+            new_particles_state: New particle state after propagation of substep.
+        """
         # local step
         particle_state, move_local_array = self.move_local(particle_state)
         # global step
-        particle_state = self.move_global(particle_state, move_local_array)
-        return particle_state
+        new_particle_state = self.move_global(particle_state, move_local_array)
+        return new_particle_state
 
 
     def move_local(self, particle_state):
+        """Movements during a substep in the local frame.
+        
+        The local frame is defined such that the magnetic field points into the
+        z-axis. Depending on the variables self.cartesian and self.cylindrical, 
+        the particle moves via a correlated random walk in Carteesian or 
+        cylindrical coordinates.
+        
+        Args:
+            particle_state: Current particle state.
+            
+        Returns: 
+            new_particles_state: New particle state after propagation of substep in local frame.
+        """
         if self.cartesian:
             # cartesian coordinates -> move in x, y and z directions
             particle_state, move_local = self.move_cartesian(particle_state)
@@ -186,6 +227,19 @@ class Propagator():
 
 
     def move_global(self, ps, move_local):
+        """Movements during a substep in the global frame -> new position.
+        
+        Currently only magnetic fields in z-axis are supported. Therfore, the
+        movement in the local frame is the same as the movement in the global
+        frame. Therefore, the new position can be derived by the local movement
+        without any transformations.
+        
+        Args:
+            particle_state: Current particle state.
+            
+        Returns: 
+            new_particles_state: New particle state after propagation of substep in global frame.
+        """
         for s in range(self.dimensions):
             ps.pos[s] = ps.pos[s] + move_local[s]
         return ps
