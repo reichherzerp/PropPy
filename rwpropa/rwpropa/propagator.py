@@ -689,7 +689,7 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
     
 
     def set_magnetic_field(self, magnetic_field):
-        """ Allow to set the propagator magnetic field.
+        """Allow to set the propagator magnetic field.
         """
         self.magnetic_field = magnetic_field
         self.propagator.magnetic_field = magnetic_field
@@ -779,6 +779,20 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
 
 
 class IsotropicPropagatorDefault(AbstractPropagator):
+    """Default isotropic propagator.
+
+    Usage of no background magnetic field with only a turbulent one. Isotropic
+    diffusion coefficients with corresponding mfp = 10**12 m. Propagating with
+    Cartesian coordinates.
+
+    Attributes:
+        nr_steps: Number of steps for each particle in simulation.
+        step_size: Size of the steps in [m].
+        mfp: Mean free paths of particles in each direction in [m].
+        magnetic_field: The magnetic field.
+        isotropic_diffusion: Is the particle diffusion isotropic?
+    """
+
     def __init__(self):
         self.nr_steps = 2*10**5
         self.step_size = 0.5*10**10 # [m]
@@ -798,11 +812,27 @@ class IsotropicPropagatorDefault(AbstractPropagator):
 
 
 class IsotropicPropagator(AbstractPropagator):
-    def __init__(self, magnetic_field, mfp, nr_steps, step_size):
-        self.magnetic_field = magnetic_field
-        self.mfp = mfp
+    """Isotropic propagator with user-specifyed parameters.
+
+    Usage of no background magnetic field with only a turbulent one. Isotropic
+    diffusion coefficients and therefore isotropic mfp. Propagating with
+    Cartesian coordinates. User can specify mfp, nr steps and step size.
+
+    Attributes:
+        nr_steps: Number of steps for each particle in simulation.
+        step_size: Size of the steps in [m].
+        mfp: Mean free paths of particles in each direction in [m].
+        magnetic_field: The magnetic field.
+        isotropic_diffusion: Is the particle diffusion isotropic?
+    """
+
+    def __init__(self, mfp, nr_steps, step_size):
         self.nr_steps = nr_steps
         self.step_size = step_size
+        self.mfp = mfp
+        # no background magnetic field
+        rms = 0
+        self.magnetic_field = DefaultBackgroundField(rms).magnetic_field
         self.isotropic_diffusion = True
 
         self.init_jitclass_propagator()
@@ -814,6 +844,21 @@ class IsotropicPropagator(AbstractPropagator):
 
 
 class AnisotropicPropagator(AbstractPropagator):
+    """Anisotropic propagator with user-specifyed parameters.
+
+    Usage of a background magnetic field and a turbulent one. Anisotropic
+    diffusion coefficients and therefore anisotropic mfp. Propagating with
+    Cylindircal coordinates. User can specify mfp, nr steps and step size,
+    as well as magnetic field.
+
+    Attributes:
+        nr_steps: Number of steps for each particle in simulation.
+        step_size: Size of the steps in [m].
+        mfp: Mean free paths of particles in each direction in [m].
+        magnetic_field: The magnetic field.
+        isotropic_diffusion: Is the particle diffusion isotropic?
+    """
+
     def __init__(self, magnetic_field, mfp, nr_steps, step_size):
         self.magnetic_field = magnetic_field
         self.mfp = mfp
