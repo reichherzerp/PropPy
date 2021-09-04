@@ -30,7 +30,7 @@ Explanation:
     solution of the diffusion equation, since this only provides a particle 
     distribution and makes statistical statements about individual particle 
     trajectories. Instead, we propagate particles according to the two-step 
-    propagation routine specified in Section 2. For strong turbulence levels we 
+    propagation routine. For strong turbulence levels we 
     use the correlated random walk (CRW) in Cartesian coordinates and for weak 
     turbulence levels the CRW in cylindrical coordinates.
 
@@ -60,7 +60,7 @@ from .particle_state import *
 from abc import ABC, ABCMeta, abstractmethod
 
 
-simulation_spec = [
+propagation_spec = [
     ('cartesian', b1),
     ('cylindrical', b1),
     ('nr_steps', int32),
@@ -84,8 +84,30 @@ simulation_spec = [
     ('particle_state', ParticleState.class_type.instance_type),
 ]
 
-@jitclass(simulation_spec)
+@jitclass(propagation_spec)
 class Propagator():
+    """ Base propagator class that is called in the simulation by the particle class to
+    determine the next particle state. 
+     
+    In analogy to existing diffusion codes, the following routine requires the 
+    information of the diffusion coefficients. Here, however, we do not use the 
+    solution of the diffusion equation, since this only provides a particle 
+    distribution and makes statistical statements about individual particle 
+    trajectories. Instead, we propagate particles according to the two-step 
+    propagation routine. 
+    - For strong turbulence levels: We use the correlated random walk (CRW) 
+    in Cartesian coordinates.
+    - For weak turbulence levels: We use the CRW in cylindrical coordinates.
+
+    Attributes: (for types, see the propagation_spec above)
+        speed: Speed of particle in [m/s].
+        all_steps: A bool that determines if all steps should be observed, independet of steps array.
+        steps: A float32 array specifying all steps that should be observed.
+        pos: A float32 array for the position of the current particle.
+        spheres: A float32 array for specifying the radii of the observer spheres.
+        ps: ParticleState of the current particle.
+    """
+
     def __init__(self, nr_steps, step_size, prob, magnetic_field):
         print('Propagator initialized')
         self.speed = 2.998*10**8 # [m/s]
