@@ -1,16 +1,45 @@
+"""The Source initializes the particles in the beginning of the simulation.
+
+There are different sources available that can be customized by the user. 
+The source spcifyes the initial state of the particles.
+
+    Typical usage example:
+
+    import rwpropa as rw
+    
+    nr_particles = 1*10**3
+    source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
+    delta_rho_div_phi = 1 #1/2**0.5 # (delta_r_rho / delta_r_phi)
+    energy = 3*10**15 # eV
+    phi = 0.0
+    pitch_angle = 2*np.pi * 54.74/360 # pitch angle for equal components in all directions
+
+    sim = rw.Simulation()
+    source = rw.PointSourceOriented(energy, source_pos, nr_particles, pitch_angle, phi)
+    sim.add_source(source)
+    sim.source.get_description()
+"""
+
+
 from .particle import Particle
 import numpy as np
 from abc import ABCMeta, abstractmethod
 
 
 class SourceMeta(ABCMeta):
-    # required attributes that have to be implemented in __init__ of all
-    # sub classes
+    """ Abstract meta class to check if all required attributes are implemented in the 
+    sub classes.
+    """
+
     required_attributes = []
 
     def __call__(self, *args, **kwargs):
-        # check if required attributes that have to be implemented in __init__ of all
-        # sub classes are really implemented. Raise an error if not
+        """ Checks if required attributes that have to be implemented in __init__ of all
+        sub classes are really implemented. 
+
+        Raises:
+            ValueError: an error if not all required attributes are implemented.
+        """
         obj = super(SourceMeta, self).__call__(*args, **kwargs)
         for attr_name in obj.required_attributes:
             if getattr(obj, attr_name) is None:
@@ -19,7 +48,19 @@ class SourceMeta(ABCMeta):
 
 
 class Source(object, metaclass=SourceMeta):
-    # all required_attributes have to be implemented in sub classes
+    """Abstract base class for all special sources.
+    
+    Functions with the label @abstractmethod have to be implemented in the special 
+    observer classes.
+
+    Attributes:
+        energy: Initial energy of the particle.
+        nr_particles: Number of particles emitted from the source.
+        dimensions: Number of dimensions.
+        particles: Particles with the initial particle state.
+        source: Special source.
+    """
+
     required_attributes = [
         'energy', 
         'nr_particles', 
@@ -29,13 +70,15 @@ class Source(object, metaclass=SourceMeta):
 
     @abstractmethod
     def __init__(self, order):
-        # implementation required in all sub classes.
-        # all required_attributes have to be implemented in sub classes
+        """Implementation required in all sub classes. All required_attributes have to 
+        be implemented in sub classes.
+        """
         pass
 
 
     def init_source(self):
-        # initialize parameters that are common for all special source classes
+        """Initialize parameters that are common for all special source classes.
+        """
         self.particles = []
         self.dimensions = 3
         self.pos = np.array(self.pos, dtype=np.float32)
@@ -48,19 +91,22 @@ class Source(object, metaclass=SourceMeta):
 
     @abstractmethod
     def inject_particles(self):
-        # each sub class (special source) has to implement how particles should be injected. Here,
-        # self.particles will be filled
+        """Each sub class (special source) has to implement how particles should be injected. Here,
+        self.particles will be filled.
+        """
         pass
 
 
     def reset_source(self):
-        # reset source after simulation in order to repeat the simulation afterwards
+        """Reset source after simulation in order to repeat the simulation afterwards.
+        """
         self.empty_source()
         self.inject_particles()
 
 
     def empty_source(self):
-        # remove all particles in the source
+        """Remove all particles in the source.
+        """
         self.particles = []
 
 
@@ -70,24 +116,27 @@ class Source(object, metaclass=SourceMeta):
 
 
     def get_description(self):
-        # print the information of the relevant parameters and the description of 
-        # the special source type that was chosen
+        """Print the information of the relevant parameters and the description of 
+        the special source type that was chosen
+        """
         self.get_description_general()
         self.get_description_parameters()
         self.get_description_source_type()
 
 
     def get_description_general(self):
-        # called by all special observer classes below.
-        # introduction of the description output
+        """Called by all special observer classes below.
+        Introduction of the description output.
+        """
         print("""Description Source:
                 The source defines the start conditions of the particles 
                 and covers the position, direction, energy, etc\n""")
 
 
     def get_description_parameters(self):   
-        # called by all special observer classes below.
-        # print out all relevant instance parameters
+        """Called by all special observer classes below.
+        print out all relevant instance parameters.
+        """
         print('position: ' , self.pos)
         print('number particles: ' ,self.nr_particles)
         print('energy: ' ,self.energy, ' eV')
@@ -95,6 +144,22 @@ class Source(object, metaclass=SourceMeta):
 
 
 class PointSourceOriented(Source):
+    """A point source that emitts particles into a user-defined direction.
+
+    All particles start from a single point defined by the source position in 
+    the user-defined direction. All particles have the exact same state in the 
+    beginning.
+
+    Attributes:
+        energy: An b array specifying observed substeps [1_substep,2_substep,3_substep].
+                  Only observing once per step: substeps = [False, False, True].
+        pos: A list that specify the source position. 
+        nr_particles: An int that defines how many particles should be emitted.
+        pitch_angle: The initial pitch angle of the particle -> angle between B-field and particle direction.
+        phi: The initial angle between the particle direction in the xy-plane and the x-axis.
+        particles: List of particles in the source. This list will be used in the simulation.
+    """
+
     def __init__(self, energy, pos, nr_particles, pitch_angle, phi):
         self.energy = energy
         self.pos = pos
@@ -120,6 +185,20 @@ class PointSourceOriented(Source):
 
 
 class PointSourceIsotropic(Source):
+    """A point source that emitts particles into isotropically.
+
+    All particles start from a single point defined by the source position in 
+    the user-defined direction. All particles have the exact same state in the 
+    beginning, except for the direction, which is isotropic.
+
+    Attributes:
+        energy: An b array specifying observed substeps [1_substep,2_substep,3_substep].
+                  Only observing once per step: substeps = [False, False, True].
+        pos: A list that specify the source position. 
+        nr_particles: An int that defines how many particles should be emitted.
+        particles: List of particles in the source. This list will be used in the simulation.
+    """
+
     def __init__(self, energy, pos, nr_particles):
         self.energy = energy
         self.pos = pos
