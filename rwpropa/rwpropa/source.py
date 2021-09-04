@@ -70,7 +70,7 @@ class Source(object, metaclass=SourceMeta):
 
     @abstractmethod
     def __init__(self, order):
-        """ Implementation required in all sub classes. All required_attributes have to 
+        """Implementation required in all sub classes. All required_attributes have to 
         be implemented in sub classes.
         """
         pass

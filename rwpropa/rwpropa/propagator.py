@@ -511,26 +511,32 @@ class Propagator():
 
 
 #---------------------------------------------------------------------------------
-# below are the abstract base class and all sub classes of the special propagators
-# that have to be added to the simulation. Each special propagator stores a
-# Propagator object in its instance parameter to be used in the simulation
-# This diversions is needed because numba does not support 
-# inheritance via ABC and Propagator() needs the label @jitclass as it is called 
-# during the numba optimized simulation loop of the run_simulation() function. 
-# This workaround supports both concepts with the 
-# advantages of fast code and easy addition of new propagator where the structure 
-# is now defined by the Abstract Base class and enforeced via the ABCMeta class
+"""Below are the abstract base class and all sub classes of the special propagators
+that have to be added to the simulation. Each special propagator stores a
+Propagator object in its instance parameter to be used in the simulation.This 
+diversions is needed because numba does not support inheritance via ABC and 
+Propagator() needs the label @jitclass as it is called during the numba optimized 
+simulation loop of the run_simulation() function. This workaround supports both 
+concepts with the advantages of fast code and easy addition of new propagator where 
+the structure is now defined by the Abstract Base class and enforeced via the 
+ABCMeta class.
+"""
 
 
 
 class AbstractPropagatorMeta(ABCMeta):
-    # required attributes that have to be implemented in __init__ of all
-    # sub classes
+    """Abstract meta class to check if all required attributes are implemented in the 
+    sub classes.
+    """
     required_attributes = []
 
     def __call__(self, *args, **kwargs):
-        # check if required attributes that have to be implemented in __init__ of all
-        # sub classes are really implemented. Raise an error if not
+        """ Checks if required attributes that have to be implemented in __init__ of all
+        sub classes are really implemented. 
+
+        Raises:
+            ValueError: an error if not all required attributes are implemented.
+        """
         obj = super(AbstractPropagatorMeta, self).__call__(*args, **kwargs)
         for attr_name in obj.required_attributes:
             if getattr(obj, attr_name) is None:
@@ -540,11 +546,22 @@ class AbstractPropagatorMeta(ABCMeta):
 
 
 class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
-    # abstract base class for all special observers.
-    # functions with the label @abstractmethod have to be implemented in 
-    # the special observer classes
+    """Abstract base class for all special propagator.
+    
+    Functions with the label @abstractmethod have to be implemented in the special 
+    propagator classes.
 
-    # all required_attributes have to be implemented in sub classes
+    Attributes: 
+        propagator: The special propagator.
+        dimensions: Number of dimensions.
+        speed: Speed of the particles in [m/s].
+        mfp: Mean free paths of particles in each direction in [m].
+        nr_steps: Number of steps for each particle in simulation.
+        magnetic_field: The magnetic field.
+        step_size: Size of the steps in [m].
+        isotropic_diffusion: Is the particle diffusion isotropic?
+    """
+    
     required_attributes = [
         'propagator', 
         'dimensions', 
@@ -558,8 +575,9 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
  
     @abstractmethod
     def __init__(self, order):
-        # implementation required in all sub classes.
-        # all required_attributes have to be implemented in sub classes
+        """Implementation required in all sub classes. All required_attributes have to 
+        be implemented in sub classes.
+        """
         pass
 
     def set_basic_parameters(self):
@@ -568,31 +586,46 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
 
 
     def set_pitch_angle_const(self, const_bool):
-        # keep the pitch angle either constant or allow for changes 
-        # during each propagation step.
+        """Keep the pitch angle either constant or allow for changes during each propagation step.
+        """
         self.pitch_angle_const = const_bool
         self.propagator.pitch_angle_const = const_bool
 
 
+    def set_pitch_angle_const(self, const_bool):
+        """Keep the pitch angle either constant or allow for changes 
+        during each propagation step.
+        """
+        self.pitch_angle_const = const_bool
+
+
     def set_dimensions(self, dimensions):
-        # default is 3d -> dimensions = 3
-        # more than 3 dimensions are not supported
+        """Default is 3d -> dimensions = 3. More than 3 dimensions are not supported.
+        """
         self.dimensions = dimensions
-        self.propagator.dimensions = dimensions
+        self.propagator.dimensions = dimensions        
 
 
-    def set_cartesian_coords(self, cartesian):
-        # there are cartesian or cylindrical coordinates available. 
-        # cylindrical coordinates activated lead to the usage of
-        # move_phi, move_rho and move_cartesian for the z-direction
-        self.cartesian = cartesian
-        self.propagator.cylindrical = not cartesian
+    def set_cartesian_coords(self, cartesian_bool):
+        """Choose Cartesian coords or not.
+        
+        There are cartesian or cylindrical coordinates available. 
+        cylindrical coordinates activated lead to the usage of
+        move_phi, move_rho and move_cartesian for the z-direction
+        """
+        self.cartesian = cartesian_bool
+        self.cylindrical = not cartesian_bool
+        self.propagator.cartesian = cartesian_bool
+        self.propagator.cylindrical = not cartesian_bool
 
     
     def set_cylindrical_coords(self, cylindrical):
-        # there are cartesian or cylindrical coordinates available. 
-        # cylindrical coordinates activated lead to the usage of
-        # move_phi, move_rho and move_cartesian for the z-direction
+        """Choose cylindrical coords or not.
+
+        There are cartesian or cylindrical coordinates available. 
+        Cylindrical coordinates activated lead to the usage of
+        move_phi, move_rho and move_cartesian for the z-direction
+        """
         self.cartesian = not cylindrical
         self.cylindrical = cylindrical
         self.propagator.cartesian = not cylindrical
@@ -600,31 +633,54 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
 
 
     def set_speed(self, speed):
-        # units = [m/s]
-        # change the speed of the particles.
-        # the default speed is the speed of light that is valid for
-        # relativistic particles
+        """Set particle speed.
+        
+        units = [m/s]
+        change the speed of the particles. The default speed is the speed of light 
+        that is valid for relativistic particles.
+        """
         self.speed = speed
         self.propagator.speed = speed
 
 
     def set_nr_steps(self, nr_steps):
-        # change number of steps
+        """Change number of steps.
+        """
         self.nr_steps = nr_steps
         self.propagator.nr_steps = nr_steps
 
     
     def set_step_size(self, step_size):
-        # units = [m]
-        # change distance of each step that particles travel 
+        """Change distance of each step that particles travel.
+        
+        units = [m]
+        """
         self.nr_steps = step_size
-        self.propagator.nr_steps = step_size
+        self.propagator.nr_steps = step_size        
 
     
     def set_prob_init(self, mean_free_path, speed, step_size):
-        xi = [speed / mean_free_path[0] / 2.0, speed / mean_free_path[1] / 2.0, speed / mean_free_path[2] / 2.0] # [1/s] frequency of change
+        """Calculate the propabilities to change directions.
+
+        The propabilities to change directions are based on the mean free paths
+        that depend on the diffusion coefficients.
+
+        Args:
+            mean_free_path: Mean free paths of particles in each direction in [m].
+            speed: Speed of the particles in [m/s].
+            step_size: Size of the steps in [m].
+
+        Returns:
+            probabilities: Probability to change the direction in one prop. step.
+        """
+        xi = [
+            speed / mean_free_path[0] / 2.0, 
+            speed / mean_free_path[1] / 2.0, 
+            speed / mean_free_path[2] / 2.0
+        ] # [1/s] frequency of change
         tau_step = step_size / speed
-        return np.array([xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step], dtype=np.float32)
+        propabilities = [xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step]
+        return np.array(propabilities, dtype=np.float32)
 
 
     def set_prob(self, mean_free_path):
@@ -633,13 +689,15 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
     
 
     def set_magnetic_field(self, magnetic_field):
-        # allow to set the propagator magnetic field
+        """ Allow to set the propagator magnetic field.
+        """
         self.magnetic_field = magnetic_field
         self.propagator.magnetic_field = magnetic_field
 
 
     def convert_mfp_input(self, mfp_input):
-        # check the input of the mean free paths
+        """Check the input of the mean free paths.
+        """
         if self.isotropic_diffusion == False:
             if isinstance(mfp_input, float) or isinstance(mfp_input, int) or len(mfp_input) < self.dimensions:
                 # error handeling by wrong input
@@ -658,10 +716,19 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
 
     
     def init_jitclass_propagator(self):
+        """Initialize the Propagator. 
+        
+        Sets the important parameters and calls the @abstractmethods that are implemented
+        in each special propagator class that are derived from the current abstract base class.
+        """
         self.set_basic_parameters()
         self.mfp = self.convert_mfp_input(self.mfp)
         mfp_final = self.set_prob_init(self.mfp, self.speed, self.step_size)
         propagator = Propagator(self.nr_steps, self.step_size, mfp_final, self.magnetic_field)
+        # have to store all relevant propagation parameters in the Propagator class that 
+        # has the @jitclass label from numba. This is important, as the Particle class is also 
+        # labeled with @jitclass and can thus only call @jitclass classes. The usage of numba is 
+        # for performance resaons.
         self.propagator = propagator
 
     
@@ -671,16 +738,19 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
 
 
     def get_description(self):
-        # print the information of the relevant parameters and the description of 
-        # the special propagation type that was chosen
+        """Description.
+        
+        Print the information of the relevant parameters and the description of 
+        the special propagation type that was chosen.
+        """
         self.propagator.get_description_general()
         self.get_description_propagator_type()
         self.propagator.get_description_parameters()
 
 
     def get_description_general(self):
-        # called by all special propagator classes below.
-        # introduction of the description output
+        """Called by all special propagator classes below. Introduction of the description output.
+        """
         print("""Description Propagator:
                 The propagator is responsible for the movement of the particles. 
                 It performs the change of direction and the movement in the respective direction.
@@ -691,8 +761,9 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
 
 
     def get_description_parameters(self):   
-        # called by all special propagator classes below.
-        # print out all relevant instance parameters
+        """Called by all special propagator classes below. Print out all relevant 
+        instance parameters.
+        """
         print('particle speed: ' ,self.speed, ' m/s')
         print('number steps: ', self.nr_steps)  
         print('step size: ', self.step_size, ' m')  
