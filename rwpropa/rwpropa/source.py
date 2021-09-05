@@ -218,13 +218,12 @@ class PointSourceIsotropic(Source):
 
     def inject_particles(self):
         self.particles = []
-        dir_iso = self.sample_isotropic_vecotrs(self.dimensions, self.nr_particles)
-        for i in range(self.nr_particles):
-            x = np.random.rand()
-            y = np.random.rand()
-            z = np.random.rand()
-            norm = x**2
-            direction = []
+        vecs_iso = self.sample_isotropic_vecotrs(self.dimensions, self.nr_particles)
+        for i, vec_iso in enumerate(vecs_iso):
+            vec_xy = [vec_iso[0], vec_iso[1]]
+            vec_xy_length = np.sqrt(vec_xy.dot(vec_xy))
+            phi = np.arctan(vec_iso[1] / vec_iso[0])
+            #pitch_angle = 
             particle_id = i
             p = Particle(particle_id, self.energy, self.pos[:], phi, pitch_angle, self.dimensions)
             self.particles.append(p)
