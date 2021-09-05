@@ -220,10 +220,9 @@ class PointSourceIsotropic(Source):
         self.particles = []
         vecs_iso = self.sample_isotropic_vecotrs(self.dimensions, self.nr_particles)
         for i, vec_iso in enumerate(vecs_iso):
-            vec_xy = [vec_iso[0], vec_iso[1]]
-            vec_xy_length = np.sqrt(vec_xy.dot(vec_xy))
+            vec_length = np.sqrt(vec_iso.dot(vec_iso))
             phi = np.arctan(vec_iso[1] / vec_iso[0])
-            #pitch_angle = 
+            pitch_angle = np.arccos(vec_iso[2] / vec_length)
             particle_id = i
             p = Particle(particle_id, self.energy, self.pos[:], phi, pitch_angle, self.dimensions)
             self.particles.append(p)
