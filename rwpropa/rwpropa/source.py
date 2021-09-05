@@ -206,18 +206,19 @@ class PointSourceIsotropic(Source):
         self.init_source()
 
 
-    def sample_isotropic_vecotr(nr_particles, dimensions):
-        """Samlpe correct isotropic vector.
+    def sample_isotropic_vecotrs(self, nr_particles, dimensions):
+        """Samlpe correct isotropic vectors.
 
         See discussion in https://mathworld.wolfram.com/SpherePointPicking.html.
         """
-        vec = np.random.randn(dimensions, nr_particles)
-        vec /= np.linalg.norm(vec, axis=0)
-        return vec
+        vec_iso = np.random.randn(dimensions, nr_particles)
+        vec_iso /= np.linalg.norm(vec_iso, axis=0)
+        return vec_iso
 
 
     def inject_particles(self):
         self.particles = []
+        dir_iso = self.sample_isotropic_vecotrs(self.dimensions, self.nr_particles)
         for i in range(self.nr_particles):
             x = np.random.rand()
             y = np.random.rand()
