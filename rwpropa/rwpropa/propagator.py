@@ -112,11 +112,11 @@ class Propagator():
         self.prob: Probability to change in each direction in a step.
     """
 
-    def __init__(self, nr_steps, step_size, prob, magnetic_field):
+    def __init__(self, nr_steps, step_size, prob, magnetic_field, cartesian):
         print('Propagator initialized')
         self.speed = 2.998*10**8 # speed of light
-        self.cartesian = False
-        self.cylindrical = True
+        self.cartesian = cartesian
+        self.cylindrical = not cartesian
         self.nr_steps = nr_steps
         self.step_size = step_size # [m]
         self.dimensions = 3
@@ -266,9 +266,8 @@ class Propagator():
             distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
         particle_state.distance = particle_state.distance + np.abs(distance_s)
         move_local = [0,0,0]
-        for s in range(self.dimensions):
-            if s == particle_state.substep:
-                move_local[s] = distance_s
+        s = particle_state.substep
+        move_local[s] = distance_s
         return particle_state, self.float_array(move_local)
         
         
@@ -727,7 +726,7 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         self.set_basic_parameters()
         self.mfp = self.convert_mfp_input(self.mfp)
         mfp_final = self.set_prob_init(self.mfp, self.speed, self.step_size)
-        propagator = Propagator(self.nr_steps, self.step_size, mfp_final, self.magnetic_field)
+        propagator = Propagator(self.nr_steps, self.step_size, mfp_final, self.magnetic_field, self.cartesian)
         # have to store all relevant propagation parameters in the Propagator class that 
         # has the @jitclass label from numba. This is important, as the Particle class is also 
         # labeled with @jitclass and can thus only call @jitclass classes. The usage of numba is 
@@ -805,6 +804,8 @@ class IsotropicPropagatorDefault(AbstractPropagator):
         rms = 0
         self.magnetic_field = DefaultBackgroundField(rms).magnetic_field
         self.isotropic_diffusion = True
+        self.cartesian = True
+        self.cylindrical = False
 
         self.init_jitclass_propagator() 
 
@@ -837,6 +838,8 @@ class IsotropicPropagator(AbstractPropagator):
         rms = 0
         self.magnetic_field = DefaultBackgroundField(rms).magnetic_field
         self.isotropic_diffusion = True
+        self.cartesian = True
+        self.cylindrical = False
 
         self.init_jitclass_propagator()
 
