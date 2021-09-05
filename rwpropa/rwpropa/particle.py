@@ -55,14 +55,12 @@ class Particle():
         self.ps.init_position()
         for step in range(0, propagator.nr_steps+1): 
             self.start(propagator, step)
-            self.ps.pos_prev =  np.array([self.ps.pos[0], self.ps.pos[1], self.ps.pos[2]], dtype=np.float32)
             for substep in range(self.ps.dimensions):
                 self.propagate_substep(propagator, substep)
                 observation = observer.observe(self.ps)
                 if observation is not None:
                     simulation_data.append(observation)
 
-                    
         return simulation_data
 
 

@@ -263,7 +263,7 @@ class Propagator():
         if particle_state.substep == self.background_direction:
             distance_s = self.step_size * np.cos(particle_state.pitch_angle) * particle_state.direction[particle_state.substep]
         else:
-            distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
+            distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5 * particle_state.direction[particle_state.substep]
         particle_state.distance = particle_state.distance + np.abs(distance_s)
         move_local = [0,0,0]
         s = particle_state.substep
