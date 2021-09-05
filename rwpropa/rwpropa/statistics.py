@@ -159,8 +159,8 @@ class Statistics():
             plt.errorbar(times, kappa_perp, yerr=kappa_perp_err, fmt=".", elinewidth=0.5, markersize=4, c='brown', label='$\kappa_\perp$')
         else:
             # plot without error bars
-            plt.plot(times, kappa_zz, zorder=1, label='$\kappa_\parallel$', c='dodgerblue') 
-            plt.scatter(times, kappa_zz, zorder=2, s=2, c='dodgerblue')
+            #plt.plot(times, kappa_zz, zorder=1, label='$\kappa_\parallel$', c='dodgerblue') 
+            #plt.scatter(times, kappa_zz, zorder=2, s=2, c='dodgerblue')
             plt.plot(times, kappa_perp, zorder=1, label='$\kappa_\perp$', c='brown') 
             plt.scatter(times, kappa_perp, zorder=2, s=2, c='brown')
         

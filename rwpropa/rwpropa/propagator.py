@@ -358,7 +358,10 @@ class Propagator():
         # Normalization factor for gyroradius for protons (v=c) with 1eV in magnetic 
         # field with strength 1Gaus.
         gyroradius_0 = 3.336*10**(-5) # in [m]
-        ps.gyroradius = gyroradius_0 * ps.energy / self.magnetic_field.rms # in [m]
+        if self.magnetic_field.rms == 0:
+            ps.gyroradius = gyroradius_0
+        else:
+            ps.gyroradius = gyroradius_0 * ps.energy / self.magnetic_field.rms # in [m]
         ps.gyroradius_eff = ps.gyroradius / 3**0.5 
         return ps
         
