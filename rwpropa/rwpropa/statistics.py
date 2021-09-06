@@ -184,6 +184,13 @@ class Statistics():
         plt.legend()
         plt.show()
         
-        d = {'d': times, 'kappa_perp':kappa_perp,'kappa_para':kappa_zz}
+        d = {
+            'd': times, 
+            'kappa_xx': kappa_xx, 
+            'kappa_yy': kappa_yy,
+            'kappa_zz': kappa_zz,
+            'kappa_perp': kappa_perp,
+            'kappa_para': kappa_zz
+        }
         return pd.DataFrame(d)
 
