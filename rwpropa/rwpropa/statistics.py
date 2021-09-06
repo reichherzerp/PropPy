@@ -94,7 +94,7 @@ class Statistics():
         plt.show()
 
         
-    def plot_diffusion_coefficients(self, error):
+    def plot_diffusion_coefficients(self, isotropic, error):
         """Plotting the running diffusion coefficients.
         
         The computation is described in:
@@ -104,7 +104,8 @@ class Statistics():
         doi:10.1093/mnras/staa2533.
 
         Args:
-            error: A bool to define if the error bars should be plotted
+            isotropic: A bool to define if the diffusion is isotropic.
+            error: A bool to define if the error bars should be plotted.
         """
 
         nr_particles = len(list(map(int, (set(self.df['id'])))))
@@ -155,14 +156,27 @@ class Statistics():
         plt.figure(figsize=(4,4))
         if error:
             # plot with error bars
-            plt.errorbar(times, kappa_zz, yerr=kappa_zz_err, fmt=".", elinewidth=0.5, markersize=4, c='dodgerblue', label='$\kappa_\parallel$')
-            plt.errorbar(times, kappa_perp, yerr=kappa_perp_err, fmt=".", elinewidth=0.5, markersize=4, c='brown', label='$\kappa_\perp$')
+            if isotropic:
+                plt.errorbar(times, kappa_xx, yerr=kappa_xx_err, fmt=".", elinewidth=0.5, markersize=4, c='k', label='$\kappa_{xx}$')
+                plt.errorbar(times, kappa_yy, yerr=kappa_yy_err, fmt=".", elinewidth=0.5, markersize=4, c='dodgerblue', label='$\kappa_{yy}$')
+                plt.errorbar(times, kappa_zz, yerr=kappa_zz_err, fmt=".", elinewidth=0.5, markersize=4, c='brown', label='$\kappa_{zz}$')
+            else:
+                plt.errorbar(times, kappa_zz, yerr=kappa_zz_err, fmt=".", elinewidth=0.5, markersize=4, c='dodgerblue', label='$\kappa_\parallel$')
+                plt.errorbar(times, kappa_perp, yerr=kappa_perp_err, fmt=".", elinewidth=0.5, markersize=4, c='brown', label='$\kappa_\perp$')
         else:
             # plot without error bars
-            plt.plot(times, kappa_zz, zorder=1, label='$\kappa_\parallel$', c='dodgerblue') 
-            plt.scatter(times, kappa_zz, zorder=2, s=2, c='dodgerblue')
-            plt.plot(times, kappa_perp, zorder=1, label='$\kappa_\perp$', c='brown') 
-            plt.scatter(times, kappa_perp, zorder=2, s=2, c='brown')
+            if isotropic:
+                plt.plot(times, kappa_xx, zorder=1, label='$\kappa_{xx}$', c='k') 
+                plt.scatter(times, kappa_xx, zorder=2, s=2, c='k')
+                plt.plot(times, kappa_yy, zorder=1, label='$\kappa_{yy}$', c='brown') 
+                plt.scatter(times, kappa_yy, zorder=2, s=2, c='brown')
+                plt.plot(times, kappa_zz, zorder=1, label='$\kappa_{zz}$', c='dodgerblue') 
+                plt.scatter(times, kappa_zz, zorder=2, s=2, c='dodgerblue')
+            else:
+                plt.plot(times, kappa_perp, zorder=1, label='$\kappa_\perp$', c='brown') 
+                plt.scatter(times, kappa_perp, zorder=2, s=2, c='brown')
+                plt.plot(times, kappa_zz, zorder=1, label='$\kappa_\parallel$', c='dodgerblue') 
+                plt.scatter(times, kappa_zz, zorder=2, s=2, c='dodgerblue')
         
         plt.xlabel('d [m]')
         plt.ylabel('running diffusion coefficients')
@@ -170,6 +184,13 @@ class Statistics():
         plt.legend()
         plt.show()
         
-        d = {'d': times, 'kappa_perp':kappa_perp,'kappa_para':kappa_zz}
+        d = {
+            'd': times, 
+            'kappa_xx': kappa_xx, 
+            'kappa_yy': kappa_yy,
+            'kappa_zz': kappa_zz,
+            'kappa_perp': kappa_perp,
+            'kappa_para': kappa_zz
+        }
         return pd.DataFrame(d)
 
