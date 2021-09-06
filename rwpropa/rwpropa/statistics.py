@@ -183,6 +183,11 @@ class Statistics():
         plt.loglog()
         plt.legend()
         plt.show()
+
+        n = 125
+        print('kappa_{xx}:', f"{np.mean(kappa_xx[-n:]):.3}", 'm²/s', '+-', f"{np.std(kappa_xx[-n:]):.3}", 'm²/s')
+        print('kappa_{yy}:', f"{np.mean(kappa_yy[-n:]):.3}", 'm²/s', '+-', f"{np.std(kappa_yy[-n:]):.3}", 'm²/s')
+        print('kappa_{zz}:', f"{np.mean(kappa_zz[-n:]):.3}", 'm²/s', '+-', f"{np.std(kappa_zz[-n:]):.3}", 'm²/s')
         
         d = {
             'd': times, 
