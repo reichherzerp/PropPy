@@ -572,7 +572,9 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         'nr_steps', 
         'magnetic_field', 
         'step_size', 
-        'isotropic_diffusion'
+        'isotropic_diffusion',
+        'cartesian',
+        'cylindrical'
     ]
  
     @abstractmethod
@@ -871,6 +873,8 @@ class AnisotropicPropagator(AbstractPropagator):
         self.nr_steps = nr_steps
         self.step_size = step_size
         self.isotropic_diffusion = False
+        self.cartesian = False
+        self.cylindrical = True
 
         self.init_jitclass_propagator()
 
