@@ -261,10 +261,11 @@ class Propagator():
         """
         distance_s = 0.0
         if particle_state.substep == self.background_direction:
+            particle_state.distance = particle_state.distance + self.step_size
             distance_s = self.step_size * np.cos(particle_state.pitch_angle) * particle_state.direction[particle_state.substep]
         else:
             distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5 * particle_state.direction[particle_state.substep]
-        particle_state.distance = particle_state.distance + np.abs(distance_s)
+        #particle_state.distance = particle_state.distance + np.abs(distance_s)
         move_local = [0,0,0]
         s = particle_state.substep
         move_local[s] = distance_s
@@ -287,7 +288,7 @@ class Propagator():
         """
         phi_old = particle_state.phi
         distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
-        particle_state.distance = particle_state.distance + np.abs(distance_s)
+        #particle_state.distance = particle_state.distance + np.abs(distance_s)
         delta_phi = self.compute_delta_phi(particle_state)
         particle_state.phi = phi_old + delta_phi * particle_state.direction[0]
         chi_x_1 = particle_state.gyroradius_eff * (np.cos(particle_state.phi) - np.cos(phi_old))
@@ -310,7 +311,7 @@ class Propagator():
             move_local: An array that describes the local move in the substep.
         """
         distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
-        particle_state.distance = particle_state.distance + np.abs(distance_s)
+        #particle_state.distance = particle_state.distance + np.abs(distance_s)
         delta_rho = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
         chi_x_2 = np.cos(particle_state.phi) * particle_state.direction[1] * delta_rho
         chi_y_2 = np.sin(particle_state.phi) * particle_state.direction[1] * delta_rho
