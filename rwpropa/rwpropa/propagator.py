@@ -300,7 +300,7 @@ class Propagator():
     def move_rho(self, particle_state):
         """Movement in substep along the rho-direction in cylindrical coords.
         
-        Here, the particle move in the rho direction that is specifyed by the current
+        Here, the particle move in the rho direction that is specified by the current
         direction array.
         
         Args:
@@ -819,7 +819,7 @@ class IsotropicPropagatorDefault(AbstractPropagator):
 
 
 class IsotropicPropagator(AbstractPropagator):
-    """Isotropic propagator with user-specifyed parameters.
+    """Isotropic propagator with user-specified parameters.
 
     Usage of no background magnetic field with only a turbulent one. Isotropic
     diffusion coefficients and therefore isotropic mfp. Propagating with
@@ -853,7 +853,7 @@ class IsotropicPropagator(AbstractPropagator):
 
 
 class AnisotropicPropagator(AbstractPropagator):
-    """Anisotropic propagator with user-specifyed parameters.
+    """Anisotropic propagator with user-specified parameters.
 
     Usage of a background magnetic field and a turbulent one. Anisotropic
     diffusion coefficients and therefore anisotropic mfp. Propagating with
