@@ -1,7 +1,7 @@
 """The Source initializes the particles in the beginning of the simulation.
 
 There are different sources available that can be customized by the user. 
-The source spcifyes the initial state of the particles.
+The source specifies the initial state of the particles.
 
     Typical usage example:
 
@@ -144,7 +144,7 @@ class Source(object, metaclass=SourceMeta):
 
 
 class PointSourceOriented(Source):
-    """A point source that emitts particles into a user-defined direction.
+    """A point source that emits particles into a user-defined direction.
 
     All particles start from a single point defined by the source position in 
     the user-defined direction. All particles have the exact same state in the 
