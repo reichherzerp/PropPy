@@ -94,7 +94,7 @@ class Statistics():
         plt.show()
 
         
-    def plot_diffusion_coefficients(self, isotropic, error):
+    def plot_diffusion_coefficients(self, isotropic, error, file_name):
         """Plotting the running diffusion coefficients.
         
         The computation is described in:
@@ -153,7 +153,7 @@ class Statistics():
                 kappa_yy_err.append(kappa_yy_running_err)
                 kappa_perp_err.append((kappa_xx_running_err+kappa_yy_running_err)/2)
                 kappa_zz_err.append(kappa_zz_running_err)
-        plt.figure(figsize=(4,4))
+        plt.figure(figsize=(3,2))
         if error:
             # plot with error bars
             if isotropic:
@@ -182,7 +182,15 @@ class Statistics():
         plt.ylabel('running diffusion coefficients')
         plt.loglog()
         plt.legend()
+        if file_name is not None:
+            plt.tight_layout()
+            plt.savefig(file_name)
         plt.show()
+
+        n = 125
+        print('kappa_{xx}:', f"{np.mean(kappa_xx[-n:]):.3}", 'm²/s', '+-', f"{np.std(kappa_xx[-n:]):.3}", 'm²/s')
+        print('kappa_{yy}:', f"{np.mean(kappa_yy[-n:]):.3}", 'm²/s', '+-', f"{np.std(kappa_yy[-n:]):.3}", 'm²/s')
+        print('kappa_{zz}:', f"{np.mean(kappa_zz[-n:]):.3}", 'm²/s', '+-', f"{np.std(kappa_zz[-n:]):.3}", 'm²/s')
         
         d = {
             'd': times, 

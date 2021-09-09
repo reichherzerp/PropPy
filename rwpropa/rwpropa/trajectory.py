@@ -121,7 +121,7 @@ class Trajectory():
             plt.figure(figsize=(4,4))
             plt.plot(df_steps['x'], df_steps['y'], c='grey', label='complete trajectory')
             # plot positions after substeps
-            plt.scatter(x_substep_0, y_substep_0, c='dodgerblue', marker='^', s=15, label='after substep '+str(substep_0))
+            plt.scatter(x_substep_0[:-1], y_substep_0[:-1], c='dodgerblue', marker='^', s=15, label='after substep '+str(substep_0))
             plt.scatter(x_substep_1, y_substep_1, c='peachpuff', marker='d', s=15, label='after substep '+str(substep_1))
             # plot substep lines
             # generate the individual partial sections of the substeps between the points.
@@ -134,10 +134,10 @@ class Trajectory():
                 x_1_0 = np.vstack([x_substep_1[1:],x_substep_0[:]])
                 y_1_0 = np.vstack([y_substep_1[1:],y_substep_0[:]])
             else:
-                x_0_1 = np.vstack([x_substep_0[:],x_substep_1[:]])
-                y_0_1 = np.vstack([y_substep_0[:],y_substep_1[:]])
-                x_1_0 = np.vstack([x_substep_1[:-1],x_substep_0[1:]])
-                y_1_0 = np.vstack([y_substep_1[:-1],y_substep_0[1:]])
+                x_0_1 = np.vstack([x_substep_0[1:-1],x_substep_1[:-1]])
+                y_0_1 = np.vstack([y_substep_0[1:-1],y_substep_1[:-1]])
+                x_1_0 = np.vstack([x_substep_1[:],x_substep_0[:-1]])
+                y_1_0 = np.vstack([y_substep_1[:],y_substep_0[:-1]])
             # legend for substeps
             plt.plot([x_substep_0.tolist()[0]], [y_substep_0.tolist()[0]], 'dodgerblue', ls=':', label='move '+str(substep_0)+'➔'+str(substep_1))
             plt.plot([x_substep_1.tolist()[0]], [y_substep_1.tolist()[0]], 'peachpuff', ls='--', label='move '+str(substep_1)+'➔'+str(substep_0))
