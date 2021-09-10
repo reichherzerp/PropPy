@@ -105,7 +105,7 @@ class AbstractMagneticField(object, metaclass=AbstractMagneticFieldMeta):
 class OrderedBackgroundField(AbstractMagneticField):
     """Ordered background magnetic field.
 
-    The user can specify the root-mean square value and the direction of the ordered 
+    The user can specify the root-mean-square (rms) value and the direction of the ordered 
     magnetic field. The magnetic field is static and points everywhere in the specified
     direction with the rms vlaue that is specified.
 
@@ -127,8 +127,8 @@ class OrderedBackgroundField(AbstractMagneticField):
 class DefaultBackgroundField(AbstractMagneticField):
     """Ordered default background magnetic field.
 
-    The user can only specify the root-mean square value of the ordered  magnetic field. 
-    The magnetic field is static and points everywhere along the z-axis with the rms vlaue 
+    The user can only specify the root-mean-square (rms) value of the ordered  magnetic field. 
+    The magnetic field is static and points everywhere along the z-axis with the rms value 
     that is specified.
 
     Attributes:

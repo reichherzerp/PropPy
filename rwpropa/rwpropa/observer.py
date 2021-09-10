@@ -348,8 +348,8 @@ class ObserverAllSteps(AbstractSpecialObserver):
 class TimeEvolutionObserverLog(AbstractSpecialObserver):
     """Observes particles at the user specified step numbers.
 
-    The user only gives the minum, the maximum and the total step numbers. The
-    TimeEvolutionObserverLin computes the list (logarithmically).
+    The user only gives the minimum, the maximum and the total step numbers. The
+    TimeEvolutionObserverLog computes the list (logarithmically).
 
     Attributes:
         substeps: An b array specifying observed substeps [1_substep,2_substep,3_substep].
@@ -386,7 +386,7 @@ class TimeEvolutionObserverLog(AbstractSpecialObserver):
 class TimeEvolutionObserverLin(AbstractSpecialObserver):
     """Observes particles at the user specified step numbers.
 
-    The user only gives the minum, the maximum and the total step numbers. The
+    The user only gives the minimum, the maximum and the total step numbers. The
     TimeEvolutionObserverLin computes the list (linearly).
 
     Attributes:
