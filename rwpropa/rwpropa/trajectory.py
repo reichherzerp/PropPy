@@ -1,6 +1,6 @@
 """Scripts to visualize simulated particle trajectories.
 
-The simulated particles can be visualized here by shwing their trajectories
+The simulated particles can be visualized here by showing their trajectories
 or other properties.
 
 
@@ -26,8 +26,8 @@ import matplotlib.pyplot as plt
 class Trajectory():
     """Trajectory class for visualizing particle trajectories.
 
-    After loading the simlation data, the simulated particles can be visualized 
-    here by shwing their trajectories or other properties.
+    After loading the simulation data, the simulated particles can be visualized 
+    here by showing their trajectories or other properties.
 
     Attributes:
         dimensions: An int for defining the dimensions.
