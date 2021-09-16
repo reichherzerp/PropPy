@@ -1,7 +1,7 @@
 """Individual particles will be simulated here.
 
 By calling the particles simulate function, the particle will be
-propagated completely and observed as specifyed in the observer.
+propagated completely and observed as specified in the observer.
 """
 
 from numba import jit, b1, float32, int32
@@ -25,11 +25,11 @@ class Particle():
      
     The properties of the particles are stored within the particle state object.
     By calling the particles simulate function, the particle will be
-    propagated completely and observed as specifyed in the observer.
+    propagated completely and observed as specified in the observer.
 
     Attributes:
-        observer: User specifyed observer.
-        propagator: User specifyed propagator.
+        observer: User specified observer.
+        propagator: User specified propagator.
         ps: ParticleState of the current particle.
  
     """
@@ -40,13 +40,13 @@ class Particle():
     def simulate(self, observer, propagator):
         """Core simulation function of a single particle.
         
-        The particle is propagated as specifyed in the list of steps in the propagator.
+        The particle is propagated as specified in the list of steps in the propagator.
         In each propagation step a particle may be observed, depending on the observation
         conditions.
 
         Args:
-            observer: User specifyed observer.
-            propagator: User specifyed propagator.
+            observer: User specified observer.
+            propagator: User specified propagator.
         Returns:
             simulation_data: Observed data of the particles.
         """

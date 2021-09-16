@@ -105,9 +105,9 @@ class AbstractMagneticField(object, metaclass=AbstractMagneticFieldMeta):
 class OrderedBackgroundField(AbstractMagneticField):
     """Ordered background magnetic field.
 
-    The user can specify the root-mean square value and the direction of the ordered 
-    magnetic field. The magnetic field is static and points everywhere in the specifyed
-    direction with the rms vlaue that is specifyed.
+    The user can specify the root-mean-square (rms) value and the direction of the ordered 
+    magnetic field. The magnetic field is static and points everywhere in the specified
+    direction with the rms vlaue that is specified.
 
     Attributes:
         rms: A float32 indicating the root-mean square value of the magnetic field.
@@ -117,7 +117,7 @@ class OrderedBackgroundField(AbstractMagneticField):
 
     def __init__(self, rms, direction):
         """Initializes the required parameters and creates the @jitclass magnetic field
-        with the user specifyed rms and direction."""
+        with the user specified rms and direction."""
         self.rms = rms
         self.direction = np.array(direction, dtype=np.float32)
         self.magnetic_field = MagneticField(self.rms, self.direction)
@@ -127,9 +127,9 @@ class OrderedBackgroundField(AbstractMagneticField):
 class DefaultBackgroundField(AbstractMagneticField):
     """Ordered default background magnetic field.
 
-    The user can only specify the root-mean square value of the ordered  magnetic field. 
-    The magnetic field is static and points everywhere along the z-axis with the rms vlaue 
-    that is specifyed.
+    The user can only specify the root-mean-square (rms) value of the ordered  magnetic field. 
+    The magnetic field is static and points everywhere along the z-axis with the rms value 
+    that is specified.
 
     Attributes:
         rms: A float32 indicating the root-mean square value of the magnetic field.
@@ -138,7 +138,7 @@ class DefaultBackgroundField(AbstractMagneticField):
 
     def __init__(self, rms):
         """Initializes the required parameters and creates the @jitclass magnetic field
-        with the user specifyed rms and the default direction along the z-axis."""
+        with the user specified rms and the default direction along the z-axis."""
         self.rms = rms
         self.direction = np.array([0,0,1], dtype=np.float32)
         self.magnetic_field = MagneticField(self.rms, self.direction)

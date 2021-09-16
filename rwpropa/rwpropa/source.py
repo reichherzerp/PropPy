@@ -1,7 +1,7 @@
 """The Source initializes the particles in the beginning of the simulation.
 
 There are different sources available that can be customized by the user. 
-The source spcifyes the initial state of the particles.
+The source specifies the initial state of the particles.
 
     Typical usage example:
 
@@ -144,7 +144,7 @@ class Source(object, metaclass=SourceMeta):
 
 
 class PointSourceOriented(Source):
-    """A point source that emitts particles into a user-defined direction.
+    """A point source that emits particles into a user-defined direction.
 
     All particles start from a single point defined by the source position in 
     the user-defined direction. All particles have the exact same state in the 
@@ -185,7 +185,7 @@ class PointSourceOriented(Source):
 
 
 class PointSourceIsotropicPhi(Source):
-    """A point source that emitts particles isotropically in phi.
+    """A point source that emits particles isotropically in phi.
 
     All particles start from a single point defined by the source position in 
     the user-defined direction. All particles have the exact same state in the 
@@ -195,7 +195,7 @@ class PointSourceIsotropicPhi(Source):
         energy: An b array specifying observed substeps [1_substep,2_substep,3_substep].
                   Only observing once per step: substeps = [False, False, True].
         pos: A list that specify the source position. 
-        nr_particles: An int that defines how many particles should be emitted.
+        nr_particles: An int that defines how many particles should be emited.
         particles: List of particles in the source. This list will be used in the simulation.
     """
 
@@ -225,7 +225,7 @@ class PointSourceIsotropicPhi(Source):
 
 
 class PointSourceIsotropic(Source):
-    """A point source that emitts particles isotropically.
+    """A point source that emits particles isotropically.
 
     All particles start from a single point defined by the source position in 
     the user-defined direction. All particles have the exact same state in the 
@@ -235,7 +235,7 @@ class PointSourceIsotropic(Source):
         energy: An b array specifying observed substeps [1_substep,2_substep,3_substep].
                   Only observing once per step: substeps = [False, False, True].
         pos: A list that specify the source position. 
-        nr_particles: An int that defines how many particles should be emitted.
+        nr_particles: An int that defines how many particles should be emited.
         particles: List of particles in the source. This list will be used in the simulation.
     """
 

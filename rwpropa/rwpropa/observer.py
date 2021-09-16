@@ -1,7 +1,7 @@
 """The Observer determines during the simulation when and what data to write out (observe).
 
 In each simulation step, the current particle state is evaluated by the Observer to check
-if one of the observing contions is satisfyed. The conditions to observe can be based 
+if one of the observing conditions is satisfied. The conditions to observe can be based 
 on the time (-> step) or the coordinates of the particle.
 
     Typical usage example:
@@ -121,7 +121,7 @@ class Observer():
         
         Checks if the particle crosses through a sphere with radii r in the current
         propagation step. As there may be many spheres, a loop over all user-
-        specifyed radii is needed.
+        specified radii is needed.
 
         Args:
             ps (ParticleState): Current particle state.
@@ -324,7 +324,7 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
     
 
 class ObserverAllSteps(AbstractSpecialObserver):
-    """Observes particles in all steps.
+    """Observes particles in all propagation steps.
 
     Attributes:
         substeps: An b array specifying observed substeps [1_substep,2_substep,3_substep].
@@ -346,10 +346,10 @@ class ObserverAllSteps(AbstractSpecialObserver):
 
 
 class TimeEvolutionObserverLog(AbstractSpecialObserver):
-    """Observes particles at the user specifyed step numbers.
+    """Observes particles at the user specified step numbers.
 
-    The user only gives the minum, the maximum and the total step numbers. The
-    TimeEvolutionObserverLin computes the list (logarithmically).
+    The user only gives the minimum, the maximum and the total step numbers. The
+    TimeEvolutionObserverLog computes the list (logarithmically).
 
     Attributes:
         substeps: An b array specifying observed substeps [1_substep,2_substep,3_substep].
@@ -384,9 +384,9 @@ class TimeEvolutionObserverLog(AbstractSpecialObserver):
 
 
 class TimeEvolutionObserverLin(AbstractSpecialObserver):
-    """Observes particles at the user specifyed step numbers.
+    """Observes particles at the user specified step numbers.
 
-    The user only gives the minum, the maximum and the total step numbers. The
+    The user only gives the minimum, the maximum and the total step numbers. The
     TimeEvolutionObserverLin computes the list (linearly).
 
     Attributes:
@@ -422,7 +422,7 @@ class TimeEvolutionObserverLin(AbstractSpecialObserver):
 
 
 class TimeEvolutionObserver(AbstractSpecialObserver):
-    """Observes particles at the user specifyed step numbers.
+    """Observes particles at the user specified step numbers.
 
     The user passes the list of steps to the TimeEvolutionObserver.
 

@@ -27,7 +27,7 @@ from scipy.stats import norm
 class Statistics():   
     """Statistics class for visualizing statistical properties of particle transport.
 
-    After loading the simlation data, distributions of particles and running diffusion
+    After loading the simulation data, distributions of particles and running diffusion
     coefficients can be plotted.
 
     Attributes:
@@ -179,7 +179,7 @@ class Statistics():
                 plt.scatter(times, kappa_zz, zorder=2, s=2, c='dodgerblue')
         
         plt.xlabel('d [m]')
-        plt.ylabel('running diffusion coefficients')
+        plt.ylabel('running diffusion coefficients [m^2/s]')
         plt.loglog()
         plt.legend()
         if file_name is not None:
@@ -201,4 +201,3 @@ class Statistics():
             'kappa_para': kappa_zz
         }
         return pd.DataFrame(d)
-
