@@ -229,7 +229,8 @@ The routine on how to compute diffusion coefficients is described in:
 “Turbulence-level dependence of cosmic ray parallel diffusion”, Monthly Notices of the Royal Astronomical Society, vol. 498, no. 4, pp. 5051–5064, 2020. doi:10.1093/mnras/staa2533.
 
 
-# Contribute
+# Community guidelines
+### Contribute
 
 Contributions are always welcome! Please fork the repository and open a new pull request for any new features.
 
@@ -239,6 +240,8 @@ After making changes, make sure everything works by running
 
 Please also add a new unittest for testing your new development if appropriate. 
 
+### Support
+Report issues or problems with the software or seek support by open new issues. 
 
 # Literature
 
