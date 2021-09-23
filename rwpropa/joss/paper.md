@@ -57,13 +57,13 @@ As an example, the propagation of charged particles in blobs of blazar jets is d
 
 Since CRPropa is the only code that supports both EOM and diffusive with anisotropic diffusion coefficients, this software is used for comparison simulations with the CRW approach. As a simulation setting, we consider $10^3$ protons isotropically emitted from a point source with an energy of $3\cdot 10^{15}$ eV. We consider two different magnetic field configurations in the following:
 
-* 1. only an isotropic tubular magnetic field with magnetic field strength $B = 1$ Gaus. A Kolmogorov spectrum is assumed for the turbulence since this is a good description in many astronomical environments.
-* 2. in addition to the turbulent field from 1. a directed background magnetic field in the $z$-direction is added. This provides the anisotropic diffusion.
+1. only an isotropic tubular magnetic field with magnetic field strength $B = 1$ Gaus. A Kolmogorov spectrum is assumed for the turbulence since this is a good description in many astronomical environments.
+2. in addition to the turbulent field from 1. a directed background magnetic field in the $z$-direction is added. This provides the anisotropic diffusion.
 
 \autoref{fig:comparison} shows a comparison of the simulation results for the calculated running diffusion coefficients for the three different propagation methods. 
 
 
-![Comparison between different propagation approaches for the computation of running diffusion coefficients. $10^3$ protons with $E=10^{15}$ eV simulated in magnetic field configurations described in the text.\label{fig:comparison}](figure_comparison.pdf)
+![Comparison between different propagation approaches for the computation of running diffusion coefficients. $10^3$ protons with $E=10^{15}$ eV simulated in magnetic field configurations described in the text. Detailed explanations and the code respectively the data for the reproducibility are available in tutorial \footnote{\url{https://gitlab.ruhr-uni-bochum.de/reichp2y/rwpropa/-/blob/master/rwpropa/tutorials/Tutorial_4---Tutorial_Comparison_CRPropa.ipynb}}. \label{fig:comparison}](figure_comparison.pdf)
 
 The diffusion approach employs a static diffusion coefficient which, by definition, is only valid in the limit of large times, as \autoref{fig:comparison} illustrates. This incorrect description of the diffusive approach of the initial propagation leads during modeling of the escape time of the particles from the sources to the problem that the number of cosmic rays within the blob is underestimated. Consequently, the number of secondary particles is significantly underestimated. The CRW approach has, despite its simplification and the associated performance improvement in comparison to the EOM approach, a comparable accuracy in the description of the relevant physics.
 
