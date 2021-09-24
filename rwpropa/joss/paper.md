@@ -121,6 +121,12 @@ Since CRPropa is the only code that supports both EOM and diffusive with anisotr
 The diffusion approach employs a static diffusion coefficient which, by definition, is only valid in the limit of large times, as \autoref{fig:comparison} illustrates. This incorrect description of the diffusive approach of the initial propagation leads to wrong escape times of the particles from the sources region. Consequently, the number of secondary particles is significantly underestimated. The CRW approach has, despite its simplification and the associated performance improvement in comparison to the EOM approach, a comparable accuracy in the description of the relevant physics.
 
 
+# Acknowledgements
+
+I want to thank the audience in my conference contribution on the software and users, who helped with valuable feedback. 
+A special thanks to J. Becker Tjus, L. Schlegel, and E.~G. Zweibel for valuable discussions.
+
+
 # References
 
 
