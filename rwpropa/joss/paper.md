@@ -104,21 +104,22 @@ Generalizing this approach for three dimensions, assuming local homogeneity, and
 
 # Comparison
 
-In principle, RWPropa can be applied wherever other propagation codes for charged particles such as CRPropa [@CRPropa:2016; @CRPropa:2021], DRAGON [@Dragon:2017], GALPROP [@Galprop:1998] are already in use. However, the advantages of RWPropa are especially in the improved performance and the accurate description of statistical transport properties also for the initial propagation, which is not possible for pure diffusive propagation approaches. 
+In principle, RWPropa can be applied wherever other propagation codes for charged particles such as CRPropa [@CRPropa2016; @CRPropa2021], DRAGON [@Dragon2017], GALPROP [@Galprop1998] are already in use. However, the advantages of RWPropa are especially in the improved performance and the accurate description of statistical transport properties also for the initial propagation, which is not possible for pure diffusive propagation approaches. 
 
-As an example, the propagation of charged particles in blobs of blazar jets is discussed in the following. Due to the high performance and the good statistical description, even at early times, the software is excellently suited for the calculation of escape times of charged particles from certain zones (blob in the example), which in turn are required in (semi)analytical calculations. Also, particle distributions and arrival times can be simulated efficiently. 
+For example, the propagation of charged particles in blobs of blazar jets is discussed in the following. Due to the high performance and the good statistical description, even at early times, the software is excellently suited for calculating escape times of charged particles from certain zones (blob in the example), which in turn are required in (semi)analytical calculations. Also, particle distributions and arrival times can be simulated efficiently. 
 
 Since CRPropa is the only code that supports both EOM and diffusive with anisotropic diffusion coefficients, this software is used for comparison simulations with the CRW approach. As a simulation setting, we consider $10^3$ protons isotropically emitted from a point source with an energy of $3\cdot 10^{15}$ eV. We consider two different magnetic field configurations in the following:
 
 1. only an isotropic tubular magnetic field with magnetic field strength $B = 1$ Gaus. A Kolmogorov spectrum is assumed for the turbulence since this is a good description in many astronomical environments.
-2. in addition to the turbulent field from 1. a directed background magnetic field in the $z$-direction is added. This provides the anisotropic diffusion.
+2. in addition to the turbulent field from 1. a directed background magnetic field in the $z$-direction is added. This configuration leads to anisotropic diffusion.
 
 \autoref{fig:comparison} shows a comparison of the simulation results for the calculated running diffusion coefficients for the three different propagation methods. 
 
 
-![Comparison between different propagation approaches for the computation of running diffusion coefficients. $10^3$ protons with $E=10^{15}$ eV simulated in magnetic field configurations described in the text. Detailed explanations and the code respectively the data for the reproducibility are available in tutorial 4. \label{fig:comparison}](figure_comparison.pdf)
+![Comparison between different propagation approaches for the computation of running diffusion coefficients. $10^3$ protons with $E=10^{15}$ eV simulated in magnetic field configurations described in the text. Configuration 1 without the ordered background magnetic field is used for the left panel and configuration 2 for the right panel. Detailed explanations and the code, respectively, the data for the reproducibility are available in tutorial 4 of the public repository. \label{fig:comparison}](figure_comparison.pdf)
 
 The diffusion approach employs a static diffusion coefficient which, by definition, is only valid in the limit of large times, as \autoref{fig:comparison} illustrates. This incorrect description of the diffusive approach of the initial propagation leads to wrong escape times of the particles from the sources region. Consequently, the number of secondary particles is significantly underestimated. The CRW approach has, despite its simplification and the associated performance improvement in comparison to the EOM approach, a comparable accuracy in the description of the relevant physics.
+
 
 # References
 
