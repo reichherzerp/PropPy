@@ -1,5 +1,5 @@
 ---
-title: 'Correlated random walk propagation of cosmic rays in turbulence'
+title: 'Correlated random walk propagation of cosmic rays in magnetic turbulence'
 tags:
   - Python
   - astronomy
@@ -125,7 +125,7 @@ The diffusion approach employs a static diffusion coefficient which, by definiti
 
 # Acknowledgements
 
-I want to thank the audience in my conference contribution on the software and users, who helped with valuable feedback. 
+I want to thank the audience in my [conference contribution](https://indico.cern.ch/event/1037017/contributions/4514419/) on the software and users, who helped with valuable feedback. 
 A special thanks to J. Becker Tjus, L. Schlegel, F. Schüssler, and E.G. Zweibel for valuable discussions.
 
 
