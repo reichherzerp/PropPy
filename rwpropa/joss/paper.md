@@ -10,12 +10,14 @@ tags:
 authors:
   - name: P. Reichherzer #^[first author] # note this makes a footnote saying 'first author'
     orcid: 0000-0003-4513-8241
-    affiliation: "1, 2" # (Multiple affiliations must be quoted)
+    affiliation: "1, 2, 3" # (Multiple affiliations must be quoted)
 affiliations:
- - name: Ruhr-Universität Bochum, Universitätsstraße 150, 44801 Bochum, Germany
+ - name: Ruhr-Universität Bochum, D-44801 Bochum, Germany
    index: 1
- - name: Université Paris-Saclay, F-91190 Gif-sur-Yvette, France
+ - name: Ruhr Astroparticle and Plasma Physics Center, D-44780 Bochum, Germany
    index: 2
+ - name: Université Paris-Saclay, F-91190 Gif-sur-Yvette, France
+   index: 3
 date: 20 September 2021
 bibliography: paper.bib
 
