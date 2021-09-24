@@ -243,8 +243,4 @@ Please also add a new unittest for testing your new development if appropriate.
 ### Support
 Report issues or problems with the software or seek support by open new issues. 
 
-# Literature
-
-- [Codling et al. (2008), Random walk models in biology (review)](https://royalsocietypublishing.org/doi/10.1098/rsif.2008.0014)
-- [Tautz & Lerche (2016), Application of the three-dimensional telegraph equation to cosmic-ray transport](https://arxiv.org/abs/1606.08272)
-- [Litvinenko & Schlickeiser (2013), The telegraph equation for cosmic-ray transport with weak adiabatic focusing](https://www.aanda.org/articles/aa/abs/2013/06/aa21327-13/aa21327-13.html)
+doi: 10.5281/zenodo.5525925
