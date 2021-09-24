@@ -50,6 +50,58 @@ RWPropa was established to tackle this issue and meet the need for realistic and
 
 The comparison of the three different approaches illustrates the good agreement of the CRW with the solution of the equation of motion. 
 
+
+# Theory
+
+Let us generally assume particle transport in one dimension. The following derivation is discussed in other contexts in the literature, such as when describing animal trails (see e.g., @Codling2008 for a review).
+
+During the CRW, the following two substeps are performed in each propagation step:
+\begin{enumerate}
+    \item Particles that point in direction $x$ will turn around with the probability $\xi\tau_\mathrm{s}$ and otherwise continue along that direction with the probability $1-\xi \tau_\mathrm{s}$.
+    \item The particles move the distance $\chi$ with the speed $ \chi/\tau_\mathrm{s} \equiv v$ along the direction established in the 1. substep. 
+\end{enumerate}
+If we divide the particle distribution per position at time $t$ into one distribution in positive direction $\alpha(x,t)$ and one in negative direction $\beta(x,t)$, the following sub distributions result one propagation step later
+\begin{equation}\label{eq:alpha_def}
+\alpha(x, t + \tau_\mathrm{s}) = (1-\xi \tau_\mathrm{s})\alpha(x-\chi,t) + \xi \tau_\mathrm{s} \beta(x-\chi,t), 
+\end{equation}
+\begin{equation}\label{eq:beta_def}
+\beta(x, t + \tau_\mathrm{s}) = \xi \tau_\mathrm{s}\alpha(x+\chi,t) + (1-\xi \tau_\mathrm{s}) \beta(x+\chi,t).
+\end{equation}
+As particles move either in positive or negative direction, it yields $f(x,t) = \alpha(x,t)+\beta(x,t)$. For simplicity we define $\alpha(x,t) \equiv \alpha$ and $\beta(x,t) \equiv \beta$. 
+Expanding \autoref{eq:alpha_def} and \autoref{eq:beta_def} for small steps $\tau_s, \chi \xrightarrow{} 0$ yields
+\begin{equation}\label{eq:alpha}
+\frac{\partial \alpha}{\partial t} = - v \frac{\partial \alpha}{\partial x} + \xi(\beta-\alpha),
+\end{equation}
+\begin{equation}\label{eq:beta}
+\frac{\partial \beta}{\partial t} = v \frac{\partial \beta}{\partial x} - \xi(\beta-\alpha).
+\end{equation}
+Adding component-wise \autoref{eq:alpha} and \autoref{eq:beta} yields
+\begin{equation}\label{eq:alpha_plus_beta}
+\frac{\partial (\alpha + \beta)}{\partial t} = v \frac{\partial (\beta-\alpha)}{\partial x},
+\end{equation}
+with the time derivative
+\begin{equation}\label{eq:alpha_plus_beta_deriv}
+\frac{\partial^2 (\alpha + \beta)}{\partial t^2} = v \frac{\partial^2 (\beta-\alpha)}{\partial t \, \partial x}.
+\end{equation}
+Substracting component-wise \autoref{eq:alpha} from \autoref{eq:beta} and derivating with respect to $x$ yields
+\begin{equation}\label{eq:beta_minus_alpha}
+\frac{\partial^2 (\beta - \alpha)}{\partial t\, \partial x} = v\frac{\partial^2 (\alpha+\beta)}{\partial x^2} - 2\xi \frac{\partial (\beta - \alpha)}{\partial x}.
+\end{equation}
+Inserting \autoref{eq:beta_minus_alpha} into \autoref{eq:alpha_plus_beta_deriv} results in
+\begin{equation}\label{eq:alpha_plus_beta_3}
+\frac{\partial^2 (\alpha + \beta)}{\partial t^2} = v^2 \frac{\partial^2 (\alpha+\beta)}{\partial x^2} - 2\xi v\frac{\partial (\beta - \alpha)}{\partial x}.
+\end{equation}
+Inserting \autoref{eq:alpha_plus_beta} into \autoref{eq:alpha_plus_beta_3}
+\begin{equation}\label{eq:alpha_plus_beta_rewritten}
+\frac{1}{2\xi}\frac{\partial^2 (\alpha + \beta)}{\partial t^2} = \frac{v^2}{2\xi} \frac{\partial^2 (\alpha+\beta)}{\partial x^2} - \frac{\partial (\alpha + \beta)}{\partial t},
+\end{equation}
+Finally, with $f = \alpha + \beta$, we have
+\begin{equation}\label{eq:alpha_plus_beta_rewritten}
+\frac{1}{2\xi}\frac{\partial^2 f}{\partial t^2} = \frac{v^2}{2\xi} \frac{\partial^2 f}{\partial x^2} - \frac{\partial f}{\partial t}.
+\end{equation}
+Generalizing this approach for three dimensions, assuming local homogeneity, and connecting diffusion coefficients with the CRW parameters leads to \autoref{eq:telegraph}. Therefore, the statistics of particles that follow CRW can be described with the telegraph equation and thus agrees with analytical theories of particle transport of cosmic rays [@Litvinenko2015; @Tautz2016].
+
+
 # Comparison
 
 In principle, RWPropa can be applied wherever other propagation codes for charged particles such as CRPropa [@CRPropa:2016; @CRPropa:2021], DRAGON [@Dragon:2017], GALPROP [@Galprop:1998] are already in use. However, the advantages of RWPropa are especially in the improved performance and the accurate description of statistical transport properties also for the initial propagation, which is not possible for pure diffusive propagation approaches. 
