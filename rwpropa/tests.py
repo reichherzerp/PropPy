@@ -162,3 +162,12 @@ class TestIntegration(unittest.TestCase):
 
         # check if the step_number of the last observed step is correct
         self.assertEqual(max_step, df[1].tolist()[-1])
+
+    
+    def test_diffusion_coefficient(self):
+        # Diffusion coefficients are a statistical description of the transport properties of charged particles in turbulent magnetic fields. Monte Carlo simulations of charged particles can be used to calculate diffusion coefficients. In this integration test, we determine the diffusion coefficient for a parameter configuration for which we know the diffusion coefficients. For this, we need to build our simulation as follows. After initializing the simulation, we need add the indvidual modules:
+        # - source
+        # - magnetic field
+        # - propagator
+        # - observer
+ 
