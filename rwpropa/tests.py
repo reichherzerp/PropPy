@@ -214,9 +214,11 @@ class TestIntegration(unittest.TestCase):
         errors = False # don't show error bars
         df_kappas = sta.plot_diffusion_coefficients(isotropic, errors, None)
         print('input kappa:', f"{float(diffusion_coefficient):.3}", 'm²/s')
-        n = 10
+        n = 20
         print('kappa_{xx}:', f"{np.mean(df_kappas['kappa_xx'][-n:]):.3}", 'm²/s', '+-', f"{np.std(df_kappas['kappa_xx'][-n:]):.3}", 'm²/s')
         print('kappa_{yy}:', f"{np.mean(df_kappas['kappa_yy'][-n:]):.3}", 'm²/s', '+-', f"{np.std(df_kappas['kappa_yy'][-n:]):.3}", 'm²/s')
         print('kappa_{zz}:', f"{np.mean(df_kappas['kappa_zz'][-n:]):.3}", 'm²/s', '+-', f"{np.std(df_kappas['kappa_zz'][-n:]):.3}", 'm²/s')
         print('Note that there is an additional systematic error that can lead to minor deviations between theory and simulations given the limited particle trajectory length. When increasing the trajectory length the agreement improves, but the simulations take longer.')
-        
+
+        # test if kappa_xx is in expected range
+        self.assertTrue(diffusion_coefficient*0.8 <= np.mean(df_kappas['kappa_xx'][-n:]) <= diffusion_coefficient*1.2)
