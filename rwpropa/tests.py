@@ -183,16 +183,16 @@ class TestIntegration(unittest.TestCase):
         sim.add_source(source)
 
         # adding a propagator to simulation
-        nr_steps = 10**4
+        nr_steps = 10**3
         step_size = 0.2*10**10 # [m]
         diffusion_coefficient = 5*10**18 # [m^2/s]
         speed_of_light = 3*10**8 # [m/s]
         mfp_iso = 3*diffusion_coefficient/speed_of_light
         mfp = np.array([mfp_iso, mfp_iso, mfp_iso], dtype=np.float32)  # [m]
-
-        # adding a TimeEvolutionObserver
         propagator = rw.IsotropicPropagator(mfp, nr_steps, step_size)
         sim.add_propagator(propagator)
+
+        # adding a TimeEvolutionObserver
         substeps = [False, False, True] # observe only steps (no substeps)
         min_step = 1
         max_step = nr_steps
@@ -206,3 +206,17 @@ class TestIntegration(unittest.TestCase):
 
         # check if the step_number of the last observed step is correct
         self.assertEqual(max_step, df[1].tolist()[-1])
+
+        # get diffusion coefficients by using the statistics class
+        df.columns = observer.get_column_names()
+        sta = rw.Statistics(df)
+        isotropic = True # diffusion is isotropic
+        errors = False # don't show error bars
+        df_kappas = sta.plot_diffusion_coefficients(isotropic, errors, None)
+        print('input kappa:', f"{float(diffusion_coefficient):.3}", 'm²/s')
+        n = 10
+        print('kappa_{xx}:', f"{np.mean(df_kappas['kappa_xx'][-n:]):.3}", 'm²/s', '+-', f"{np.std(df_kappas['kappa_xx'][-n:]):.3}", 'm²/s')
+        print('kappa_{yy}:', f"{np.mean(df_kappas['kappa_yy'][-n:]):.3}", 'm²/s', '+-', f"{np.std(df_kappas['kappa_yy'][-n:]):.3}", 'm²/s')
+        print('kappa_{zz}:', f"{np.mean(df_kappas['kappa_zz'][-n:]):.3}", 'm²/s', '+-', f"{np.std(df_kappas['kappa_zz'][-n:]):.3}", 'm²/s')
+        print('Note that there is an additional systematic error that can lead to minor deviations between theory and simulations given the limited particle trajectory length. When increasing the trajectory length the agreement improves, but the simulations take longer.')
+        
