@@ -222,3 +222,7 @@ class TestIntegration(unittest.TestCase):
 
         # test if kappa_xx is in expected range
         self.assertTrue(diffusion_coefficient*0.8 <= np.mean(df_kappas['kappa_xx'][-n:]) <= diffusion_coefficient*1.2)
+        # test if kappa_yy is in expected range
+        self.assertTrue(diffusion_coefficient*0.8 <= np.mean(df_kappas['kappa_yy'][-n:]) <= diffusion_coefficient*1.2)
+        # test if kappa_zz is in expected range
+        self.assertTrue(diffusion_coefficient*0.8 <= np.mean(df_kappas['kappa_zz'][-n:]) <= diffusion_coefficient*1.2)
