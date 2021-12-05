@@ -74,9 +74,9 @@ class TestObserver(unittest.TestCase):
 
 class TestIntegration(unittest.TestCase):
 
-    def test_basic_propagation(self):
+    def test_basic_propagation_isotropic_source(self):
         print('\n----------------------------------')
-        print('-> integration_test_basic_propagation')
+        print('-> integration_test_basic_propagation_isotropic_source')
 
         sim = rw.Simulation()
 
@@ -87,6 +87,52 @@ class TestIntegration(unittest.TestCase):
         source = rw.PointSourceIsotropic(energy, pos, nr_particles)
         sim.add_source(source)
         
+        # adding a propagator to simulation
+        nr_steps = 10**3
+        step_size = 0.5*10**10 # [m]
+        mfp = np.array([2.13*10**12/2.0, 2.13*10**12/2.0, 2.1078*10**12], dtype=np.float32)  # [m]
+        rms = 1 # Gaus
+        magnetic_field = rw.OrderedBackgroundField(rms, [0,0,1]).magnetic_field
+        propagator = rw.AnisotropicPropagator(magnetic_field, mfp, nr_steps, step_size)
+        sim.add_propagator(propagator)
+
+        # adding a TimeEvolutionObserver
+        substeps = [False, False, True] # observe only steps (no substeps)
+        min_step = 1
+        max_step = nr_steps
+        nr_obs_steps = 30
+        observer = rw.TimeEvolutionObserverLin(min_step, max_step, nr_obs_steps, substeps)
+        sim.add_observer(observer)
+
+        # simulate
+        sim.run_simulation()
+        df = pd.DataFrame(sim.data[1:])
+
+        # check if the number of observations is correct
+        self.assertEqual(nr_obs_steps*nr_particles, len(df[0]))
+
+        # check if the step_number of the first observed step is correct
+        self.assertEqual(min_step, df[1].tolist()[0])
+
+        # check if the step_number of the last observed step is correct
+        self.assertEqual(max_step, df[1].tolist()[-1])
+
+
+    def test_basic_propagation_oriented_source(self):
+        print('\n----------------------------------')
+        print('-> integration_test_basic_propagation_oriented_source')
+
+        sim = rw.Simulation()
+
+        # adding a particle source
+        energy = 10**10 #eV
+        pos = [0,0,0]
+        nr_particles = 10**1
+        pitch_angle = 2*np.pi * 54.74/360
+        phi = np.pi/4.0
+        source = rw.PointSourceOriented(energy, pos, nr_particles, pitch_angle, phi)
+        sim.add_source(source)
+
         # adding a propagator to simulation
         nr_steps = 10**3
         step_size = 0.5*10**10 # [m]
