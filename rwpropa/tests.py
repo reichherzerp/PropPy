@@ -164,10 +164,31 @@ class TestIntegration(unittest.TestCase):
         self.assertEqual(max_step, df[1].tolist()[-1])
 
     
-    def test_diffusion_coefficient(self):
+    def test_isotropic_diffusion_coefficient(self):
         # Diffusion coefficients are a statistical description of the transport properties of charged particles in turbulent magnetic fields. Monte Carlo simulations of charged particles can be used to calculate diffusion coefficients. In this integration test, we determine the diffusion coefficient for a parameter configuration for which we know the diffusion coefficients. For this, we need to build our simulation as follows. After initializing the simulation, we need add the indvidual modules:
         # - source
         # - magnetic field
         # - propagator
         # - observer
- 
+        print('\n----------------------------------')
+        print('-> test_isotropic_diffusion_coefficient')
+
+        sim = rw.Simulation()
+
+        # adding a particle source
+        nr_particles = 10**3
+        source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
+        energy = 10**15 # eV
+        source = rw.PointSourceIsotropicPhi(energy, source_pos, nr_particles)
+        sim.add_source(source)
+
+        # adding a propagator to simulation
+        nr_steps = 10**4
+        step_size = 0.5*10**10 # [m]
+        diffusion_coefficient = 5*10**18 # [m^2/s]
+        speed_of_light = 3*10**8 # [m/s]
+        mfp_iso = 3*diffusion_coefficient/speed_of_light
+        mfp = np.array([10**11, 10**11, 10**11], dtype=np.float32)  # [m]
+        rms = 1 # Gaus
+        propagator = rw.IsotropicPropagator(mfp, nr_steps, step_size)
+        sim.add_propagator(propagator)
