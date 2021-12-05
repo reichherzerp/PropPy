@@ -215,14 +215,25 @@ class TestIntegration(unittest.TestCase):
         df_kappas = sta.plot_diffusion_coefficients(isotropic, errors, None)
         print('input kappa:', f"{float(diffusion_coefficient):.3}", 'm²/s')
         n = 20
-        print('kappa_{xx}:', f"{np.mean(df_kappas['kappa_xx'][-n:]):.3}", 'm²/s', '+-', f"{np.std(df_kappas['kappa_xx'][-n:]):.3}", 'm²/s')
-        print('kappa_{yy}:', f"{np.mean(df_kappas['kappa_yy'][-n:]):.3}", 'm²/s', '+-', f"{np.std(df_kappas['kappa_yy'][-n:]):.3}", 'm²/s')
-        print('kappa_{zz}:', f"{np.mean(df_kappas['kappa_zz'][-n:]):.3}", 'm²/s', '+-', f"{np.std(df_kappas['kappa_zz'][-n:]):.3}", 'm²/s')
+        kappa_xx = np.mean(df_kappas['kappa_xx'][-n:])
+        kappa_yy = np.mean(df_kappas['kappa_yy'][-n:])
+        kappa_zz = np.mean(df_kappas['kappa_zz'][-n:])
+        kappa_xx_err = np.std(df_kappas['kappa_xx'][-n:])
+        kappa_yy_err = np.std(df_kappas['kappa_yy'][-n:])
+        kappa_zz_err = np.std(df_kappas['kappa_zz'][-n:])
+        print('kappa_{xx}:', f"{kappa_xx:.3}", 'm²/s', '+-', f"{kappa_xx_err:.3}", 'm²/s')
+        print('kappa_{yy}:', f"{kappa_yy:.3}", 'm²/s', '+-', f"{kappa_yy_err:.3}", 'm²/s')
+        print('kappa_{zz}:', f"{kappa_zz:.3}", 'm²/s', '+-', f"{kappa_zz_err:.3}", 'm²/s')
         print('Note that there is an additional systematic error that can lead to minor deviations between theory and simulations given the limited particle trajectory length. When increasing the trajectory length the agreement improves, but the simulations take longer.')
 
         # test if kappa_xx is in expected range
-        self.assertTrue(diffusion_coefficient*0.8 <= np.mean(df_kappas['kappa_xx'][-n:]) <= diffusion_coefficient*1.2)
+        self.assertTrue(diffusion_coefficient*0.8 <= kappa_xx <= diffusion_coefficient*1.2)
         # test if kappa_yy is in expected range
-        self.assertTrue(diffusion_coefficient*0.8 <= np.mean(df_kappas['kappa_yy'][-n:]) <= diffusion_coefficient*1.2)
+        self.assertTrue(diffusion_coefficient*0.8 <= kappa_yy <= diffusion_coefficient*1.2)
         # test if kappa_zz is in expected range
-        self.assertTrue(diffusion_coefficient*0.8 <= np.mean(df_kappas['kappa_zz'][-n:]) <= diffusion_coefficient*1.2)
+        self.assertTrue(diffusion_coefficient*0.8 <= kappa_zz <= diffusion_coefficient*1.2)
+        # test if kappa is in expected range
+        kappa = np.mean(np.array([kappa_xx, kappa_yy, kappa_zz]))
+        kappa_err = np.std(np.array([kappa_xx, kappa_yy, kappa_zz]))
+        print('kappa:', f"{kappa:.3}", 'm²/s', '+-', f"{kappa_err:.3}", 'm²/s')
+        self.assertTrue(diffusion_coefficient*0.9 <= kappa <= diffusion_coefficient*1.1)
