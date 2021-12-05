@@ -184,11 +184,25 @@ class TestIntegration(unittest.TestCase):
 
         # adding a propagator to simulation
         nr_steps = 10**4
-        step_size = 0.5*10**10 # [m]
+        step_size = 0.2*10**10 # [m]
         diffusion_coefficient = 5*10**18 # [m^2/s]
         speed_of_light = 3*10**8 # [m/s]
         mfp_iso = 3*diffusion_coefficient/speed_of_light
-        mfp = np.array([10**11, 10**11, 10**11], dtype=np.float32)  # [m]
-        rms = 1 # Gaus
+        mfp = np.array([mfp_iso, mfp_iso, mfp_iso], dtype=np.float32)  # [m]
+
+        # adding a TimeEvolutionObserver
         propagator = rw.IsotropicPropagator(mfp, nr_steps, step_size)
         sim.add_propagator(propagator)
+        substeps = [False, False, True] # observe only steps (no substeps)
+        min_step = 1
+        max_step = nr_steps
+        nr_obs_steps = 600
+        observer = rw.TimeEvolutionObserverLog(min_step, max_step, nr_obs_steps, substeps)
+        sim.add_observer(observer)
+
+        # simulate
+        sim.run_simulation()
+        df = pd.DataFrame(sim.data[1:])
+
+        # check if the step_number of the last observed step is correct
+        self.assertEqual(max_step, df[1].tolist()[-1])
