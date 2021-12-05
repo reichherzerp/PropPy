@@ -214,7 +214,7 @@ class Propagator():
         """
         if self.cartesian:
             # cartesian coordinates -> move in x, y and z directions
-            particle_state, move_local = self.move_cartesian(particle_state)
+            particle_state, move_local = self.move_cartesian_simple(particle_state)
         else:
             # cylindrical coordinates -> move in phi, rho and z directions
             if particle_state.substep == 0:
@@ -246,6 +246,26 @@ class Propagator():
         return ps
     
                  
+    def move_cartesian_simple(self, particle_state):
+        """Movement in substep in Cartesian coords.
+        
+        During the complete propagation step, the particle moves one step size further, without taking the pitch angle into account
+        
+        Args:
+            particle_state: Current particle state.
+            
+        Returns: 
+            particles_state: New particle state after propagation of substep in global frame.
+            move_local: An array that describes the local move in the substep.
+        """
+        distance_s = particle_state.direction[particle_state.substep] * self.step_size / 3**0.5
+        particle_state.distance = particle_state.distance + self.step_size / 3.0
+        move_local = [0,0,0]
+        s = particle_state.substep
+        move_local[s] = distance_s
+        return particle_state, self.float_array(move_local)
+
+    
     def move_cartesian(self, particle_state):
         """Movement in substep in Cartesian coords. or in z-axis in cylindrical coords.
         
@@ -261,11 +281,13 @@ class Propagator():
         """
         distance_s = 0.0
         if particle_state.substep == self.background_direction:
-            particle_state.distance = particle_state.distance + self.step_size
             distance_s = self.step_size * np.cos(particle_state.pitch_angle) * particle_state.direction[particle_state.substep]
         else:
             distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5 * particle_state.direction[particle_state.substep]
-        #particle_state.distance = particle_state.distance + np.abs(distance_s)
+        if self.cartesian:
+            particle_state.distance = particle_state.distance + np.abs(distance_s)
+        else:
+            particle_state.distance = particle_state.distance + self.step_size
         move_local = [0,0,0]
         s = particle_state.substep
         move_local[s] = distance_s
@@ -287,8 +309,6 @@ class Propagator():
             move_local: An array that describes the local move in the substep.
         """
         phi_old = particle_state.phi
-        distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
-        #particle_state.distance = particle_state.distance + np.abs(distance_s)
         delta_phi = self.compute_delta_phi(particle_state)
         particle_state.phi = phi_old + delta_phi * particle_state.direction[0]
         chi_x_1 = particle_state.gyroradius_eff * (np.cos(particle_state.phi) - np.cos(phi_old))
