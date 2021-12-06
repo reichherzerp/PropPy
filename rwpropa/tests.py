@@ -247,7 +247,7 @@ class TestIntegration(unittest.TestCase):
         # - propagator
         # - observer
         print('\n----------------------------------')
-        print('-> test_isotropic_diffusion_coefficient')
+        print('-> test_anisotropic_diffusion_coefficient')
 
         sim = rw.Simulation()
 
