@@ -94,7 +94,7 @@ class Statistics():
         plt.show()
 
         
-    def plot_diffusion_coefficients(self, isotropic, error, file_name):
+    def plot_diffusion_coefficients(self, isotropic, error, file_name=None):
         """Plotting the running diffusion coefficients.
         
         The computation is described in:
