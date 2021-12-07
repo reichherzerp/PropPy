@@ -407,11 +407,8 @@ class TestIntegration(unittest.TestCase):
 
 
     def test_ballistic_anisotropic_diffusion_coefficient(self):
-        # Diffusion coefficients are a statistical description of the transport properties of charged particles in turbulent magnetic fields. Monte Carlo simulations of charged particles can be used to calculate diffusion coefficients. In this integration test, we determine the anisotropic diffusion tensor for a parameter configuration for which we know the diffusion coefficients. For this, we need to build our simulation as follows. After initializing the simulation, we need add the indvidual modules:
-        # - source
-        # - magnetic field
-        # - propagator
-        # - observer
+        # See Reichherzer et al. (2021) for the difference between initial ballistic and final diffusive
+        # propagation.
         print('\n----------------------------------')
         print('-> test_ballistic_anisotropic_diffusion_coefficient')
 
