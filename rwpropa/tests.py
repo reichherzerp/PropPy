@@ -337,7 +337,7 @@ class TestIntegration(unittest.TestCase):
         sim = rw.Simulation()
 
         # adding a particle source
-        nr_particles = 3*10**2
+        nr_particles = 10**2
         source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         energy = 3*10**15 # eV
 
@@ -345,11 +345,11 @@ class TestIntegration(unittest.TestCase):
         sim.add_source(source)
 
         # adding a propagator to simulation
-        nr_steps = 1*10**5
-        step_size = 0.2*10**10 # [m]
+        nr_steps = 1*10**4
+        step_size = 0.5*10**10 # [m]
         speed_of_light = 3*10**8 # [m/s]
-        diffusion_coefficient_perp = 1.3*10**18 # [m^2/s]
-        diffusion_coefficient_para = 1.4*10**20 # [m^2/s]
+        diffusion_coefficient_perp = 1*10**17 # [m^2/s]
+        diffusion_coefficient_para = 1*10**20 # [m^2/s]
         mfp_perp = 3*diffusion_coefficient_perp/speed_of_light*2
         mfp_para = 3*diffusion_coefficient_para/speed_of_light
         mfp = np.array([mfp_perp, mfp_perp, mfp_para], dtype=np.float32)
@@ -363,7 +363,7 @@ class TestIntegration(unittest.TestCase):
         substeps = [False, False, True] # observe only steps (no substeps)
         min_step = 1
         max_step = nr_steps
-        nr_obs_steps = 600
+        nr_obs_steps = 200
 
         observer = rw.TimeEvolutionObserverLog(min_step, max_step, nr_obs_steps, substeps)
 
@@ -399,7 +399,7 @@ class TestIntegration(unittest.TestCase):
 
         # Given that we decrease the statistics, we expect some statistical fluctuation between theory and anayltics.
         # In tutorial 2, this example is shown with better statistics and good agreement.
-        uncertainty = 0.3
+        uncertainty = 0.6
         # test if kappa_xx is in expected range
         self.assertTrue(diffusion_coefficient_perp*(1.-uncertainty) <= kappa_xx <= diffusion_coefficient_perp*(1.+uncertainty))
         # test if kappa_yy is in expected range
