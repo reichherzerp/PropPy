@@ -418,7 +418,7 @@ class TestIntegration(unittest.TestCase):
         sim = rw.Simulation()
 
         # adding a particle source
-        nr_particles = 3*10**2
+        nr_particles = 1*10**2
         source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         energy = 3*10**15 # eV
 
@@ -426,8 +426,8 @@ class TestIntegration(unittest.TestCase):
         sim.add_source(source)
 
         # adding a propagator to simulation
-        nr_steps = 1*10**5
-        step_size = 0.2*10**10 # [m]
+        nr_steps = 1*10**3
+        step_size = 1*10**6 # [m]
         speed_of_light = 3*10**8 # [m/s]
         diffusion_coefficient_perp = 1.3*10**18 # [m^2/s]
         diffusion_coefficient_para = 1.4*10**20 # [m^2/s]
@@ -444,7 +444,7 @@ class TestIntegration(unittest.TestCase):
         substeps = [False, False, True] # observe only steps (no substeps)
         min_step = 1
         max_step = nr_steps
-        nr_obs_steps = 600
+        nr_obs_steps = 200
 
         observer = rw.TimeEvolutionObserverLog(min_step, max_step, nr_obs_steps, substeps)
 
@@ -464,8 +464,6 @@ class TestIntegration(unittest.TestCase):
         isotropic = True # diffusion is isotropic
         errors = False # don't show error bars
         df_kappas = sta.plot_diffusion_coefficients(isotropic, errors, None, plot=False)
-        print('input kappa_perp:', f"{float(diffusion_coefficient_perp):.3}", 'm²/s')
-        print('input kappa_para:', f"{float(diffusion_coefficient_para):.3}", 'm²/s')
         n = 20
         kappa_xx = np.mean(df_kappas['kappa_xx'][-n:])
         kappa_yy = np.mean(df_kappas['kappa_yy'][-n:])
@@ -476,19 +474,10 @@ class TestIntegration(unittest.TestCase):
         print('kappa_{xx}:', f"{kappa_xx:.3}", 'm²/s', '+-', f"{kappa_xx_err:.3}", 'm²/s')
         print('kappa_{yy}:', f"{kappa_yy:.3}", 'm²/s', '+-', f"{kappa_yy_err:.3}", 'm²/s')
         print('kappa_{zz}:', f"{kappa_zz:.3}", 'm²/s', '+-', f"{kappa_zz_err:.3}", 'm²/s')
-        print('Note that there is an additional systematic error that can lead to minor deviations between theory and simulations given the limited particle trajectory length. When increasing the trajectory length the agreement improves, but the simulations take longer.')
+        print('Note that we are in the ballistic propagation phase.')
 
-        # Given that we decrease the statistics, we expect some statistical fluctuation between theory and anayltics.
-        # In tutorial 2, this example is shown with better statistics and good agreement.
-        uncertainty = 0.3
-        # test if kappa_xx is in expected range
-        self.assertTrue(diffusion_coefficient_perp*(1.-uncertainty) <= kappa_xx <= diffusion_coefficient_perp*(1.+uncertainty))
-        # test if kappa_yy is in expected range
-        self.assertTrue(diffusion_coefficient_perp*(1.-uncertainty) <= kappa_yy <= diffusion_coefficient_perp*(1.+uncertainty))
-        # test if kappa_zz is in expected range
-        self.assertTrue(diffusion_coefficient_para*(1.-uncertainty) <= kappa_zz <= diffusion_coefficient_para*(1.+uncertainty))
-        # test if kappa is in expected range
         kappa_perp = np.mean(np.array([kappa_xx, kappa_yy]))
         kappa_perp_err = np.std(np.array([kappa_xx, kappa_yy]))
         print('kappa:', f"{kappa_perp:.3}", 'm²/s', '+-', f"{kappa_perp_err:.3}", 'm²/s')
-        self.assertTrue(diffusion_coefficient_perp*(1.-uncertainty) <= kappa_perp <= diffusion_coefficient_perp*(1.+uncertainty))
+        # both diffusion coefficients should be similar in the ballistic phase:
+        self.assertTrue(kappa_zz*0.9 <= kappa_perp <= kappa_zz*1.1)
