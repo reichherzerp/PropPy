@@ -94,7 +94,7 @@ class Statistics():
         plt.show()
 
         
-    def plot_diffusion_coefficients(self, isotropic, error, file_name=None):
+    def plot_diffusion_coefficients(self, isotropic, error, file_name=None, plot=True):
         """Plotting the running diffusion coefficients.
         
         The computation is described in:
@@ -185,7 +185,8 @@ class Statistics():
         if file_name is not None:
             plt.tight_layout()
             plt.savefig(file_name)
-        plt.show()
+        if plot:
+            plt.show()
 
         n = 125
         print('kappa_{xx}:', f"{np.mean(kappa_xx[-n:]):.3}", 'm²/s', '+-', f"{np.std(kappa_xx[-n:]):.3}", 'm²/s')

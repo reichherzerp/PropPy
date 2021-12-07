@@ -213,7 +213,7 @@ class TestIntegration(unittest.TestCase):
         sta = rw.Statistics(df)
         isotropic = True # diffusion is isotropic
         errors = False # don't show error bars
-        df_kappas = sta.plot_diffusion_coefficients(isotropic, errors, None)
+        df_kappas = sta.plot_diffusion_coefficients(isotropic, errors, None, plot=False)
         print('input kappa:', f"{float(diffusion_coefficient):.3}", 'm²/s')
         n = 20
         kappa_xx = np.mean(df_kappas['kappa_xx'][-n:])
@@ -297,7 +297,7 @@ class TestIntegration(unittest.TestCase):
         sta = rw.Statistics(df)
         isotropic = True # diffusion is isotropic
         errors = False # don't show error bars
-        df_kappas = sta.plot_diffusion_coefficients(isotropic, errors, None)
+        df_kappas = sta.plot_diffusion_coefficients(isotropic, errors, None, plot=False)
         print('input kappa_perp:', f"{float(diffusion_coefficient_perp):.3}", 'm²/s')
         print('input kappa_para:', f"{float(diffusion_coefficient_para):.3}", 'm²/s')
         n = 20
@@ -346,9 +346,9 @@ class TestIntegration(unittest.TestCase):
 
         # adding a propagator to simulation
         nr_steps = 1*10**4
-        step_size = 0.5*10**10 # [m]
+        step_size = 0.2*10**10 # [m]
         speed_of_light = 3*10**8 # [m/s]
-        diffusion_coefficient_perp = 1*10**17 # [m^2/s]
+        diffusion_coefficient_perp = 1*10**18 # [m^2/s]
         diffusion_coefficient_para = 1*10**20 # [m^2/s]
         mfp_perp = 3*diffusion_coefficient_perp/speed_of_light*2
         mfp_para = 3*diffusion_coefficient_para/speed_of_light
@@ -382,7 +382,7 @@ class TestIntegration(unittest.TestCase):
         sta = rw.Statistics(df)
         isotropic = True # diffusion is isotropic
         errors = False # don't show error bars
-        df_kappas = sta.plot_diffusion_coefficients(isotropic, errors, None)
+        df_kappas = sta.plot_diffusion_coefficients(isotropic, errors, None, plot=False)
         print('input kappa_perp:', f"{float(diffusion_coefficient_perp):.3}", 'm²/s')
         print('input kappa_para:', f"{float(diffusion_coefficient_para):.3}", 'm²/s')
         n = 20
