@@ -104,6 +104,7 @@ class Observer():
         """
 
         if ps.substep == 2 and len(self.spheres) > 1:
+            print('check in sphere!')
             data_on_sphere = self.check_on_sphere(ps)
             if data_on_sphere != None:
                 return data_on_sphere
@@ -133,13 +134,16 @@ class Observer():
         for i in range(ps.dimensions):
             radius_2 = radius_2 + ps.pos[i]**2
             radius_prev_2 = radius_prev_2 + ps.pos_prev[i]**2
+        print('pos: ', ps.pos, ', pos_prev: ', ps.pos_prev)
         radius = radius_2**0.5
-        radius_prev = radius_prev_2**0.5
+        radius_prev = ps.rad_prev#radius_prev_2**0.5
         for j in range(1, len(self.spheres)):
             r_s = self.spheres[j]
+            print('radius: ', radius, ', r_s: ', r_s, ', radius_prev:', radius_prev)
             if (radius > r_s and radius_prev < r_s) or (radius < r_s and radius_prev > r_s):
+                print('observe')
                 return self.data_row(ps, r_s)
-        
+        ps.rad_prev = radius
         return None
 
 
@@ -465,6 +469,11 @@ class SphericalObserver(AbstractSpecialObserver):
         self.spheres = [-1.0] + spheres
 
         self.init_observer(substeps, self.spheres)
+
+    def set_steps(self):
+        """No steps needed.
+        """
+        return []
 
     def get_description_observer_type(self):
         print('observer tpye: SphericalObserver')
