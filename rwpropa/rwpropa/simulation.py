@@ -81,13 +81,13 @@ class Simulation():
 
 
 class IsotropicSimulation():
-    def __init__(self, nr_particles = 10**3, energy = 10**15, nr_steps = 10**4, diffusion_coefficient = 1.*10**21, nr_obs_steps = 600):
+    def __init__(self, nr_particles = 10**3, energy = 10**15, nr_steps = 10**4, diffusion_coefficient_para = 1.*10**21, nr_obs_steps = 600):
         self.nr_particles = nr_particles
         self.source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         self.energy = energy # [eV]
         self.nr_steps = nr_steps
         self.step_size = 1*10**12 # [m]
-        self.diffusion_coefficient = diffusion_coefficient # [m^2/s]
+        self.diffusion_coefficient = diffusion_coefficient_para # [m^2/s]
         self.speed_of_light = 3*10**8 # [m/s]
         mfp_iso = 3*self.diffusion_coefficient/self.speed_of_light
         self.mfp = np.array([mfp_iso, mfp_iso, mfp_iso], dtype=np.float32)  # [m]
@@ -116,5 +116,40 @@ class IsotropicSimulation():
             self.sim.observer.get_description()
 
 
+class AnisotropicSimulation():
+    def __init__(self, nr_particles = 10**2, energy = 10**15, nr_steps = 10**4, diffusion_coefficient_para = 1.4*10**20, nr_obs_steps = 600):
+        self.nr_particles = nr_particles
+        self.source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
+        self.energy = energy # [eV]
+        self.nr_steps = nr_steps
+        self.step_size = 1.*10**9 # [m]
+        self.diffusion_coefficient = diffusion_coefficient_para # [m^2/s]
+        self.speed_of_light = 3*10**8 # [m/s]
+        mfp_iso = 3*self.diffusion_coefficient/self.speed_of_light
+        self.mfp = np.array([mfp_iso, mfp_iso, mfp_iso], dtype=np.float32)  # [m]
+        self.nr_obs_steps = nr_obs_steps
+        self.substeps = [False, False, True] # observe only steps (no substeps)
+        self.sim = None
+        rms = 1 # Gaus
+        self.magnetic_field = OrderedBackgroundField(rms, [0,0,1]).magnetic_field
 
+    def simulate(self, file_name = 'anisotropic'):
+        print('simulate with a diffusion coefficient of ', self.diffusion_coefficient, 'm²/s')
+        self.sim = Simulation()
+        source = PointSourceIsotropicPhi(self.energy, self.source_pos, self.nr_particles)
+        self.sim.add_source(source)
+        propagator = AnisotropicPropagator(self.magnetic_field, self.mfp, self.nr_steps, self.step_size)
+        self.sim.add_propagator(propagator)
+        observer = TimeEvolutionObserverLog(1, self.nr_steps, self.nr_obs_steps, self.substeps)
+        self.sim.add_observer(observer)
+        self.sim.run_simulation()
+        self.sim.save_data(file_name)
+
+    def get_simulation_info(self):
+        if self.sim == None:
+            print('run simulation first to get description of used parameters.')
+        else:
+            self.sim.source.get_description()
+            self.sim.propagator.get_description()
+            self.sim.observer.get_description()
 
