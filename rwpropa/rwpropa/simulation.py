@@ -26,7 +26,9 @@ and the propagator.
     sim.save_data('data/data_sim')
 """
 
+import numpy as np
 import pandas as pd
+from .source import *
 
 
 
@@ -73,3 +75,16 @@ class Simulation():
         df = pd.DataFrame(self.data[1:])
         df.columns = self.observer.get_column_names()
         df.to_pickle(file_name+".pkl")
+
+
+class RWPropa():
+    def __init__(self):
+        # source
+        self.nr_particles = 10**3
+        self.source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
+        self.energy = 3*10**15 # eV
+
+    def simulate(self):
+        sim = Simulation()
+        source = PointSourceIsotropicPhi(self.energy, self.source_pos, self.nr_particles)
+        sim.add_source(source)

@@ -7,4 +7,3 @@ from .simulation import *
 from .source import *
 from .statistics import *
 from .trajectory import *
-from .simulation_template import *
