@@ -522,7 +522,7 @@ class Propagator():
             print('pitch angle: constant')
         else:
             print('pitch angle: not constant')
-        print('particle speed: ' ,self.speed, ' m/s')
+        print('particle speed: ', self.speed, ' m/s')
         print('number steps: ', self.nr_steps)  
         print('step size: ', self.step_size, ' m')  
         print('step duration: ', self.step_size / self.speed, ' s') 
