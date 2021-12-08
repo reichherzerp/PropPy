@@ -96,6 +96,7 @@ class RWPropa():
 
 
     def simulate(self, file_name = 'data/test'):
+        print('simulate with a diffusion coefficient of ', self.diffusion_coefficient, 'm²/s')
         sim = Simulation()
         source = PointSourceIsotropicPhi(self.energy, self.source_pos, self.nr_particles)
         sim.add_source(source)
