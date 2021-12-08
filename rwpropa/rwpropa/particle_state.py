@@ -28,7 +28,6 @@ particle_state_spec = [
     ('pos_start', float32[:]),
     ('pos', float32[:]),
     ('dir', float32[:]),
-    ('pos_prev', float32[:]),
     ('rad_prev', float32),
     ('direction', float32[:]),
     ('step', int32),
@@ -56,7 +55,6 @@ class ParticleState():
         step: Number of current step. 
         pos_start: Initial position of the particle.
         pos: Current position of the particle.
-        pos_prev: Previous position of the particle.
         rad_prev: Previous radius of the particle for spherical observer.
         direction: Directions for the random walk (can be 1 or -1 in each direction).
         dir: Direction into which particle points.
@@ -77,7 +75,6 @@ class ParticleState():
         self.step = 0
         self.pos_start = pos[:]
         self.pos = pos[:]
-        self.pos_prev = self.pos[:]
         self.rad_prev = 0.0
         self.direction = np.array([1.0, 1.0, 1.0], dtype=np.float32)
         self.dir = np.array([np.cos(phi)*np.sin(pitch_angle), np.sin(phi)*np.sin(pitch_angle), np.cos(pitch_angle)], dtype=np.float32)
