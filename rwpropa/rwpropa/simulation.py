@@ -77,6 +77,7 @@ class Simulation():
         df = pd.DataFrame(self.data[1:])
         df.columns = self.observer.get_column_names()
         df.to_pickle(file_name+".pkl")
+        print('saved data file ' + file_name + ".pkl")
 
 
 
@@ -117,7 +118,7 @@ class IsotropicSimulation():
 
 
 class AnisotropicSimulation():
-    def __init__(self, nr_particles = 10**2, energy = 10**15, nr_steps = 10**4, diffusion_coefficient_para = 1.4*10**20, nr_obs_steps = 600):
+    def __init__(self, nr_particles = 10**2, energy = 10**15, nr_steps = 10**5, diffusion_coefficient_para = 1.4*10**20, nr_obs_steps = 600):
         self.nr_particles = nr_particles
         self.source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         self.energy = energy # [eV]
