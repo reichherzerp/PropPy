@@ -94,7 +94,7 @@ class Statistics():
         plt.show()
 
         
-    def plot_diffusion_coefficients(self, isotropic, error, file_name=None, plot=True):
+    def plot_diffusion_coefficients(self, isotropic=True, error=False, file_name=None, plot=True, n_points_plateau = 100):
         """Plotting the running diffusion coefficients.
         
         The computation is described in:
@@ -188,7 +188,8 @@ class Statistics():
         if plot:
             plt.show()
 
-        n = 125
+        n = n_points_plateau
+        print('diffusion coefficients computed between ' + str(times[n_points_plateau]) + 'm and ' + str(times[-1]) +'m with ' + str(n) + ' data points')
         print('kappa_{xx}:', f"{np.mean(kappa_xx[-n:]):.3}", 'm²/s', '+-', f"{np.std(kappa_xx[-n:]):.3}", 'm²/s')
         print('kappa_{yy}:', f"{np.mean(kappa_yy[-n:]):.3}", 'm²/s', '+-', f"{np.std(kappa_yy[-n:]):.3}", 'm²/s')
         print('kappa_{zz}:', f"{np.mean(kappa_zz[-n:]):.3}", 'm²/s', '+-', f"{np.std(kappa_zz[-n:]):.3}", 'm²/s')
