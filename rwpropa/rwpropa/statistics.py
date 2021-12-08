@@ -178,7 +178,7 @@ class Statistics():
                 plt.plot(times, kappa_zz, zorder=1, label='$\kappa_\parallel$', c='dodgerblue') 
                 plt.scatter(times, kappa_zz, zorder=2, s=2, c='dodgerblue')
         
-        plt.xlabel('d [m]')
+        plt.xlabel('trajectory length [m]')
         plt.ylabel('running diff. coeff. [m$^2$/s]')
         plt.loglog()
         plt.legend()
