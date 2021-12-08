@@ -79,30 +79,40 @@ class Simulation():
         df.to_pickle(file_name+".pkl")
 
 
-class RWPropa():
-    def __init__(self):
-        # source
-        self.nr_particles = 10**3
+
+class IsotropicSimulation():
+    def __init__(self, nr_particles = 10**3, energy = 10**15, nr_steps = 10**4, diffusion_coefficient = 1.*10**21, nr_obs_steps = 600):
+        self.nr_particles = nr_particles
         self.source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
-        self.energy = 3*10**15 # eV
-        self.nr_steps = 10**4
+        self.energy = energy # [eV]
+        self.nr_steps = nr_steps
         self.step_size = 1*10**12 # [m]
-        self.diffusion_coefficient = 1.5*10**21 # [m^2/s]
+        self.diffusion_coefficient = diffusion_coefficient # [m^2/s]
         self.speed_of_light = 3*10**8 # [m/s]
         mfp_iso = 3*self.diffusion_coefficient/self.speed_of_light
         self.mfp = np.array([mfp_iso, mfp_iso, mfp_iso], dtype=np.float32)  # [m]
-        self.nr_obs_steps = 600
+        self.nr_obs_steps = nr_obs_steps
         self.substeps = [False, False, True] # observe only steps (no substeps)
+        self.sim = None
 
-
-    def simulate(self, file_name = 'data/test'):
+    def simulate(self, file_name = 'isotropic'):
         print('simulate with a diffusion coefficient of ', self.diffusion_coefficient, 'm²/s')
-        sim = Simulation()
+        self.sim = Simulation()
         source = PointSourceIsotropicPhi(self.energy, self.source_pos, self.nr_particles)
-        sim.add_source(source)
+        self.sim.add_source(source)
         propagator = IsotropicPropagator(self.mfp, self.nr_steps, self.step_size)
-        sim.add_propagator(propagator)
+        self.sim.add_propagator(propagator)
         observer = TimeEvolutionObserverLog(1, self.nr_steps, self.nr_obs_steps, self.substeps)
-        sim.add_observer(observer)
-        sim.run_simulation()
-        sim.save_data(file_name)
+        self.sim.add_observer(observer)
+        self.sim.run_simulation()
+        self.sim.save_data(file_name)
+
+    def get_simulation_info(self):
+        if self.sim == None:
+            print('run simulation first to get description of used parameters.')
+        else:
+            self.sim.source.get_description()
+            self.sim.propagator.get_description()
+            self.sim.observer.get_description()
+
+
