@@ -29,6 +29,8 @@ and the propagator.
 import numpy as np
 import pandas as pd
 from .source import *
+from .propagator import *
+from .observer import *
 
 
 
@@ -83,8 +85,23 @@ class RWPropa():
         self.nr_particles = 10**3
         self.source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         self.energy = 3*10**15 # eV
+        self.nr_steps = 10**4
+        self.step_size = 1*10**12 # [m]
+        self.diffusion_coefficient = 1.5*10**21 # [m^2/s]
+        self.speed_of_light = 3*10**8 # [m/s]
+        mfp_iso = 3*self.diffusion_coefficient/self.speed_of_light
+        self.mfp = np.array([mfp_iso, mfp_iso, mfp_iso], dtype=np.float32)  # [m]
+        self.nr_obs_steps = 600
+        self.substeps = [False, False, True] # observe only steps (no substeps)
 
-    def simulate(self):
+
+    def simulate(self, file_name = 'data/test'):
         sim = Simulation()
         source = PointSourceIsotropicPhi(self.energy, self.source_pos, self.nr_particles)
         sim.add_source(source)
+        propagator = IsotropicPropagator(self.mfp, self.nr_steps, self.step_size)
+        sim.add_propagator(propagator)
+        observer = TimeEvolutionObserverLog(1, self.nr_steps, self.nr_obs_steps, self.substeps)
+        sim.add_observer(observer)
+        sim.run_simulation()
+        sim.save_data(file_name)
