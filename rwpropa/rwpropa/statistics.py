@@ -179,7 +179,7 @@ class Statistics():
                 plt.scatter(times, kappa_zz, zorder=2, s=2, c='dodgerblue')
         
         plt.xlabel('d [m]')
-        plt.ylabel('running diffusion coefficients [m^2/s]')
+        plt.ylabel('running diff. coeff. [m$^2$/s]')
         plt.loglog()
         plt.legend()
         if file_name is not None:
