@@ -59,10 +59,11 @@ class Observer():
  
     """
 
-    def __init__(self, steps, substeps, spheres):
+    def __init__(self, steps, substeps, spheres, on_detection_deactivate=False):
         self.substeps = substeps
         self.spheres = spheres
         self.all_steps = False
+        self.on_detection_deactivate = on_detection_deactivate
         if -1 in steps:
             # the -1 is the key to say that all steps should be observed
             self.all_steps = True
@@ -267,7 +268,7 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
         """
         pass
 
-    def init_observer(self, substeps, spheres):
+    def init_observer(self, substeps, spheres, on_detection_deactivate=False):
         """Initialize the Observer 
         
         Sets the important parameters and calls the @abstractmethods that are implemented
@@ -282,11 +283,12 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
         self.substeps_bool = np.array(substeps)
         self.steps = self.set_steps_int() 
         self.spheres = np.array(spheres, dtype=np.float32)
+        self.on_detection_deactivate = on_detection_deactivate
         # have to store all relevant observation parameters in the Observer class that 
         # has the @jitclass label from numba. This is important, as the Particle class is also 
         # labeled with @jitclass and can thus only call @jitclass classes. The usage of numba is 
         # for performance resaons.
-        self.observer = Observer(self.steps, self.substeps_bool, self.spheres)
+        self.observer = Observer(self.steps, self.substeps_bool, self.spheres, self.on_detection_deactivate)
 
     @abstractmethod
     def set_steps(self):
@@ -458,7 +460,7 @@ class SphericalObserver(AbstractSpecialObserver):
         spheres: A float array for specifying the radii of the observer spheres.
     """
 
-    def __init__(self, substeps, spheres):
+    def __init__(self, substeps, spheres, on_detection_deactivate=False):
         self.steps_input = []
         self.spheres = [-1.0] + spheres
 
