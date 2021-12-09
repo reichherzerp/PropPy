@@ -70,6 +70,44 @@ class TestObserver(unittest.TestCase):
         self.assertEqual(min_step, sim.observer.steps[0])
         self.assertEqual(max_step, sim.observer.steps[-1])
 
+    def test_spherical_observer_unit(self):
+        print('\n----------------------------------')
+        print('-> unit_test_spherical_observer')
+        sim = rw.Simulation()
+        nr_particles = 1
+        source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
+        energy = 10**12 # eV
+        source = rw.PointSourceIsotropicPhi(energy, source_pos, nr_particles)
+        sim.add_source(source)
+
+        nr_steps = 1*10**5
+        step_size = 1.0*10**9 # [m]
+        diffusion_coefficient = 1.5*10**20 # [m^2/s]
+        speed_of_light = 3*10**8 # [m/s]
+        mfp_iso = 3*diffusion_coefficient/speed_of_light
+        mfp = np.array([mfp_iso, mfp_iso, mfp_iso], dtype=np.float32)  # [m]
+        propagator = rw.IsotropicPropagator(mfp, nr_steps, step_size)
+        sim.add_propagator(propagator)
+
+        substeps = [False, False, True] # observe only steps (no substeps)
+        sphere = 10**10 # [m]
+        spheres = [sphere]
+        observer = rw.SphericalObserver(substeps, spheres, on_detection_deactivate=True)
+        sim.add_observer(observer)
+
+        sim.run_simulation()
+        df = pd.DataFrame(sim.data[1:])
+
+        # check if the number of observations is correct -> only observe all particles once
+        self.assertEqual(nr_particles, len(df[0]))
+
+        # check if the trajcetory lenth of the observed paarticle is at least the sphere radius
+        trajectory_length = df[2].tolist()[0]
+        self.assertTrue(sphere <= trajectory_length) 
+        # check if the trajcetory lenth of the observed paarticle is not much larger than the sphere radius
+        # because we assume ballistic propagation phase until its observation given the large diffusion coefficient
+        self.assertTrue(trajectory_length <= 2*sphere) 
+        
 
 
 class TestIntegration(unittest.TestCase):
