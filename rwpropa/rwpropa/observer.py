@@ -137,7 +137,7 @@ class Observer():
         radius_prev = ps.rad_prev
         for j in range(1, len(self.spheres)):
             r_s = self.spheres[j]
-            if (radius > r_s and radius_prev < r_s) or (radius < r_s and radius_prev > r_s):
+            if (radius >= r_s and radius_prev <= r_s) or (radius <= r_s and radius_prev >= r_s):
                 if self.on_detection_deactivate:
                     ps.active = False
                 return self.data_row(ps, r_s)
