@@ -54,6 +54,8 @@ class Particle():
 
         self.ps.init_position()
         for step in range(0, propagator.nr_steps+1): 
+            if self.ps.active == False:
+                break
             self.start(propagator, step)
             for substep in range(self.ps.dimensions):
                 self.propagate_substep(propagator, substep)
