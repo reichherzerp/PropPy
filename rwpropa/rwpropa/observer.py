@@ -33,6 +33,7 @@ observer_spec = [
     ('pos', float32[:]),
     ('spheres', float32[:]),
     ('ps', ParticleState.class_type.instance_type),
+    ('on_detection_deactivate', b1),
 ]
 
 @jitclass(observer_spec)
@@ -56,7 +57,7 @@ class Observer():
         pos: A float32 array for the position of the current particle.
         spheres: A float32 array for specifying the radii of the observer spheres.
         ps: ParticleState of the current particle.
- 
+        on_detection_deactivate: A bool to check if particle should be deactivated after observing it.
     """
 
     def __init__(self, steps, substeps, spheres, on_detection_deactivate=False):
@@ -255,12 +256,14 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
         spheres: A float32 array for specifying the radii of the observer spheres.
         column: A float32 array for specifying the column names of the data output.
         observer: The special observer.
+        on_detection_deactivate: A bool to check if particle should be deactivated after observing it.
     """
     
     required_attributes = [
         'steps', 
         'substeps_bool',
-        'spheres'
+        'spheres',
+        'on_detection_deactivate'
     ]
  
     @abstractmethod
