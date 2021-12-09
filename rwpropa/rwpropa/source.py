@@ -286,10 +286,11 @@ class SphereSourceIsotropic(Source):
         particles: List of particles in the source. This list will be used in the simulation.
     """
 
-    def __init__(self, energy, pos, nr_particles):
+    def __init__(self, energy, pos, nr_particles, radius):
         self.energy = energy
         self.pos = pos
         self.nr_particles = nr_particles
+        self.radius = radius
         self.init_source()
 
 
@@ -301,16 +302,19 @@ class SphereSourceIsotropic(Source):
         phi = np.random.random()*2*np.pi
         cos_pitch_angle = np.random.random()*2-1
         pitch_angle = np.arccos(cos_pitch_angle)
-        return phi, pitch_angle
+        rho = np.random.random()
+        return phi, pitch_angle, rho
 
 
     def inject_particles(self):
         self.particles = []
         for i in range(self.nr_particles):
-            phi, pitch_angle = self.sample_isotropic_vecotrs()
+            phi, pitch_angle, rho = self.sample_isotropic_vecotrs()
             particle_id = i
-            pos = self.pos[:]
+            r = rho**(1/3.0)
+            pos = np.array([r*self.radius*np.cos(phi)*np.sin(pitch_angle), r*self.radius*np.sin(phi)*np.sin(pitch_angle), r*self.radius*np.cos(pitch_angle)], dtype=np.float32)
             p = Particle(particle_id, self.energy, pos, phi, pitch_angle, self.dimensions)
+            #p.set_random_direction(self, np.array([-1.0, 1.0, 1.0], dtype=np.float32))
             self.particles.append(p)
 
 

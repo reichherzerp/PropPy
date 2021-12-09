@@ -13,6 +13,7 @@ from numba.experimental import jitclass
 
 particle_state_spec = [
     ('active', b1),
+    ('random', b1),
     ('step_distance', float32),
     ('chi_isotropic', float32),
     ('speed', float32),
@@ -79,11 +80,26 @@ class ParticleState():
         self.pos_start = pos[:]
         self.pos = pos[:]
         self.rad_prev = 0.0
-        self.direction = np.array([1.0, 1.0, 1.0], dtype=np.float32)
+        if phi<np.pi/2 or phi>np.pi/2+np.pi:
+            x = 1.0
+        else:
+            x = -1.0
+        if phi>np.pi:
+            y = 1.0
+        else:
+            y = -1.0
+        if pitch_angle > np.pi/2.0:
+            z = 1.0
+        else:
+            z = -1.0
+        self.direction = np.array([x, y, z], dtype=np.float32)
         self.dir = np.array([np.cos(phi)*np.sin(pitch_angle), np.sin(phi)*np.sin(pitch_angle), np.cos(pitch_angle)], dtype=np.float32)
         self.phi = phi
         self.pitch_angle = pitch_angle
 
+    def set_random_direction(self, direction):
+        self.direction = direction
+        
 
     def init_position(self):
         self.pos = np.array([self.pos_start[0], self.pos_start[1], self.pos_start[2]], dtype=np.float32)
