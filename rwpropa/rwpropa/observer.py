@@ -469,7 +469,7 @@ class SphericalObserver(AbstractSpecialObserver):
         self.steps_input = []
         self.spheres = [-1.0] + spheres
 
-        self.init_observer(substeps, self.spheres)
+        self.init_observer(substeps, self.spheres, on_detection_deactivate)
 
     def set_steps(self):
         """No steps needed.
