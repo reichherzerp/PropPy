@@ -12,6 +12,7 @@ from numba.experimental import jitclass
 
 
 particle_state_spec = [
+    ('active', b1),
     ('step_distance', float32),
     ('chi_isotropic', float32),
     ('speed', float32),
@@ -43,6 +44,7 @@ class ParticleState():
     the particle state can be written out.
 
     Attributes:
+        active: If the particle takes part in the simulation.
         speed: Speed of the particle in [m^2/s].
         energy: Energy of the particle in [eV].
         gyroradius: Gyroradius of the particle in [m].
@@ -63,6 +65,7 @@ class ParticleState():
     """
 
     def __init__(self, particle_id, energy, pos, phi, pitch_angle, dimensions):
+        self.active = True
         self.speed = 3*10**8 # [m^2/s]
         self.energy = energy
         self.gyroradius = 0.0
