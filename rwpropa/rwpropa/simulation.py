@@ -28,6 +28,7 @@ and the propagator.
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from .source import *
 from .propagator import *
 from .observer import *
@@ -154,7 +155,7 @@ class IsotropicSphereSimulation():
 
 
 class PlasmoidSimulation():
-    def __init__(self, nr_particles = 10**3, radius = 10**14, energy = 10**15, nr_steps = 3*10**3, diffusion_coefficient = 1.*10**21,  step_size = 1*10**12):
+    def __init__(self, nr_particles = 10**4, radius = 10**14, energy = 10**15, nr_steps = 3*10**3, diffusion_coefficient = 1.*10**21,  step_size = 1*10**12):
         self.nr_particles = nr_particles
         self.source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         self.radius = radius
@@ -169,6 +170,7 @@ class PlasmoidSimulation():
         self.sim = None
 
     def simulate(self, file_name = 'plasmoid'):
+        self.file_name = file_name
         print('simulate with a diffusion coefficient of ', self.diffusion_coefficient, 'm²/s')
         self.sim = Simulation()
         source = SphereSourceIsotropic(self.energy, self.source_pos, self.nr_particles, self.radius)
@@ -179,6 +181,40 @@ class PlasmoidSimulation():
         self.sim.add_observer(observer)
         self.sim.run_simulation()
         self.sim.save_data(file_name)
+
+
+    def analize(self):
+        df = pd.read_pickle(self.file_name+'.pkl')
+
+        plt.figure(figsize=(5,3))
+        bins = 20
+        trajectory_lengths = df['d']
+        d = trajectory_lengths/10**14
+        hist, bins = np.histogram(d, bins=bins)
+        logbins = np.logspace(np.log10(min(d)),np.log10(max(d)),len(bins))
+        plt.hist(d, bins=logbins, alpha=0.5, label='$\kappa =$ {:.1e}m$^2$/s'.format(self.diffusion_coefficient))
+        plt.axvline(x=1, color='k', ls='--', label='plasmoid radius')
+        plt.title('total # particles = {:.0e}'.format(self.nr_particles))
+        plt.xlabel('D/{:.0e}m'.format(self.radius))
+        plt.ylabel('# particles')
+        plt.loglog()
+        plt.legend()
+        plt.show()
+        
+        plt.figure(figsize=(5,3))
+        bins = 50
+        trajectory_lengths = df['d']
+        d = trajectory_lengths/10**14
+        hist, bins = np.histogram(d, bins=bins)
+        linbins = np.linspace((min(d)),(max(d)),len(bins))
+        plt.hist(d, bins=linbins, alpha=0.5, label='$\kappa =$ {:.1e}m$^2$/s'.format(self.diffusion_coefficient))
+        plt.axvline(x=1, color='k', ls='--', label='plasmoid radius')
+        plt.title('total # particles = {:.0e}'.format(self.nr_particles))
+        plt.xlabel('D/{:.0e}m'.format(self.radius))
+        plt.ylabel('# particles')
+        plt.legend()
+        plt.show()
+
 
     def get_simulation_info(self):
         if self.sim == None:
