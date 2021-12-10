@@ -82,12 +82,12 @@ class Simulation():
 
 
 class IsotropicSimulation():
-    def __init__(self, nr_particles = 10**3, energy = 10**15, nr_steps = 10**4, diffusion_coefficient_para = 1.*10**21, nr_obs_steps = 600):
+    def __init__(self, nr_particles = 10**3, energy = 10**15, nr_steps = 10**4, diffusion_coefficient_para = 1.*10**21, nr_obs_steps = 600, step_size = 1*10**12):
         self.nr_particles = nr_particles
         self.source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         self.energy = energy # [eV]
         self.nr_steps = nr_steps
-        self.step_size = 1*10**12 # [m]
+        self.step_size = step_size # [m]
         self.diffusion_coefficient = diffusion_coefficient_para # [m^2/s]
         self.speed_of_light = 3*10**8 # [m/s]
         mfp_iso = 3*self.diffusion_coefficient/self.speed_of_light
