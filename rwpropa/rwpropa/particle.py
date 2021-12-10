@@ -53,7 +53,8 @@ class Particle():
         simulation_data = []
 
         self.ps.init_position()
-        for step in range(0, propagator.nr_steps+1): 
+        observation = observer.observe(self.ps)
+        for step in range(1, propagator.nr_steps+1): 
             if self.ps.active == False:
                 break
             self.start(propagator, step)
