@@ -17,5 +17,4 @@ def simulate(file_name):
 
 
 if __name__ == '__main__':
-    file_name = str(sys.argv[1])
-    simulate(file_name)
+    print('server merge script with parameters: ', sys.argv[1], sys.argv[2])
