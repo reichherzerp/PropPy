@@ -94,8 +94,8 @@ class Statistics():
         plt.show()
 
 
-    def plot_arrival_times(self, radius, nr_particles, diffusion_coefficient):
-        df = pd.read_pickle(self.file_name+'.pkl')
+    def plot_arrival_times(self, radius, nr_particles, diffusion_coefficient, file_name):
+        df = pd.read_pickle(file_name+'.pkl')
 
         plt.figure(figsize=(5,3))
         bins = 20

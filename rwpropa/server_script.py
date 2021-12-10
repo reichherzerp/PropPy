@@ -16,6 +16,5 @@ def simulate(file_name):
     print("Elapsed (after compilation) = %s" % (end - start))
 
 
-
 if __name__ == '__main__':
     simulate('data_'+str(sys.argv[1]))

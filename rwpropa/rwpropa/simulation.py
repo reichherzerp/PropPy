@@ -156,7 +156,7 @@ class IsotropicSphereSimulation():
 
 
 class PlasmoidSimulation():
-    def __init__(self, nr_particles = 10**4, radius = 10**14, energy = 10**15, nr_steps = 3*10**3, diffusion_coefficient = 1.*10**21,  step_size = 1*10**12):
+    def __init__(self, nr_particles = 10**4, radius = 10**14, energy = 10**15, nr_steps = 3*10**3, diffusion_coefficient = 1.*10**21, step_size = 1*10**12):
         self.nr_particles = nr_particles
         self.source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         self.radius = radius
@@ -186,7 +186,7 @@ class PlasmoidSimulation():
     def plot_arrival_times(self):
         df = pd.read_pickle(self.file_name+'.pkl')
         sta = Statistics(df)
-        sta.plot_arrival_times(self.radius, self.nr_particles, self.diffusion_coefficient)
+        sta.plot_arrival_times(self.radius, self.nr_particles, self.diffusion_coefficient, self.file_name)
 
     def get_simulation_info(self):
         if self.sim == None:
