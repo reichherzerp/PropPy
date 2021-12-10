@@ -32,6 +32,7 @@ import matplotlib.pyplot as plt
 from .source import *
 from .propagator import *
 from .observer import *
+from .statistics import *
 
 
 
@@ -182,39 +183,10 @@ class PlasmoidSimulation():
         self.sim.run_simulation()
         self.sim.save_data(file_name)
 
-
-    def analize(self):
+    def plot_arrival_times(self):
         df = pd.read_pickle(self.file_name+'.pkl')
-
-        plt.figure(figsize=(5,3))
-        bins = 20
-        trajectory_lengths = df['d']
-        d = trajectory_lengths/10**14
-        hist, bins = np.histogram(d, bins=bins)
-        logbins = np.logspace(np.log10(min(d)),np.log10(max(d)),len(bins))
-        plt.hist(d, bins=logbins, alpha=0.5, label='$\kappa =$ {:.1e}m$^2$/s'.format(self.diffusion_coefficient))
-        plt.axvline(x=1, color='k', ls='--', label='plasmoid radius')
-        plt.title('total # particles = {:.0e}'.format(self.nr_particles))
-        plt.xlabel('D/{:.0e}m'.format(self.radius))
-        plt.ylabel('# particles')
-        plt.loglog()
-        plt.legend()
-        plt.show()
-        
-        plt.figure(figsize=(5,3))
-        bins = 50
-        trajectory_lengths = df['d']
-        d = trajectory_lengths/10**14
-        hist, bins = np.histogram(d, bins=bins)
-        linbins = np.linspace((min(d)),(max(d)),len(bins))
-        plt.hist(d, bins=linbins, alpha=0.5, label='$\kappa =$ {:.1e}m$^2$/s'.format(self.diffusion_coefficient))
-        plt.axvline(x=1, color='k', ls='--', label='plasmoid radius')
-        plt.title('total # particles = {:.0e}'.format(self.nr_particles))
-        plt.xlabel('D/{:.0e}m'.format(self.radius))
-        plt.ylabel('# particles')
-        plt.legend()
-        plt.show()
-
+        sta = Statistics(df)
+        sta.plot_arrival_times(self.radius, self.nr_particles, self.diffusion_coefficient)
 
     def get_simulation_info(self):
         if self.sim == None:

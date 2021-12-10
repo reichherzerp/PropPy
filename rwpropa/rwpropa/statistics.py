@@ -93,6 +93,39 @@ class Statistics():
             plt.savefig(file_name)
         plt.show()
 
+
+    def plot_arrival_times(self, radius, nr_particles, diffusion_coefficient):
+        df = pd.read_pickle(self.file_name+'.pkl')
+
+        plt.figure(figsize=(5,3))
+        bins = 20
+        trajectory_lengths = df['d']
+        d = trajectory_lengths/10**14
+        hist, bins = np.histogram(d, bins=bins)
+        logbins = np.logspace(np.log10(min(d)),np.log10(max(d)),len(bins))
+        plt.hist(d, bins=logbins, alpha=0.5, label='$\kappa =$ {:.1e}m$^2$/s'.format(diffusion_coefficient))
+        plt.axvline(x=1, color='k', ls='--', label='plasmoid radius')
+        plt.title('total # particles = {:.0e}'.format(nr_particles))
+        plt.xlabel('D/{:.0e}m'.format(radius))
+        plt.ylabel('# particles')
+        plt.loglog()
+        plt.legend()
+        plt.show()
+        
+        plt.figure(figsize=(5,3))
+        bins = 50
+        trajectory_lengths = df['d']
+        d = trajectory_lengths/10**14
+        hist, bins = np.histogram(d, bins=bins)
+        linbins = np.linspace((min(d)),(max(d)),len(bins))
+        plt.hist(d, bins=linbins, alpha=0.5, label='$\kappa =$ {:.1e}m$^2$/s'.format(diffusion_coefficient))
+        plt.axvline(x=1, color='k', ls='--', label='plasmoid radius')
+        plt.title('total # particles = {:.0e}'.format(nr_particles))
+        plt.xlabel('D/{:.0e}m'.format(radius))
+        plt.ylabel('# particles')
+        plt.legend()
+        plt.show()
+
         
     def plot_diffusion_coefficients(self, isotropic=True, error=False, file_name=None, plot=True, n_points_plateau = 100):
         """Plotting the running diffusion coefficients.
