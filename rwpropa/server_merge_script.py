@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import sys
+import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
     file_name = sys.argv[1]
@@ -10,4 +11,9 @@ if __name__ == '__main__':
     for i in range(1, nr_simulations):
         df = pd.read_pickle(file_name+str(i)+'.pkl')
         t = np.append(df['d'].values.tolist(), t)
-    np.save('merged', t)
+    np.save(file_name+'_merged', t)
+    print('saved merged file')
+
+    plt.hist(t)
+    plt.savefig(file_name+'_hist.png')
+    print('created histogram plot')
