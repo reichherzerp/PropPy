@@ -3,9 +3,8 @@ import pandas as pd
 import sys
 import matplotlib.pyplot as plt
 
-if __name__ == '__main__':
-    file_name = sys.argv[1]
-    nr_simulations = int(sys.argv[2])
+
+def merge_sub_simulation_files(file_name, nr_simulations):
     t = np.array([])
     print('server merge script with parameters: ', file_name, nr_simulations)
     for i in range(1, nr_simulations):
@@ -13,7 +12,10 @@ if __name__ == '__main__':
         t = np.append(df['d'].values.tolist(), t)
     np.save(file_name+'_merged', t)
     print('saved merged file')
+    return t
 
+
+def plot_hists(file_name, t):
     # plot lin-lin-hist
     plt.figure(figsize=(5,3))
     bins = 30
@@ -39,4 +41,11 @@ if __name__ == '__main__':
     plt.savefig(file_name+'_hist_log.pdf')
 
     print('created histogram plots')
+
+
+if __name__ == '__main__':
+    file_name = sys.argv[1]
+    nr_simulations = int(sys.argv[2])
+    t = merge_sub_simulation_files(file_name, nr_simulations)
+    plot_hists(file_name, t)
     

@@ -34,7 +34,11 @@ def simulate(file_name, i, total_number_simulations):
 
 
 if __name__ == '__main__':
+    # get parameters from batch script (job.sh)
     file_name = str(sys.argv[1])
+    # current sub simulation id
     i = str(sys.argv[2])
+    # number of sub simulations
     total_number_simulations = str(sys.argv[3])
+    # run sub simulation 
     simulate(file_name, i, total_number_simulations)
