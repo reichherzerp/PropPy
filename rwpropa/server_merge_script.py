@@ -14,6 +14,29 @@ if __name__ == '__main__':
     np.save(file_name+'_merged', t)
     print('saved merged file')
 
-    plt.hist(t)
-    plt.savefig(file_name+'_hist.png')
-    print('created histogram plot')
+    # plot lin-lin-hist
+    plt.figure(figsize=(5,3))
+    bins = 30
+    plt.hist(t, bins=bins, alpha=0.5)
+    plt.title('total observed particles = {:.0e}'.format(len(t)))
+    plt.xlabel('D [m]')
+    plt.ylabel('# particles')
+    plt.tight_layout()
+    plt.savefig(file_name+'_hist_lin.png')
+
+    # plot log-log-hist
+    plt.figure(figsize=(5,3))
+    d = t
+    hist, bins = np.histogram(d, bins=bins)
+    logbins = np.logspace(np.log10(min(d)),np.log10(max(d)),len(bins))
+    plt.hist(d, bins=logbins, alpha=0.5)
+    plt.title('total observed particles = {:.0e}'.format(len(t)))
+    plt.xlabel('D [m]')
+    plt.ylabel('# particles')
+    plt.loglog()
+    plt.tight_layout()
+    plt.savefig(file_name+'_hist_log.png')
+    plt.savefig(file_name+'_hist_log.pdf')
+
+    print('created histogram plots')
+    

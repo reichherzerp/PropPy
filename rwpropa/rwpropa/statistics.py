@@ -96,10 +96,10 @@ class Statistics():
 
     def plot_arrival_times(self, radius, nr_particles, diffusion_coefficient, file_name):
         df = pd.read_pickle(file_name+'.pkl')
-
+        trajectory_lengths = df['d']
         plt.figure(figsize=(5,3))
         bins = 20
-        trajectory_lengths = df['d']
+        
         d = trajectory_lengths/10**14
         hist, bins = np.histogram(d, bins=bins)
         logbins = np.logspace(np.log10(min(d)),np.log10(max(d)),len(bins))
@@ -114,7 +114,6 @@ class Statistics():
         
         plt.figure(figsize=(5,3))
         bins = 50
-        trajectory_lengths = df['d']
         d = trajectory_lengths/10**14
         hist, bins = np.histogram(d, bins=bins)
         linbins = np.linspace((min(d)),(max(d)),len(bins))
