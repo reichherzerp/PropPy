@@ -1,6 +1,6 @@
 #!/bin/sh
 file_name="test_new_"
-nr=10
+nr=243
 for i in `seq 1 $nr`; 
 do python3 server_script.py "$file_name${i}"& 
 done

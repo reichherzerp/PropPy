@@ -28,7 +28,6 @@ and the propagator.
 
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from .source import *
 from .propagator import *
 from .observer import *

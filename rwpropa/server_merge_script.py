@@ -5,16 +5,17 @@ import os
 os.chdir('..')
 import rwpropa as rw
 import sys
+import matplotlib.pyplot as plt
 
 
-def simulate(file_name):
-    sim = rw.PlasmoidSimulation()
-    start = time.time()
-    sim.simulate(file_name)
-    print('finished: ', file_name)
-    end = time.time()
-    print("Elapsed (after compilation) = %s" % (end - start))
 
 
 if __name__ == '__main__':
-    print('server merge script with parameters: ', sys.argv[1], sys.argv[2])
+    file_name = sys.argv[1]
+    nr = int(sys.argv[2])
+    t = np.array([])
+    print('server merge script with parameters: ', file_name, nr)
+    for i in range(1,nr):
+        df = pd.read_pickle(file_name+str(i)+'.pkl')
+        t = np.append(df['d'].values.tolist(), t)
+    np.save('merged', t)
