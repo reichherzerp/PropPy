@@ -1,6 +1,6 @@
 #!/bin/sh
-file_name="test_new_"
-nr=243
+file_name="/home/patrick/Documents/rwpropa/test/test_new_"
+nr=5
 for i in `seq 1 $nr`; 
 do python3 server_script.py "$file_name${i}"& 
 done

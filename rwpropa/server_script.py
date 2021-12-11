@@ -8,7 +8,13 @@ import sys
 
 
 def simulate(file_name):
-    sim = rw.PlasmoidSimulation(nr_particles = 10**6, radius = 10**14, energy = 10**15, nr_steps = 1*10**6, diffusion_coefficient = 1.5*10**20, step_size = 1*10**11)
+    nr_particles = 10**2 
+    radius = 10**14 
+    energy = 10**15
+    nr_steps = 1*10**4
+    diffusion_coefficient = 1.5*10**20
+    step_size = 1*10**12
+    sim = rw.PlasmoidSimulation(nr_particles = nr_particles, radius = radius, energy = energy, nr_steps = nr_steps, diffusion_coefficient = diffusion_coefficient, step_size = step_size)
     start = time.time()
     sim.simulate(file_name)
     print('finished: ', file_name)
