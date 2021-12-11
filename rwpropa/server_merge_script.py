@@ -16,19 +16,16 @@ def merge_sub_simulation_files(file_name, nr_simulations):
 
 
 def plot_hists(file_name, t):
-    # plot lin-lin-hist
-    plt.figure(figsize=(5,3))
-    bins = 30
-    plt.hist(t, bins=bins, alpha=0.5)
-    plt.title('total observed particles = {:.0e}'.format(len(t)))
-    plt.xlabel('D [m]')
-    plt.ylabel('# particles')
-    plt.tight_layout()
-    plt.savefig(file_name+'_hist_lin.png')
+    plot_hist_linlin(file_name, t)
+    plot_hist_loglog(file_name, t)
+    print('created histogram plots')
 
+
+def plot_hist_loglog(file_name, t):
     # plot log-log-hist
     plt.figure(figsize=(5,3))
     d = t
+    bins = 30
     hist, bins = np.histogram(d, bins=bins)
     logbins = np.logspace(np.log10(min(d)),np.log10(max(d)),len(bins))
     plt.hist(d, bins=logbins, alpha=0.5)
@@ -39,8 +36,18 @@ def plot_hists(file_name, t):
     plt.tight_layout()
     plt.savefig(file_name+'_hist_log.png')
     plt.savefig(file_name+'_hist_log.pdf')
+    
 
-    print('created histogram plots')
+def plot_hist_linlin(file_name, t):
+    # plot lin-lin-hist
+    plt.figure(figsize=(5,3))
+    bins = 30
+    plt.hist(t, bins=bins, alpha=0.5)
+    plt.title('total observed particles = {:.0e}'.format(len(t)))
+    plt.xlabel('D [m]')
+    plt.ylabel('# particles')
+    plt.tight_layout()
+    plt.savefig(file_name+'_hist_lin.png')
 
 
 if __name__ == '__main__':
