@@ -1,7 +1,5 @@
 import time
-import os
-os.chdir('..')
-import rwpropa as rw
+from ... import rwpropa as rw
 import sys
 
 
