@@ -740,7 +740,7 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
             for i in range(self.dimensions):
                 mfp.append(mfp_input[0])
 
-        return mfp
+        return np.array(mfp, dtype=np.float32)
 
     
     def init_jitclass_propagator(self):
