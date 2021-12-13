@@ -262,12 +262,20 @@ class Propagator():
             particles_state: New particle state after propagation of substep in global frame.
             move_local: An array that describes the local move in the substep.
         """
-        distance_s = particle_state.direction[particle_state.substep] * self.step_size / 3**0.5
-        particle_state.distance = particle_state.distance + self.step_size / 3.0
+        step_size = self.get_step_size(particle_state)
+        distance_s = particle_state.direction[particle_state.substep] * step_size / 3**0.5
+        particle_state.distance = particle_state.distance + step_size / 3.0
         move_local = [0,0,0]
         s = particle_state.substep
         move_local[s] = distance_s
         return particle_state, self.float_array(move_local)
+
+
+    def get_step_size(self, particle_state):
+        if particle_state.distance > self.mfp[particle_state.substep]:
+            return self.step_size * self.step_size_diff_factor
+        else:
+            return self.step_size
 
     
     def move_cartesian(self, particle_state):
@@ -334,7 +342,6 @@ class Propagator():
             particles_state: New particle state after propagation of substep in global frame.
             move_local: An array that describes the local move in the substep.
         """
-        distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
         #particle_state.distance = particle_state.distance + np.abs(distance_s)
         delta_rho = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
         chi_x_2 = np.cos(particle_state.phi) * particle_state.direction[1] * delta_rho
