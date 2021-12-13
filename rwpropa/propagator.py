@@ -57,7 +57,7 @@ import numpy as np
 from numba.experimental import jitclass
 from .magnetic_field import *
 from .particle_state import *
-from abc import ABC, ABCMeta, abstractmethod
+from abc import ABCMeta, abstractmethod
 
 
 propagation_spec = [
@@ -621,6 +621,7 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
     def set_basic_parameters(self):
         self.dimensions = 3
         self.speed = 2.998*10**8 # [m/s]
+        self.step_size_diff_factor = 1.0
 
 
     def set_pitch_angle_const(self, const_bool):
@@ -762,7 +763,7 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         self.set_basic_parameters()
         self.mfp = self.convert_mfp_input(self.mfp)
         mfp_final = self.set_prob_init(self.mfp, self.speed, self.step_size)
-        propagator = Propagator(self.nr_steps, self.step_size, mfp_final, self.magnetic_field, self.cartesian, self.mfp)
+        propagator = Propagator(self.nr_steps, self.step_size, mfp_final, self.magnetic_field, self.cartesian, self.mfp, step_size_diff_factor = self.step_size_diff_factor)
         # have to store all relevant propagation parameters in the Propagator class that 
         # has the @jitclass label from numba. This is important, as the Particle class is also 
         # labeled with @jitclass and can thus only call @jitclass classes. The usage of numba is 
@@ -866,10 +867,11 @@ class IsotropicPropagator(AbstractPropagator):
         isotropic_diffusion: Is the particle diffusion isotropic?
     """
 
-    def __init__(self, mfp, nr_steps, step_size):
+    def __init__(self, mfp, nr_steps, step_size, step_size_diff_factor=1.0):
         self.nr_steps = nr_steps
         self.step_size = step_size
         self.mfp = mfp
+        self.step_size_diff_factor = step_size_diff_factor
         # no background magnetic field
         rms = 0
         self.magnetic_field = DefaultBackgroundField(rms).magnetic_field

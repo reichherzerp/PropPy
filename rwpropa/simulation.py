@@ -155,7 +155,7 @@ class IsotropicSphereSimulation():
 
 
 class PlasmoidSimulation():
-    def __init__(self, nr_particles = 10**4, radius = 10**14, energy = 10**15, nr_steps = 3*10**3, diffusion_coefficient = 1.*10**21, step_size = 1*10**12):
+    def __init__(self, nr_particles = 10**4, radius = 10**14, energy = 10**15, nr_steps = 3*10**3, diffusion_coefficient = 1.*10**21, step_size = 1*10**12, step_size_factor = 1.0):
         self.nr_particles = nr_particles
         self.source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         self.radius = radius
@@ -166,7 +166,9 @@ class PlasmoidSimulation():
         self.speed_of_light = 3*10**8 # [m/s]
         mfp_iso = 3*self.diffusion_coefficient/self.speed_of_light
         self.mfp = np.array([mfp_iso, mfp_iso, mfp_iso], dtype=np.float32)  # [m]
+        print('mean-free paths: ', self.mfp, 'm')
         self.substeps = [False, False, True] # observe only steps (no substeps)
+        self.step_size_factor = step_size_factor
         self.sim = None
 
     def simulate(self, file_name = 'plasmoid'):
@@ -175,7 +177,7 @@ class PlasmoidSimulation():
         self.sim = Simulation()
         source = SphereSourceIsotropic(self.energy, self.source_pos, self.nr_particles, self.radius)
         self.sim.add_source(source)
-        propagator = IsotropicPropagator(self.mfp, self.nr_steps, self.step_size)
+        propagator = IsotropicPropagator(self.mfp, self.nr_steps, self.step_size, step_size_diff_factor = self.step_size_factor)
         self.sim.add_propagator(propagator)
         observer = SphericalObserver(self.substeps, [self.radius], on_detection_deactivate=True)
         self.sim.add_observer(observer)
