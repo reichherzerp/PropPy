@@ -68,6 +68,7 @@ propagation_spec = [
     ('background_direction', int32),
     ('step_distance', float32),
     ('step_size', float32),
+    ('step_size_diff_factor', float32),
     ('gyroradius_eff', float32),
     ('speed', float32),
     ('pitch_angle_const', b1),
@@ -128,6 +129,7 @@ class Propagator():
         self.magnetic_field = magnetic_field
         self.prob = prob
         self.mfp = mfp
+        self.step_size_diff_factor = step_size_diff_factor
         
 
     def change_direction(self, direction):
