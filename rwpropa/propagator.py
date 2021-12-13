@@ -76,6 +76,7 @@ propagation_spec = [
 
     ('pos', float32[:]),
     ('direction', float32[:]),
+    ('mfp', float32[:]),
     ('phi', float32),
     ('pitch_angle', float32),
     ('distance', float32),
@@ -109,10 +110,11 @@ class Propagator():
         pitch_angle_const: Should the pitch angle remain const or should there be pitch angle scattering?
         background_direction: Direction of a background field (0=x-axis,...).
         magnetic_field: The magnetic field.
-        self.prob: Probability to change in each direction in a step.
+        prob: Probability to change in each direction in a step.
+        mfp: Mean free paths of particles in each direction in [m].
     """
 
-    def __init__(self, nr_steps, step_size, prob, magnetic_field, cartesian):
+    def __init__(self, nr_steps, step_size, prob, magnetic_field, cartesian, mfp):
         print('Propagator initialized')
         self.speed = 2.998*10**8 # speed of light
         self.cartesian = cartesian
@@ -124,6 +126,7 @@ class Propagator():
         self.background_direction = 2
         self.magnetic_field = magnetic_field
         self.prob = prob
+        self.mfp = mfp
         
 
     def change_direction(self, direction):
@@ -749,7 +752,7 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         self.set_basic_parameters()
         self.mfp = self.convert_mfp_input(self.mfp)
         mfp_final = self.set_prob_init(self.mfp, self.speed, self.step_size)
-        propagator = Propagator(self.nr_steps, self.step_size, mfp_final, self.magnetic_field, self.cartesian)
+        propagator = Propagator(self.nr_steps, self.step_size, mfp_final, self.magnetic_field, self.cartesian, self.mfp)
         # have to store all relevant propagation parameters in the Propagator class that 
         # has the @jitclass label from numba. This is important, as the Particle class is also 
         # labeled with @jitclass and can thus only call @jitclass classes. The usage of numba is 
