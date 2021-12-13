@@ -112,9 +112,10 @@ class Propagator():
         magnetic_field: The magnetic field.
         prob: Probability to change in each direction in a step.
         mfp: Mean free paths of particles in each direction in [m].
+        step_size_diff_factor: Increase step size in diffusive phase by this factor. 
     """
 
-    def __init__(self, nr_steps, step_size, prob, magnetic_field, cartesian, mfp):
+    def __init__(self, nr_steps, step_size, prob, magnetic_field, cartesian, mfp, step_size_diff_factor=1.0):
         print('Propagator initialized')
         self.speed = 2.998*10**8 # speed of light
         self.cartesian = cartesian
