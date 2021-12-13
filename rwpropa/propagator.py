@@ -275,9 +275,11 @@ class Propagator():
 
     def get_step_size(self, particle_state):
         if particle_state.distance > self.mfp[particle_state.substep]:
-            return self.step_size * self.step_size_diff_factor
+            adaptive_step_size = self.step_size * self.step_size_diff_factor
         else:
-            return self.step_size
+            adaptive_step_size = self.step_size
+        return adaptive_step_size
+
 
     
     def move_cartesian(self, particle_state):
@@ -621,7 +623,6 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
     def set_basic_parameters(self):
         self.dimensions = 3
         self.speed = 2.998*10**8 # [m/s]
-        self.step_size_diff_factor = 1.0
 
 
     def set_pitch_angle_const(self, const_bool):

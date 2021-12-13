@@ -101,6 +101,7 @@ class Statistics():
         bins = 20
         
         d = trajectory_lengths/10**14
+        print(max(d))
         hist, bins = np.histogram(d, bins=bins)
         logbins = np.logspace(np.log10(min(d)),np.log10(max(d)),len(bins))
         plt.hist(d, bins=logbins, alpha=0.5, label='$\kappa =$ {:.1e}m$^2$/s'.format(diffusion_coefficient))
