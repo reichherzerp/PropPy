@@ -274,7 +274,7 @@ class Propagator():
 
 
     def get_step_size(self, particle_state):
-        if particle_state.distance > self.mfp[particle_state.substep]:
+        if particle_state.distance > 10*self.mfp[particle_state.substep]:
             adaptive_step_size = self.step_size * self.step_size_diff_factor
         else:
             adaptive_step_size = self.step_size
@@ -763,8 +763,8 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         """
         self.set_basic_parameters()
         self.mfp = self.convert_mfp_input(self.mfp)
-        mfp_final = self.set_prob_init(self.mfp, self.speed, self.step_size)
-        propagator = Propagator(self.nr_steps, self.step_size, mfp_final, self.magnetic_field, self.cartesian, self.mfp, step_size_diff_factor = self.step_size_diff_factor)
+        probs = self.set_prob_init(self.mfp, self.speed, self.step_size)
+        propagator = Propagator(self.nr_steps, self.step_size, probs, self.magnetic_field, self.cartesian, self.mfp, step_size_diff_factor = self.step_size_diff_factor)
         # have to store all relevant propagation parameters in the Propagator class that 
         # has the @jitclass label from numba. This is important, as the Particle class is also 
         # labeled with @jitclass and can thus only call @jitclass classes. The usage of numba is 
