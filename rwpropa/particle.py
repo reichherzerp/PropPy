@@ -72,7 +72,7 @@ class Particle():
         """
         self.ps.step = step
         self.ps = propagator.set_gyroradius(self.ps)
-        self.ps.direction = propagator.change_direction(self.ps.direction)
+        self.ps.direction = propagator.change_direction(self.ps.direction, self.ps)
         self.ps.pitch_angle = propagator.change_pitch_angle(self.ps.pitch_angle)
 
 

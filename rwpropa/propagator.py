@@ -132,7 +132,7 @@ class Propagator():
         self.step_size_diff_factor = step_size_diff_factor
         
 
-    def change_direction(self, direction):
+    def change_direction(self, direction, particle_state):
         """Change particle direction during step in random walk.
         
         Change in direction happens with a propability that is defined by the 
@@ -146,7 +146,8 @@ class Propagator():
             direction: New direction of particle that is the same as the input direction (-> correlated random walk).
         """
         for p in range(self.dimensions):
-            if np.random.random() < self.prob[p]:
+            prop = self.get_adaptive_prob(particle_state, self.prob[p], p)
+            if np.random.random() < prop:
                 direction[p] = -1*direction[p]
         return direction
 
@@ -264,7 +265,7 @@ class Propagator():
             particles_state: New particle state after propagation of substep in global frame.
             move_local: An array that describes the local move in the substep.
         """
-        step_size = self.get_step_size(particle_state)
+        step_size = self.get_adaptive_step_size(particle_state)
         distance_s = particle_state.direction[particle_state.substep] * step_size / 3**0.5
         particle_state.distance = particle_state.distance + step_size / 3.0
         move_local = [0,0,0]
@@ -273,12 +274,20 @@ class Propagator():
         return particle_state, self.float_array(move_local)
 
 
-    def get_step_size(self, particle_state):
-        if particle_state.distance > 10*self.mfp[particle_state.substep]:
+    def get_adaptive_step_size(self, particle_state):
+        if particle_state.distance > self.mfp[particle_state.substep]:
             adaptive_step_size = self.step_size * self.step_size_diff_factor
         else:
             adaptive_step_size = self.step_size
         return adaptive_step_size
+
+
+    def get_adaptive_prob(self, particle_state, prob, p):
+        if particle_state.distance > self.mfp[p]:
+            adaptive_prob = prob * self.step_size_diff_factor
+        else:
+            adaptive_prob = prob
+        return adaptive_prob
 
 
     
