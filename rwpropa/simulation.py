@@ -184,10 +184,10 @@ class PlasmoidSimulation():
         self.sim.run_simulation()
         self.sim.save_data(file_name)
 
-    def plot_arrival_times(self, bins_log=20, bins_lin=50):
+    def plot_arrival_times(self, bins_log=20, bins_lin=50, d_max=None):
         df = pd.read_pickle(self.file_name+'.pkl')
         sta = Statistics(df)
-        sta.plot_arrival_times(self.radius, self.nr_particles, self.diffusion_coefficient, self.file_name, bins_log=bins_log, bins_lin=bins_lin)
+        sta.plot_arrival_times(self.radius, self.nr_particles, self.diffusion_coefficient, self.file_name, bins_log=bins_log, bins_lin=bins_lin, d_max=d_max)
 
     def get_simulation_info(self):
         if self.sim == None:

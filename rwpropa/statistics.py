@@ -94,16 +94,19 @@ class Statistics():
         plt.show()
 
 
-    def plot_arrival_times(self, radius, nr_particles, diffusion_coefficient, file_name, bins_log=20, bins_lin=50):
+    def plot_arrival_times(self, radius, nr_particles, diffusion_coefficient, file_name, bins_log=20, bins_lin=50, d_max=None):
         df = pd.read_pickle(file_name+'.pkl')
         trajectory_lengths = df['d']
         plt.figure(figsize=(5,3))
         bins = bins_log
-        
         d = trajectory_lengths/10**14
+        if d_max == None:
+            d_max_value = max(d)
+        else:
+            d_max_value = d_max
         print(max(d))
         hist, bins = np.histogram(d, bins=bins)
-        logbins = np.logspace(np.log10(min(d)),np.log10(max(d)),len(bins))
+        logbins = np.logspace(np.log10(min(d)),np.log10(d_max_value),len(bins))
         plt.hist(d, bins=logbins, alpha=0.5, label='$\kappa =$ {:.1e}m$^2$/s'.format(diffusion_coefficient))
         plt.axvline(x=1, color='k', ls='--', label='plasmoid radius')
         plt.title('total # particles = {:.0e}'.format(nr_particles))
@@ -116,8 +119,8 @@ class Statistics():
         plt.figure(figsize=(5,3))
         bins = bins_lin
         d = trajectory_lengths/10**14
-        hist, bins = np.histogram(d, bins=bins)
-        linbins = np.linspace((min(d)),(max(d)),len(bins))
+        hist, bins = np.histogram(d, bins=bins) 
+        linbins = np.linspace((min(d)),(d_max_value),len(bins))
         plt.hist(d, bins=linbins, alpha=0.5, label='$\kappa =$ {:.1e}m$^2$/s'.format(diffusion_coefficient))
         plt.axvline(x=1, color='k', ls='--', label='plasmoid radius')
         plt.title('total # particles = {:.0e}'.format(nr_particles))

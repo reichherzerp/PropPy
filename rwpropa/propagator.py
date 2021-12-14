@@ -275,7 +275,7 @@ class Propagator():
 
 
     def get_adaptive_step_size(self, particle_state):
-        if particle_state.distance > self.mfp[particle_state.substep]:
+        if particle_state.distance > 5*self.mfp[particle_state.substep]:
             adaptive_step_size = self.step_size * self.step_size_diff_factor
         else:
             adaptive_step_size = self.step_size
@@ -283,7 +283,7 @@ class Propagator():
 
 
     def get_adaptive_prob(self, particle_state, prob, p):
-        if particle_state.distance > self.mfp[p]:
+        if particle_state.distance > 5*self.mfp[p]:
             adaptive_prob = prob * self.step_size_diff_factor
         else:
             adaptive_prob = prob
