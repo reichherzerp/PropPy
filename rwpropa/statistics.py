@@ -107,6 +107,9 @@ class Statistics():
             nr_particles: An int only relevant for the title of the plots.
             diffusion_coefficient: A float only relevant for the title of the plots.
             file_name: A string that points to the source of the data that should be plotted.
+            bins_log: An int that defines the number of bins for the lin-lin hist.
+            bins_lin: An int that defines the number of bins for the log-log hist.
+            d_max: An float that defines the maximum trajectory length that is shown.
         """
         df = pd.read_pickle(file_name+'.pkl')
         trajectory_lengths = df['d']
