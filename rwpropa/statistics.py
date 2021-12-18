@@ -95,6 +95,19 @@ class Statistics():
 
 
     def plot_arrival_times(self, radius, nr_particles, diffusion_coefficient, file_name, bins_log=20, bins_lin=50, d_max=None):
+        """Plotting the histograms for arrival times on a sphere.
+        
+        Two plots are created that show the number of particles arriving the
+        sphere as a function of time:
+        - in lin-lin representation to resolve later times
+        - in log-log representation to resolve initial times
+
+        Args:
+            radius: A double that defines the radius of the sphere.
+            nr_particles: An int only relevant for the title of the plots.
+            diffusion_coefficient: A float only relevant for the title of the plots.
+            file_name: A string that points to the source of the data that should be plotted.
+        """
         df = pd.read_pickle(file_name+'.pkl')
         trajectory_lengths = df['d']
         plt.figure(figsize=(5,3))
