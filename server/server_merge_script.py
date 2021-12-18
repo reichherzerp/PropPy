@@ -16,6 +16,17 @@ def merge_sub_simulation_files(file_name, nr_simulations):
 
 
 def plot_hists(file_name, t):
+    """Plotting the histograms for arrival times on a sphere.
+        
+    Two plots are created that show the number of particles arriving the
+    sphere as a function of time:
+    - in lin-lin representation to resolve later times
+    - in log-log representation to resolve initial times
+
+    Args:
+        file_name: A string that points to the source of the data that should be plotted.
+        t: An array with the trajectory lengths of particles reaching the plasmoid surface.
+    """
     plot_hist_linlin(file_name, t)
     plot_hist_loglog(file_name, t)
     print('created histogram plots')
