@@ -81,6 +81,12 @@ class Simulation():
         print('saved data file ' + file_name + ".pkl")
 
 
+#-----------------------------------------------------------------------------
+"""Special simulation classes
+
+Below, there are some special simulation classes that allow for fast and simple
+simulations with predefined sources, propagation methods and observers.
+"""
 
 class IsotropicSimulation():
     def __init__(self, nr_particles = 10**3, energy = 10**15, nr_steps = 10**4, diffusion_coefficient_para = 1.*10**21, nr_obs_steps = 600, step_size = 1*10**12):
@@ -116,6 +122,7 @@ class IsotropicSimulation():
             self.sim.source.get_description()
             self.sim.propagator.get_description()
             self.sim.observer.get_description()
+
 
 class IsotropicSphereSimulation():
     def __init__(self, nr_particles = 10**3, energy = 10**15, nr_steps = 10**4, diffusion_coefficient_para = 1.*10**21, nr_obs_steps = 600):
