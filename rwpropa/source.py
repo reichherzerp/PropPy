@@ -310,9 +310,10 @@ class SphereSourceIsotropic(Source):
         self.particles = []
         for i in range(self.nr_particles):
             phi, pitch_angle, rho = self.sample_isotropic_vecotrs()
+            phi_pos, pitch_angle_pos, rho_pos = self.sample_isotropic_vecotrs()
             particle_id = i
-            r = rho**(1/3.0)
-            pos = np.array([r*self.radius*np.cos(phi)*np.sin(pitch_angle), r*self.radius*np.sin(phi)*np.sin(pitch_angle), r*self.radius*np.cos(pitch_angle)], dtype=np.float32)
+            r = rho_pos**(1/3.0)
+            pos = np.array([r*self.radius*np.cos(phi_pos)*np.sin(pitch_angle_pos), r*self.radius*np.sin(phi_pos)*np.sin(pitch_angle_pos), r*self.radius*np.cos(pitch_angle_pos)], dtype=np.float32)
             p = Particle(particle_id, self.energy, pos, phi, pitch_angle, self.dimensions)
             #p.set_random_direction(self, np.array([-1.0, 1.0, 1.0], dtype=np.float32))
             self.particles.append(p)
@@ -361,8 +362,9 @@ class SphereSourceSurfaceIsotropic(Source):
         self.particles = []
         for i in range(self.nr_particles):
             phi, pitch_angle, rho = self.sample_isotropic_vecotrs()
+            phi_pos, pitch_angle_pos, rho_pos = self.sample_isotropic_vecotrs()
             particle_id = i
-            pos = np.array([self.radius*np.cos(phi)*np.sin(pitch_angle), self.radius*np.sin(phi)*np.sin(pitch_angle), self.radius*np.cos(pitch_angle)], dtype=np.float32)
+            pos = np.array([self.radius*np.cos(phi_pos)*np.sin(pitch_angle_pos), self.radius*np.sin(phi_pos)*np.sin(pitch_angle_pos), self.radius*np.cos(pitch_angle_pos)], dtype=np.float32)
             p = Particle(particle_id, self.energy, pos, phi, pitch_angle, self.dimensions)
             self.particles.append(p)
 
