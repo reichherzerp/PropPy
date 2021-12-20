@@ -57,7 +57,7 @@ import numpy as np
 from numba.experimental import jitclass
 from .magnetic_field import *
 from .particle_state import *
-from abc import ABC, ABCMeta, abstractmethod
+from abc import ABCMeta, abstractmethod
 
 
 propagation_spec = [
@@ -68,6 +68,7 @@ propagation_spec = [
     ('background_direction', int32),
     ('step_distance', float32),
     ('step_size', float32),
+    ('step_size_diff_factor', float32),
     ('gyroradius_eff', float32),
     ('speed', float32),
     ('pitch_angle_const', b1),
@@ -76,6 +77,7 @@ propagation_spec = [
 
     ('pos', float32[:]),
     ('direction', float32[:]),
+    ('mfp', float32[:]),
     ('phi', float32),
     ('pitch_angle', float32),
     ('distance', float32),
@@ -109,10 +111,12 @@ class Propagator():
         pitch_angle_const: Should the pitch angle remain const or should there be pitch angle scattering?
         background_direction: Direction of a background field (0=x-axis,...).
         magnetic_field: The magnetic field.
-        self.prob: Probability to change in each direction in a step.
+        prob: Probability to change in each direction in a step.
+        mfp: Mean free paths of particles in each direction in [m].
+        step_size_diff_factor: Increase step size in diffusive phase by this factor. 
     """
 
-    def __init__(self, nr_steps, step_size, prob, magnetic_field, cartesian):
+    def __init__(self, nr_steps, step_size, prob, magnetic_field, cartesian, mfp, step_size_diff_factor=1.0):
         print('Propagator initialized')
         self.speed = 2.998*10**8 # speed of light
         self.cartesian = cartesian
@@ -124,9 +128,11 @@ class Propagator():
         self.background_direction = 2
         self.magnetic_field = magnetic_field
         self.prob = prob
+        self.mfp = mfp
+        self.step_size_diff_factor = step_size_diff_factor
         
 
-    def change_direction(self, direction):
+    def change_direction(self, direction, particle_state):
         """Change particle direction during step in random walk.
         
         Change in direction happens with a propability that is defined by the 
@@ -140,7 +146,8 @@ class Propagator():
             direction: New direction of particle that is the same as the input direction (-> correlated random walk).
         """
         for p in range(self.dimensions):
-            if np.random.random() < self.prob[p]:
+            prop = self.get_adaptive_prob(particle_state, self.prob[p], p)
+            if np.random.random() < prop:
                 direction[p] = -1*direction[p]
         return direction
 
@@ -214,7 +221,7 @@ class Propagator():
         """
         if self.cartesian:
             # cartesian coordinates -> move in x, y and z directions
-            particle_state, move_local = self.move_cartesian(particle_state)
+            particle_state, move_local = self.move_cartesian_simple(particle_state)
         else:
             # cylindrical coordinates -> move in phi, rho and z directions
             if particle_state.substep == 0:
@@ -246,6 +253,44 @@ class Propagator():
         return ps
     
                  
+    def move_cartesian_simple(self, particle_state):
+        """Movement in substep in Cartesian coords.
+        
+        During the complete propagation step, the particle moves one step size further, without taking the pitch angle into account
+        
+        Args:
+            particle_state: Current particle state.
+            
+        Returns: 
+            particles_state: New particle state after propagation of substep in global frame.
+            move_local: An array that describes the local move in the substep.
+        """
+        step_size = self.get_adaptive_step_size(particle_state)
+        distance_s = particle_state.direction[particle_state.substep] * step_size / 3**0.5
+        particle_state.distance = particle_state.distance + step_size / 3.0
+        move_local = [0,0,0]
+        s = particle_state.substep
+        move_local[s] = distance_s
+        return particle_state, self.float_array(move_local)
+
+
+    def get_adaptive_step_size(self, particle_state):
+        if particle_state.distance > 5*self.mfp[particle_state.substep]:
+            adaptive_step_size = self.step_size * self.step_size_diff_factor
+        else:
+            adaptive_step_size = self.step_size
+        return adaptive_step_size
+
+
+    def get_adaptive_prob(self, particle_state, prob, p):
+        if particle_state.distance > 5*self.mfp[p]:
+            adaptive_prob = prob * self.step_size_diff_factor
+        else:
+            adaptive_prob = prob
+        return adaptive_prob
+
+
+    
     def move_cartesian(self, particle_state):
         """Movement in substep in Cartesian coords. or in z-axis in cylindrical coords.
         
@@ -261,11 +306,13 @@ class Propagator():
         """
         distance_s = 0.0
         if particle_state.substep == self.background_direction:
-            particle_state.distance = particle_state.distance + self.step_size
             distance_s = self.step_size * np.cos(particle_state.pitch_angle) * particle_state.direction[particle_state.substep]
         else:
             distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5 * particle_state.direction[particle_state.substep]
-        #particle_state.distance = particle_state.distance + np.abs(distance_s)
+        if self.cartesian:
+            particle_state.distance = particle_state.distance + np.abs(distance_s)
+        else:
+            particle_state.distance = particle_state.distance + self.step_size
         move_local = [0,0,0]
         s = particle_state.substep
         move_local[s] = distance_s
@@ -287,8 +334,6 @@ class Propagator():
             move_local: An array that describes the local move in the substep.
         """
         phi_old = particle_state.phi
-        distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
-        #particle_state.distance = particle_state.distance + np.abs(distance_s)
         delta_phi = self.compute_delta_phi(particle_state)
         particle_state.phi = phi_old + delta_phi * particle_state.direction[0]
         chi_x_1 = particle_state.gyroradius_eff * (np.cos(particle_state.phi) - np.cos(phi_old))
@@ -310,7 +355,6 @@ class Propagator():
             particles_state: New particle state after propagation of substep in global frame.
             move_local: An array that describes the local move in the substep.
         """
-        distance_s = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
         #particle_state.distance = particle_state.distance + np.abs(distance_s)
         delta_rho = self.step_size * np.sin(particle_state.pitch_angle) / 2**0.5
         chi_x_2 = np.cos(particle_state.phi) * particle_state.direction[1] * delta_rho
@@ -502,7 +546,7 @@ class Propagator():
             print('pitch angle: constant')
         else:
             print('pitch angle: not constant')
-        print('particle speed: ' ,self.speed, ' m/s')
+        print('particle speed: ', self.speed, ' m/s')
         print('number steps: ', self.nr_steps)  
         print('step size: ', self.step_size, ' m')  
         print('step duration: ', self.step_size / self.speed, ' s') 
@@ -717,7 +761,7 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
             for i in range(self.dimensions):
                 mfp.append(mfp_input[0])
 
-        return mfp
+        return np.array(mfp, dtype=np.float32)
 
     
     def init_jitclass_propagator(self):
@@ -728,8 +772,8 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         """
         self.set_basic_parameters()
         self.mfp = self.convert_mfp_input(self.mfp)
-        mfp_final = self.set_prob_init(self.mfp, self.speed, self.step_size)
-        propagator = Propagator(self.nr_steps, self.step_size, mfp_final, self.magnetic_field, self.cartesian)
+        probs = self.set_prob_init(self.mfp, self.speed, self.step_size)
+        propagator = Propagator(self.nr_steps, self.step_size, probs, self.magnetic_field, self.cartesian, self.mfp, step_size_diff_factor = self.step_size_diff_factor)
         # have to store all relevant propagation parameters in the Propagator class that 
         # has the @jitclass label from numba. This is important, as the Particle class is also 
         # labeled with @jitclass and can thus only call @jitclass classes. The usage of numba is 
@@ -833,10 +877,11 @@ class IsotropicPropagator(AbstractPropagator):
         isotropic_diffusion: Is the particle diffusion isotropic?
     """
 
-    def __init__(self, mfp, nr_steps, step_size):
+    def __init__(self, mfp, nr_steps, step_size, step_size_diff_factor=1.0):
         self.nr_steps = nr_steps
         self.step_size = step_size
         self.mfp = mfp
+        self.step_size_diff_factor = step_size_diff_factor
         # no background magnetic field
         rms = 0
         self.magnetic_field = DefaultBackgroundField(rms).magnetic_field

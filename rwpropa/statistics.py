@@ -93,8 +93,60 @@ class Statistics():
             plt.savefig(file_name)
         plt.show()
 
+
+    def plot_arrival_times(self, radius, nr_particles, diffusion_coefficient, file_name, bins_log=20, bins_lin=50, d_max=None):
+        """Plotting the histograms for arrival times on a sphere.
         
-    def plot_diffusion_coefficients(self, isotropic, error, file_name):
+        Two plots are created that show the number of particles arriving the
+        sphere as a function of time:
+        - in lin-lin representation to resolve later times
+        - in log-log representation to resolve initial times
+
+        Args:
+            radius: A double that defines the radius of the sphere.
+            nr_particles: An int only relevant for the title of the plots.
+            diffusion_coefficient: A float only relevant for the title of the plots.
+            file_name: A string that points to the source of the data that should be plotted.
+            bins_log: An int that defines the number of bins for the lin-lin hist.
+            bins_lin: An int that defines the number of bins for the log-log hist.
+            d_max: An float that defines the maximum trajectory length that is shown.
+        """
+        df = pd.read_pickle(file_name+'.pkl')
+        trajectory_lengths = df['d']
+        plt.figure(figsize=(5,3))
+        bins = bins_log
+        d = trajectory_lengths/10**14
+        if d_max == None:
+            d_max_value = max(d)
+        else:
+            d_max_value = d_max
+        print(max(d))
+        hist, bins = np.histogram(d, bins=bins)
+        logbins = np.logspace(np.log10(min(d)),np.log10(d_max_value),len(bins))
+        plt.hist(d, bins=logbins, alpha=0.5, label='$\kappa =$ {:.1e}m$^2$/s'.format(diffusion_coefficient))
+        plt.axvline(x=1, color='k', ls='--', label='plasmoid radius')
+        plt.title('total # particles = {:.0e}'.format(nr_particles))
+        plt.xlabel('D/{:.0e}m'.format(radius))
+        plt.ylabel('# particles')
+        plt.loglog()
+        plt.legend()
+        plt.show()
+        
+        plt.figure(figsize=(5,3))
+        bins = bins_lin
+        d = trajectory_lengths/10**14
+        hist, bins = np.histogram(d, bins=bins) 
+        linbins = np.linspace((min(d)),(d_max_value),len(bins))
+        plt.hist(d, bins=linbins, alpha=0.5, label='$\kappa =$ {:.1e}m$^2$/s'.format(diffusion_coefficient))
+        plt.axvline(x=1, color='k', ls='--', label='plasmoid radius')
+        plt.title('total # particles = {:.0e}'.format(nr_particles))
+        plt.xlabel('D/{:.0e}m'.format(radius))
+        plt.ylabel('# particles')
+        plt.legend()
+        plt.show()
+
+        
+    def plot_diffusion_coefficients(self, isotropic=True, error=False, file_name=None, plot=True, n_points_plateau = 100):
         """Plotting the running diffusion coefficients.
         
         The computation is described in:
@@ -178,16 +230,18 @@ class Statistics():
                 plt.plot(times, kappa_zz, zorder=1, label='$\kappa_\parallel$', c='dodgerblue') 
                 plt.scatter(times, kappa_zz, zorder=2, s=2, c='dodgerblue')
         
-        plt.xlabel('d [m]')
-        plt.ylabel('running diffusion coefficients [m^2/s]')
+        plt.xlabel('trajectory length [m]')
+        plt.ylabel('running diff. coeff. [m$^2$/s]')
         plt.loglog()
         plt.legend()
         if file_name is not None:
             plt.tight_layout()
             plt.savefig(file_name)
-        plt.show()
+        if plot:
+            plt.show()
 
-        n = 125
+        n = n_points_plateau
+        print('diffusion coefficients computed between ' + str("{:.2e}".format(times[-n_points_plateau])) + 'm and ' + str("{:.2e}".format(times[-1])) +'m with ' + str(n) + ' data points')
         print('kappa_{xx}:', f"{np.mean(kappa_xx[-n:]):.3}", 'm²/s', '+-', f"{np.std(kappa_xx[-n:]):.3}", 'm²/s')
         print('kappa_{yy}:', f"{np.mean(kappa_yy[-n:]):.3}", 'm²/s', '+-', f"{np.std(kappa_yy[-n:]):.3}", 'm²/s')
         print('kappa_{zz}:', f"{np.mean(kappa_zz[-n:]):.3}", 'm²/s', '+-', f"{np.std(kappa_zz[-n:]):.3}", 'm²/s')

@@ -33,6 +33,7 @@ observer_spec = [
     ('pos', float32[:]),
     ('spheres', float32[:]),
     ('ps', ParticleState.class_type.instance_type),
+    ('on_detection_deactivate', b1),
 ]
 
 @jitclass(observer_spec)
@@ -56,13 +57,14 @@ class Observer():
         pos: A float32 array for the position of the current particle.
         spheres: A float32 array for specifying the radii of the observer spheres.
         ps: ParticleState of the current particle.
- 
+        on_detection_deactivate: A bool to check if particle should be deactivated after observing it.
     """
 
-    def __init__(self, steps, substeps, spheres):
+    def __init__(self, steps, substeps, spheres, on_detection_deactivate=False):
         self.substeps = substeps
         self.spheres = spheres
         self.all_steps = False
+        self.on_detection_deactivate = on_detection_deactivate
         if -1 in steps:
             # the -1 is the key to say that all steps should be observed
             self.all_steps = True
@@ -129,17 +131,17 @@ class Observer():
             new data row or None
         """
         radius_2 = 0
-        radius_prev_2 = 0
         for i in range(ps.dimensions):
             radius_2 = radius_2 + ps.pos[i]**2
-            radius_prev_2 = radius_prev_2 + ps.pos_prev[i]**2
         radius = radius_2**0.5
-        radius_prev = radius_prev_2**0.5
+        radius_prev = ps.rad_prev
         for j in range(1, len(self.spheres)):
             r_s = self.spheres[j]
-            if (radius > r_s and radius_prev < r_s) or (radius < r_s and radius_prev > r_s):
+            if (radius >= r_s and radius_prev <= r_s) or (radius <= r_s and radius_prev >= r_s):
+                if self.on_detection_deactivate:
+                    ps.active = False
                 return self.data_row(ps, r_s)
-        
+        ps.rad_prev = radius
         return None
 
 
@@ -254,12 +256,14 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
         spheres: A float32 array for specifying the radii of the observer spheres.
         column: A float32 array for specifying the column names of the data output.
         observer: The special observer.
+        on_detection_deactivate: A bool to check if particle should be deactivated after observing it.
     """
     
     required_attributes = [
         'steps', 
         'substeps_bool',
-        'spheres'
+        'spheres',
+        'on_detection_deactivate'
     ]
  
     @abstractmethod
@@ -269,7 +273,7 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
         """
         pass
 
-    def init_observer(self, substeps, spheres):
+    def init_observer(self, substeps, spheres, on_detection_deactivate=False):
         """Initialize the Observer 
         
         Sets the important parameters and calls the @abstractmethods that are implemented
@@ -284,11 +288,12 @@ class AbstractSpecialObserver(object, metaclass=AbstractSpecialObserverMeta):
         self.substeps_bool = np.array(substeps)
         self.steps = self.set_steps_int() 
         self.spheres = np.array(spheres, dtype=np.float32)
+        self.on_detection_deactivate = on_detection_deactivate
         # have to store all relevant observation parameters in the Observer class that 
         # has the @jitclass label from numba. This is important, as the Particle class is also 
         # labeled with @jitclass and can thus only call @jitclass classes. The usage of numba is 
         # for performance resaons.
-        self.observer = Observer(self.steps, self.substeps_bool, self.spheres)
+        self.observer = Observer(self.steps, self.substeps_bool, self.spheres, self.on_detection_deactivate)
 
     @abstractmethod
     def set_steps(self):
@@ -460,11 +465,16 @@ class SphericalObserver(AbstractSpecialObserver):
         spheres: A float array for specifying the radii of the observer spheres.
     """
 
-    def __init__(self, substeps, spheres):
+    def __init__(self, substeps, spheres, on_detection_deactivate=False):
         self.steps_input = []
         self.spheres = [-1.0] + spheres
 
-        self.init_observer(substeps, self.spheres)
+        self.init_observer(substeps, self.spheres, on_detection_deactivate)
+
+    def set_steps(self):
+        """No steps needed.
+        """
+        return []
 
     def get_description_observer_type(self):
         print('observer tpye: SphericalObserver')

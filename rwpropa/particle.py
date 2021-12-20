@@ -53,7 +53,10 @@ class Particle():
         simulation_data = []
 
         self.ps.init_position()
-        for step in range(0, propagator.nr_steps+1): 
+        observation = observer.observe(self.ps)
+        for step in range(1, propagator.nr_steps+1): 
+            if self.ps.active == False:
+                break
             self.start(propagator, step)
             for substep in range(self.ps.dimensions):
                 self.propagate_substep(propagator, substep)
@@ -68,9 +71,8 @@ class Particle():
         """Start the simulation by using the parameters defined in the source.
         """
         self.ps.step = step
-        self.ps.pos_prev = self.ps.pos
         self.ps = propagator.set_gyroradius(self.ps)
-        self.ps.direction = propagator.change_direction(self.ps.direction)
+        self.ps.direction = propagator.change_direction(self.ps.direction, self.ps)
         self.ps.pitch_angle = propagator.change_pitch_angle(self.ps.pitch_angle)
 
 

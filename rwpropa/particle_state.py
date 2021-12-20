@@ -12,6 +12,8 @@ from numba.experimental import jitclass
 
 
 particle_state_spec = [
+    ('active', b1),
+    ('random', b1),
     ('step_distance', float32),
     ('chi_isotropic', float32),
     ('speed', float32),
@@ -28,7 +30,7 @@ particle_state_spec = [
     ('pos_start', float32[:]),
     ('pos', float32[:]),
     ('dir', float32[:]),
-    ('pos_prev', float32[:]),
+    ('rad_prev', float32),
     ('direction', float32[:]),
     ('step', int32),
     ('substep', int32),
@@ -43,6 +45,7 @@ class ParticleState():
     the particle state can be written out.
 
     Attributes:
+        active: If the particle takes part in the simulation.
         speed: Speed of the particle in [m^2/s].
         energy: Energy of the particle in [eV].
         gyroradius: Gyroradius of the particle in [m].
@@ -55,7 +58,7 @@ class ParticleState():
         step: Number of current step. 
         pos_start: Initial position of the particle.
         pos: Current position of the particle.
-        pos_prev: Previous position of the particle.
+        rad_prev: Previous radius of the particle for spherical observer.
         direction: Directions for the random walk (can be 1 or -1 in each direction).
         dir: Direction into which particle points.
         phi: Angle in the xy-plane with respect to the x-axis.
@@ -63,6 +66,7 @@ class ParticleState():
     """
 
     def __init__(self, particle_id, energy, pos, phi, pitch_angle, dimensions):
+        self.active = True
         self.speed = 3*10**8 # [m^2/s]
         self.energy = energy
         self.gyroradius = 0.0
@@ -75,12 +79,27 @@ class ParticleState():
         self.step = 0
         self.pos_start = pos[:]
         self.pos = pos[:]
-        self.pos_prev = self.pos[:]
-        self.direction = np.array([1.0, 1.0, 1.0], dtype=np.float32)
+        self.rad_prev = 0.0
+        if phi<np.pi/2 or phi>np.pi/2+np.pi:
+            x = 1.0
+        else:
+            x = -1.0
+        if phi>np.pi:
+            y = 1.0
+        else:
+            y = -1.0
+        if pitch_angle > np.pi/2.0:
+            z = 1.0
+        else:
+            z = -1.0
+        self.direction = np.array([x, y, z], dtype=np.float32)
         self.dir = np.array([np.cos(phi)*np.sin(pitch_angle), np.sin(phi)*np.sin(pitch_angle), np.cos(pitch_angle)], dtype=np.float32)
         self.phi = phi
         self.pitch_angle = pitch_angle
 
+    def set_random_direction(self, direction):
+        self.direction = direction
+        
 
     def init_position(self):
         self.pos = np.array([self.pos_start[0], self.pos_start[1], self.pos_start[2]], dtype=np.float32)

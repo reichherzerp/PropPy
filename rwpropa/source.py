@@ -268,3 +268,154 @@ class PointSourceIsotropic(Source):
 
     def get_description_source_type(self):
         print('source tpye: PointSourceIsotropic')
+
+
+
+class SphereSourceIsotropic(Source):
+    """A spherical source that emits particles isotropically.
+
+    All particles start from a random point within a user defined sphere. 
+    All particles have the exact same state in the 
+    beginning, except for the position and the direction, which is isotropic.
+
+    Attributes:
+        energy: An b array specifying observed substeps [1_substep,2_substep,3_substep].
+                  Only observing once per step: substeps = [False, False, True].
+        pos: A list that specify the source position. 
+        nr_particles: An int that defines how many particles should be emited.
+        particles: List of particles in the source. This list will be used in the simulation.
+    """
+
+    def __init__(self, energy, pos, nr_particles, radius):
+        self.energy = energy
+        self.pos = pos
+        self.nr_particles = nr_particles
+        self.radius = radius
+        self.init_source()
+
+
+    def sample_isotropic_vecotrs(self):
+        """Samlpe correct isotropic vectors.
+
+        See discussion in https://mathworld.wolfram.com/SpherePointPicking.html.
+        """
+        phi = np.random.random()*2*np.pi
+        cos_pitch_angle = np.random.random()*2-1
+        pitch_angle = np.arccos(cos_pitch_angle)
+        rho = np.random.random()
+        return phi, pitch_angle, rho
+
+
+    def inject_particles(self):
+        self.particles = []
+        for i in range(self.nr_particles):
+            phi, pitch_angle, rho = self.sample_isotropic_vecotrs()
+            phi_pos, pitch_angle_pos, rho_pos = self.sample_isotropic_vecotrs()
+            particle_id = i
+            r = rho_pos**(1/3.0)
+            pos = np.array([r*self.radius*np.cos(phi_pos)*np.sin(pitch_angle_pos), r*self.radius*np.sin(phi_pos)*np.sin(pitch_angle_pos), r*self.radius*np.cos(pitch_angle_pos)], dtype=np.float32)
+            p = Particle(particle_id, self.energy, pos, phi, pitch_angle, self.dimensions)
+            #p.set_random_direction(self, np.array([-1.0, 1.0, 1.0], dtype=np.float32))
+            self.particles.append(p)
+
+
+    def get_description_source_type(self):
+        print('source tpye: PointSourceIsotropic')
+
+
+class SphereSourceSurfaceIsotropic(Source):
+    """A spherical source that emits particles isotropically from its surface.
+
+    All particles start from a random point from the surface of a user defined sphere. 
+    All particles have the exact same state in the 
+    beginning, except for the position and the direction, which is isotropic.
+
+    Attributes:
+        energy: An b array specifying observed substeps [1_substep,2_substep,3_substep].
+                  Only observing once per step: substeps = [False, False, True].
+        pos: A list that specify the source position. 
+        nr_particles: An int that defines how many particles should be emited.
+        particles: List of particles in the source. This list will be used in the simulation.
+    """
+
+    def __init__(self, energy, pos, nr_particles, radius):
+        self.energy = energy
+        self.pos = pos
+        self.nr_particles = nr_particles
+        self.radius = radius
+        self.init_source()
+
+
+    def sample_isotropic_vecotrs(self):
+        """Samlpe correct isotropic vectors.
+
+        See discussion in https://mathworld.wolfram.com/SpherePointPicking.html.
+        """
+        phi = np.random.random()*2*np.pi
+        cos_pitch_angle = np.random.random()*2-1
+        pitch_angle = np.arccos(cos_pitch_angle)
+        rho = np.random.random()
+        return phi, pitch_angle, rho
+
+
+    def inject_particles(self):
+        self.particles = []
+        for i in range(self.nr_particles):
+            phi, pitch_angle, rho = self.sample_isotropic_vecotrs()
+            phi_pos, pitch_angle_pos, rho_pos = self.sample_isotropic_vecotrs()
+            particle_id = i
+            pos = np.array([self.radius*np.cos(phi_pos)*np.sin(pitch_angle_pos), self.radius*np.sin(phi_pos)*np.sin(pitch_angle_pos), self.radius*np.cos(pitch_angle_pos)], dtype=np.float32)
+            p = Particle(particle_id, self.energy, pos, phi, pitch_angle, self.dimensions)
+            self.particles.append(p)
+
+
+    def get_description_source_type(self):
+        print('source tpye: PointSourceIsotropic')
+
+
+
+class QubicSourceIsotropic(Source):
+    """A quibic source that emits particles isotropically from within its volume.
+
+    All particles start from a random point from the 3d cube of a user defined width. 
+    All particles have the exact same state in the 
+    beginning, except for the position and the direction, which is isotropic.
+
+    Attributes:
+        energy: An b array specifying observed substeps [1_substep,2_substep,3_substep].
+                  Only observing once per step: substeps = [False, False, True].
+        pos: A list that specify the source position. 
+        nr_particles: An int that defines how many particles should be emited.
+        particles: List of particles in the source. This list will be used in the simulation.
+    """
+
+    def __init__(self, energy, pos, nr_particles, width):
+        self.energy = energy
+        self.pos = pos
+        self.nr_particles = nr_particles
+        self.width = width
+        self.init_source()
+
+    def sample_isotropic_vecotrs(self):
+        """Samlpe correct isotropic vectors.
+
+        See discussion in https://mathworld.wolfram.com/SpherePointPicking.html.
+        """
+        phi = np.random.random()*2*np.pi
+        cos_pitch_angle = np.random.random()*2-1
+        pitch_angle = np.arccos(cos_pitch_angle)
+        rho = np.random.random()
+        return phi, pitch_angle, rho
+
+    def inject_particles(self):
+        self.particles = []
+        for i in range(self.nr_particles):
+            particle_id = i
+            phi, pitch_angle, rho = self.sample_isotropic_vecotrs()
+            pos = np.array([(np.random.random()*2-1)*self.width, (np.random.random()*2-1)*self.width, (np.random.random()*2-1)*self.width], dtype=np.float32)
+            p = Particle(particle_id, self.energy, pos, phi, pitch_angle, self.dimensions)
+            self.particles.append(p)
+
+
+    def get_description_source_type(self):
+        print('source tpye: PointSourceIsotropic')
