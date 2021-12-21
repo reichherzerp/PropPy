@@ -21,3 +21,5 @@ l_min = 5*10**9 # [m]
 turbulence_spectrum = crp.SimpleTurbulenceSpectrum(brms, l_min, l_max)
 turbulence = crp.PlaneWaveTurbulence(turbulence_spectrum, Nm = 400)
 b_field.addField(turbulence)
+regular_field = crp.UniformMagneticField(crp.Vector3d(0,0,1)*b_background)
+b_field.addField(regular_field)
