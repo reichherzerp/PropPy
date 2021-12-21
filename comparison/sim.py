@@ -31,3 +31,8 @@ sim.add(prop_bp)
 t_max = 10**5*step_size
 maxTra = crp.MaximumTrajectoryLength(t_max)
 sim.add(maxTra)
+
+# output
+output_lin = crp.TextOutput('sim_result.txt', crp.Output.Trajectory3D)
+output_lin.enable(output_lin.SerialNumberColumn)
+output_lin.enable(output_lin.SourceDirectionColumn)
