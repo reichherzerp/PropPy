@@ -36,3 +36,11 @@ sim.add(maxTra)
 output_lin = crp.TextOutput('sim_result.txt', crp.Output.Trajectory3D)
 output_lin.enable(output_lin.SerialNumberColumn)
 output_lin.enable(output_lin.SourceDirectionColumn)
+
+# observer
+obs_lin = crp.Observer()
+n_obs = 100
+obs_lin.add(crp.ObserverTimeEvolution(step_size, t_max, n_obs, log=1))
+obs_lin.setDeactivateOnDetection(False)
+obs_lin.onDetection(output_lin)
+sim.add(obs_lin)
