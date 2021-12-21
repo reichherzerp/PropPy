@@ -44,3 +44,8 @@ obs_lin.add(crp.ObserverTimeEvolution(step_size, t_max, n_obs, log=1))
 obs_lin.setDeactivateOnDetection(False)
 obs_lin.onDetection(output_lin)
 sim.add(obs_lin)
+
+# run simulation                                               
+sim.setShowProgress(True)
+number_particles = 500
+sim.run(source, number_particles, True)
