@@ -1,9 +1,9 @@
 from crpropa_sim import *
 import numpy as np
 
-step_sizes = np.logspace(10**10, 10**12, 4)
-crpropa_sim(10**11)
-crpropa_sim(10**12)
+step_sizes = np.logspace(10, 13, 8)
+for step_size in step_sizes:
+    crpropa_sim(step_size = step_size)
 
-analyze_agn(10**11, 'sim_result_ana_')
-analyze_agn(10**12, 'sim_result_ana_')
+for step_size in step_sizes:
+    analyze_agn(step_size, 'data/sim_result_ana_')

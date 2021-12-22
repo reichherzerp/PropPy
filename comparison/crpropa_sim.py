@@ -7,10 +7,10 @@ c = 2.99792*10**8
 N_time = 100
 number_particles = 10**3
 N = number_particles
-file_name = 'sim_result_'
+file_name = 'data/sim_result_'
 
 
-def crpropa_sim(step_size = 10**11):
+def crpropa_sim(step_size = 10**11, traj_max = 10**16):
     sim = crp.ModuleList()
 
     # source settings
@@ -18,7 +18,7 @@ def crpropa_sim(step_size = 10**11):
     source = crp.Source()
     source.add(crp.SourcePosition(crp.Vector3d(0)))
     source.add(crp.SourceParticleType(crp.nucleusId(1, 1)))
-    source.add(crp.SourceEnergy(3*10**15*crp.eV))
+    source.add(crp.SourceEnergy(3*10**16*crp.eV))
     source.add(crp.SourceIsotropicEmission())
 
     # magnetic field 
@@ -36,8 +36,7 @@ def crpropa_sim(step_size = 10**11):
     # propagation
     prop_bp = crp.PropagationBP(b_field, step_size)
     sim.add(prop_bp)
-    t_max = 10**4*step_size
-    maxTra = crp.MaximumTrajectoryLength(t_max)
+    maxTra = crp.MaximumTrajectoryLength(traj_max)
     sim.add(maxTra)
 
     # output
@@ -48,14 +47,13 @@ def crpropa_sim(step_size = 10**11):
     # observer
     obs_lin = crp.Observer()
     n_obs = 100
-    obs_lin.add(crp.ObserverTimeEvolution(step_size, t_max, n_obs, log=1))
+    obs_lin.add(crp.ObserverTimeEvolution(step_size, traj_max, n_obs, log=1))
     obs_lin.setDeactivateOnDetection(False)
     obs_lin.onDetection(output_lin)
     sim.add(obs_lin)
 
     # run simulation                                               
     sim.setShowProgress(True)
-    number_particles = 10**3
     sim.run(source, number_particles, True)
 
 
