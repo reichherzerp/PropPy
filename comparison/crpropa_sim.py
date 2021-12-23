@@ -76,13 +76,21 @@ class CRPropa:
 
         # observer
         obs = crp.Observer()
-        log = 1
+        log = True
         obs.add(crp.ObserverTimeEvolution(self.step_size, self.traj_max, self.n_obs, log))
         obs.setDeactivateOnDetection(False)
         obs.onDetection(output)
         sim.add(obs)
 
-        # run simulation                                               
+        # run simulation     
+        r_g = (self.energy/(crp.eV*crp.c_light*self.brms))
+        l_c = self.l_max/5
+        print('step_size/r_g = ', self.step_size/r_g)
+        print('step_size/l_c = ', self.step_size/l_c)
+        if self.step_size > r_g:
+            print("warning: step size doesn't resolve gyromotion")
+        if self.step_size > l_c:
+            print("warning: step size doesn't resolve correlation length of turbulence")
         sim.setShowProgress(True)
         sim.run(source, self.n_particles, True)
 
@@ -111,7 +119,7 @@ class CRPropa:
     def diffusion_coefficients(self, data):
         kappa_xx = []
         kappa_zz = []
-        L = self.return_L(data)
+        L = self.return_l(data)
         for l in L:
             dataI = data[data['D'] == l]
             kappa_xx.append(np.mean(dataI.X2D.values + dataI.Y2D.values)/2.0)
@@ -119,15 +127,15 @@ class CRPropa:
         return kappa_xx, kappa_zz
 
 
-    def return_L(self, dataI):
-        L = list(set(dataI.D.values.tolist()))
-        return sorted(L)
+    def return_l(self, dataI):
+        l = list(set(dataI.D.values.tolist()))
+        return sorted(l)
 
 
-    def analyze_agn(self, step_size, file_name_output):
+    def analyze(self, step_size, file_name_output):
         dataLin = self.load_data(self.file_name+str(step_size/10**11)+'.txt')
         kappa_perp, kappa_para = self.diffusion_coefficients(dataLin)
-        L = self.return_L(dataLin)
-        np.save(file_name_output+str(step_size/10**11)+'_d', np.array(L))
+        l = self.return_l(dataLin)
+        np.save(file_name_output+str(step_size/10**11)+'_d', np.array(l))
         np.save(file_name_output+str(step_size/10**11)+'_kappa_perp.npy', np.array(kappa_perp))
         np.save(file_name_output+str(step_size/10**11)+'_kappa_para.npy', np.array(kappa_para))

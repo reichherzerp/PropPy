@@ -7,4 +7,4 @@ step_sizes = [10**10]
 for step_size in step_sizes:
     crp = CRPropa(step_size = step_size)
     crp.sim()
-    crp.analyze_agn(step_size, 'data/sim_result_ana_')
+    crp.analyze(step_size, 'data/sim_result_ana_')
