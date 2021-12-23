@@ -12,10 +12,41 @@ class CRPropa:
         self.brms = crp.gauss
         self.l_max = 5*10**11 # [m]
         self.l_min = 5*10**9 # [m]
+        self.n_wavemodes = 100
         self.step_size = step_size
         self.traj_max = traj_max
         self.file_name = 'data/raw_data/sim_result_'
 
+    
+    def set_energy(self, energy):
+        self.energy = energy
+
+    def set_n_obs(self, n_obs):
+        self.n_obs = n_obs
+
+    def set_n_particles(self, n_particles):
+        self.n_particles = n_particles
+
+    def set_brms(self, brms):
+        self.brms = brms
+
+    def set_l_max(self, l_max):
+        self.l_max = l_max
+
+    def set_l_min(self, l_min):
+        self.l_min = l_min
+
+    def set_n_wavemodes(self, n_wavemodes):
+        self.n_wavemodes = n_wavemodes
+
+    def set_step_size(self, step_size):
+        self.step_size = step_size
+
+    def set_traj_max(self, traj_max):
+        self.traj_max = traj_max
+
+    def set_file_name(self, file_name):
+        self.file_name = file_name
 
     def sim(self):
         sim = crp.ModuleList()
@@ -30,7 +61,7 @@ class CRPropa:
         # magnetic field 
         b_field = crp.MagneticFieldList()
         turbulence_spectrum = crp.SimpleTurbulenceSpectrum(self.brms, self.l_min, self.l_max)
-        turbulence = crp.PlaneWaveTurbulence(turbulence_spectrum, Nm = 100)
+        turbulence = crp.PlaneWaveTurbulence(turbulence_spectrum, self.n_wavemodes)
         b_field.addField(turbulence)
         
         # propagation
@@ -45,7 +76,8 @@ class CRPropa:
 
         # observer
         obs = crp.Observer()
-        obs.add(crp.ObserverTimeEvolution(self.step_size, self.traj_max, self.n_obs, log=1))
+        log = 1
+        obs.add(crp.ObserverTimeEvolution(self.step_size, self.traj_max, self.n_obs, log))
         obs.setDeactivateOnDetection(False)
         obs.onDetection(output)
         sim.add(obs)
