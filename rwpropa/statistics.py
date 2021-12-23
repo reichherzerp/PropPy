@@ -145,21 +145,8 @@ class Statistics():
         plt.legend()
         plt.show()
 
-        
-    def plot_diffusion_coefficients(self, isotropic=True, error=False, file_name=None, plot=True, n_points_plateau = 100):
-        """Plotting the running diffusion coefficients.
-        
-        The computation is described in:
-        [1]Reichherzer, P., Becker Tjus, J., Zweibel, E. G., Merten, L., and Pueschel, M. J., 
-        “Turbulence-level dependence of cosmic ray parallel diffusion”, 
-        Monthly Notices of the Royal Astronomical Society, vol. 498, no. 4, pp. 5051–5064, 2020. 
-        doi:10.1093/mnras/staa2533.
 
-        Args:
-            isotropic: A bool to define if the diffusion is isotropic.
-            error: A bool to define if the error bars should be plotted.
-        """
-
+    def get_diffusion_coefficients(self, error = False):
         nr_particles = len(list(map(int, (set(self.df['id'])))))
         # sort the pandas dataframe so that the df can be distributed in packages of length=nr_particles
         df = self.df.sort_values('d')
@@ -172,11 +159,10 @@ class Statistics():
         kappa_yy = []
         kappa_perp = []
         kappa_zz = []
-        if error:
-            kappa_xx_err = []
-            kappa_yy_err = []
-            kappa_perp_err = []
-            kappa_zz_err = []
+        kappa_xx_err = []
+        kappa_yy_err = []
+        kappa_perp_err = []
+        kappa_zz_err = []
         c = 299792458 # speed of light [m/s]
         nr_steps =  int(len(d)/nr_particles)
         # calculate the running diffusion coefficient kappa_i(t) for each step
@@ -196,15 +182,53 @@ class Statistics():
             kappa_perp.append((kappa_xx_running+kappa_yy_running)/2)
             kappa_zz.append(kappa_zz_running)
             times.append(d_j)
-            if error:
-                # compute the standard deviation of the mean square displacement in each step
-                kappa_xx_running_err = np.std(x_squared)/(2*d_j/c)
-                kappa_yy_running_err = np.std(y_squared)/(2*d_j/c)
-                kappa_zz_running_err = np.std(z_squared)/(2*d_j/c)
-                kappa_xx_err.append(kappa_xx_running_err)
-                kappa_yy_err.append(kappa_yy_running_err)
-                kappa_perp_err.append((kappa_xx_running_err+kappa_yy_running_err)/2)
-                kappa_zz_err.append(kappa_zz_running_err)
+            # compute the standard deviation of the mean square displacement in each step
+            kappa_xx_running_err = np.std(x_squared)/(2*d_j/c)
+            kappa_yy_running_err = np.std(y_squared)/(2*d_j/c)
+            kappa_zz_running_err = np.std(z_squared)/(2*d_j/c)
+            kappa_xx_err.append(kappa_xx_running_err)
+            kappa_yy_err.append(kappa_yy_running_err)
+            kappa_perp_err.append((kappa_xx_running_err+kappa_yy_running_err)/2)
+            kappa_zz_err.append(kappa_zz_running_err)
+        d = {
+            'd': times, 
+            'kappa_xx': kappa_xx,
+            'kappa_xx_err': kappa_xx_err,
+            'kappa_yy': kappa_yy,
+            'kappa_yy_err': kappa_yy_err,
+            'kappa_zz': kappa_zz,
+            'kappa_zz_err': kappa_zz_err,
+            'kappa_perp': kappa_perp,
+            'kappa_perp_err': kappa_perp_err,
+            'kappa_para': kappa_zz
+        }
+        return pd.DataFrame(d)
+
+        
+    def plot_diffusion_coefficients(self, isotropic=True, error=False, file_name=None, plot=True, n_points_plateau = 100):
+        """Plotting the running diffusion coefficients.
+        
+        The computation is described in:
+        [1]Reichherzer, P., Becker Tjus, J., Zweibel, E. G., Merten, L., and Pueschel, M. J., 
+        “Turbulence-level dependence of cosmic ray parallel diffusion”, 
+        Monthly Notices of the Royal Astronomical Society, vol. 498, no. 4, pp. 5051–5064, 2020. 
+        doi:10.1093/mnras/staa2533.
+
+        Args:
+            isotropic: A bool to define if the diffusion is isotropic.
+            error: A bool to define if the error bars should be plotted.
+        """
+
+        df_kappas =  self.get_diffusion_coefficients(error = error)
+        times = df_kappas['d'].values.tolist()
+        kappa_xx = df_kappas['kappa_xx'].values.tolist()
+        kappa_yy = df_kappas['kappa_yy'].values.tolist()
+        kappa_zz = df_kappas['kappa_zz'].values.tolist()
+        kappa_xx_err = df_kappas['kappa_xx_err'].values.tolist()
+        kappa_yy_err = df_kappas['kappa_yy_err'].values.tolist()
+        kappa_zz_err = df_kappas['kappa_zz_err'].values.tolist()
+        kappa_perp = df_kappas['kappa_perp'].values.tolist()
+        kappa_perp_err = df_kappas['kappa_perp_err'].values.tolist()
         plt.figure(figsize=(3,2))
         if error:
             # plot with error bars
