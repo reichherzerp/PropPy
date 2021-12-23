@@ -1,9 +1,10 @@
+# First, activate CRPropa environment and then run this current script
+
 from crpropa_sim import *
 import numpy as np
 
 
 step_sizes = np.logspace(10, 13, 8)
-step_sizes = [10**10]
 for step_size in step_sizes:
     crp = CRPropa(step_size = step_size)
     crp.sim()
