@@ -3,3 +3,4 @@ __pycache__/
 rwpropa/__pycache__/
 .ipynb_checkpoints
 rwpropa/tutorials/.ipynb_checkpoints
+**/rwpropa/comparison/data/
