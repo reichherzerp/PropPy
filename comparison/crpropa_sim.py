@@ -17,7 +17,7 @@ class CRPropa:
         self.traj_max = traj_max
         self.file_name = 'data/raw_data/sim_result_'
 
-    
+
     def set_energy(self, energy):
         self.energy = energy
 
