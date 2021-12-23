@@ -44,17 +44,15 @@ class CRPropa:
         sim.add(maxTra)
 
         # output
-        output_lin = crp.TextOutput(file_name+str(step_size/10**11)+'.txt', crp.Output.Trajectory3D)
-        output_lin.enable(output_lin.SerialNumberColumn)
-        output_lin.enable(output_lin.SourceDirectionColumn)
+        output = crp.TextOutput(file_name+str(self.step_size/10**11)+'.txt', crp.Output.Trajectory3D)
+        output.enable(output.SerialNumberColumn)
 
         # observer
-        obs_lin = crp.Observer()
-        
-        obs_lin.add(crp.ObserverTimeEvolution(step_size, traj_max, self.n_obs, log=1))
-        obs_lin.setDeactivateOnDetection(False)
-        obs_lin.onDetection(output_lin)
-        sim.add(obs_lin)
+        obs = crp.Observer()
+        obs.add(crp.ObserverTimeEvolution(self.step_size, self.traj_max, self.n_obs, log=1))
+        obs.setDeactivateOnDetection(False)
+        obs.onDetection(output)
+        sim.add(obs)
 
         # run simulation                                               
         sim.setShowProgress(True)
@@ -75,8 +73,8 @@ SN"])
     dataI['Y2D'] = dataI.Y**2 / (dataI.D) * c / 2.
     dataI['Z2D'] = dataI.Z**2 / (dataI.D) * c / 2.
     dataI['R2D'] = (dataI.X**2+dataI.Y**2+dataI.Z**2)**0.5
-    ### Number of Gyrations                                                            
-    dataI.D = dataI.D #/ (2 * math.pi * r)
+    ### Distance                                                            
+    dataI.D = dataI.D
     print(len(dataI.D.values.tolist()))
     
     dataI = dataI.sort_values('D')
