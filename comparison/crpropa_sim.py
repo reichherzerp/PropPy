@@ -9,6 +9,10 @@ number_particles = 10**3
 N = number_particles
 file_name = 'data/sim_result_'
 
+class CRPropa:
+    def __init__(self):
+        self.energy = 3*10**16*crp.eV
+
 
 def crpropa_sim(step_size = 10**11, traj_max = 10**16):
     sim = crp.ModuleList()
