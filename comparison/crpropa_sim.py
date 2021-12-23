@@ -10,55 +10,55 @@ N = number_particles
 file_name = 'data/sim_result_'
 
 class CRPropa:
-    def __init__(self):
+    def __init__(self, step_size = 10**11, traj_max = 10**16):
+        # all simulation parameters
         self.energy = 3*10**16*crp.eV
+        self.n_obs = 100
+        self.brms = 10**6*crp.muG
+        self.l_max = 5*10**11 # [m]
+        self.l_min = 5*10**9 # [m]
+        self.step_size = step_size
+        self.traj_max = traj_max
 
 
-def crpropa_sim(step_size = 10**11, traj_max = 10**16):
-    sim = crp.ModuleList()
+    def crpropa_sim(self, ):
+        sim = crp.ModuleList()
 
-    # source settings
-    # A point source at the origin is isotropically injecting protons.
-    source = crp.Source()
-    source.add(crp.SourcePosition(crp.Vector3d(0)))
-    source.add(crp.SourceParticleType(crp.nucleusId(1, 1)))
-    source.add(crp.SourceEnergy(3*10**16*crp.eV))
-    source.add(crp.SourceIsotropicEmission())
+        # point source settings
+        source = crp.Source()
+        source.add(crp.SourcePosition(crp.Vector3d(0)))
+        source.add(crp.SourceParticleType(crp.nucleusId(1, 1)))
+        source.add(crp.SourceEnergy(self.energy))
+        source.add(crp.SourceIsotropicEmission())
 
-    # magnetic field 
-    b_field = crp.MagneticFieldList()
-    brms = 10**6*crp.muG
-    b_background = 10**7*crp.muG
-    l_max = 5*10**11 # [m]
-    l_min = 5*10**9 # [m]
-    turbulence_spectrum = crp.SimpleTurbulenceSpectrum(brms, l_min, l_max)
-    turbulence = crp.PlaneWaveTurbulence(turbulence_spectrum, Nm = 100)
-    b_field.addField(turbulence)
-    regular_field = crp.UniformMagneticField(crp.Vector3d(0,0,1)*b_background)
-    #b_field.addField(regular_field)
+        # magnetic field 
+        b_field = crp.MagneticFieldList()
+        turbulence_spectrum = crp.SimpleTurbulenceSpectrum(self.brms, self.l_min, self.l_max)
+        turbulence = crp.PlaneWaveTurbulence(turbulence_spectrum, Nm = 100)
+        b_field.addField(turbulence)
+        
+        # propagation
+        prop_bp = crp.PropagationBP(b_field, self.step_size)
+        sim.add(prop_bp)
+        maxTra = crp.MaximumTrajectoryLength(self.traj_max)
+        sim.add(maxTra)
 
-    # propagation
-    prop_bp = crp.PropagationBP(b_field, step_size)
-    sim.add(prop_bp)
-    maxTra = crp.MaximumTrajectoryLength(traj_max)
-    sim.add(maxTra)
+        # output
+        output_lin = crp.TextOutput(file_name+str(step_size/10**11)+'.txt', crp.Output.Trajectory3D)
+        output_lin.enable(output_lin.SerialNumberColumn)
+        output_lin.enable(output_lin.SourceDirectionColumn)
 
-    # output
-    output_lin = crp.TextOutput(file_name+str(step_size/10**11)+'.txt', crp.Output.Trajectory3D)
-    output_lin.enable(output_lin.SerialNumberColumn)
-    output_lin.enable(output_lin.SourceDirectionColumn)
+        # observer
+        obs_lin = crp.Observer()
+        
+        obs_lin.add(crp.ObserverTimeEvolution(step_size, traj_max, self.n_obs, log=1))
+        obs_lin.setDeactivateOnDetection(False)
+        obs_lin.onDetection(output_lin)
+        sim.add(obs_lin)
 
-    # observer
-    obs_lin = crp.Observer()
-    n_obs = 100
-    obs_lin.add(crp.ObserverTimeEvolution(step_size, traj_max, n_obs, log=1))
-    obs_lin.setDeactivateOnDetection(False)
-    obs_lin.onDetection(output_lin)
-    sim.add(obs_lin)
-
-    # run simulation                                               
-    sim.setShowProgress(True)
-    sim.run(source, number_particles, True)
+        # run simulation                                               
+        sim.setShowProgress(True)
+        sim.run(source, number_particles, True)
 
 
 def load_data(x):
