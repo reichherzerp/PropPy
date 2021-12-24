@@ -163,6 +163,7 @@ class Statistics():
         kappa_yy_err = []
         kappa_perp_err = []
         kappa_zz_err = []
+        kappa = []
         c = 299792458 # speed of light [m/s]
         nr_steps =  int(len(d)/nr_particles)
         # calculate the running diffusion coefficient kappa_i(t) for each step
@@ -181,6 +182,7 @@ class Statistics():
             kappa_yy.append(kappa_yy_running)
             kappa_perp.append((kappa_xx_running+kappa_yy_running)/2)
             kappa_zz.append(kappa_zz_running)
+            kappa.append((kappa_xx_running+kappa_yy_running+kappa_zz_running)/3)
             l.append(d_j)
             # compute the standard deviation of the mean square displacement in each step
             kappa_xx_running_err = np.std(x_squared)/(2*d_j/c)
@@ -192,6 +194,7 @@ class Statistics():
             kappa_zz_err.append(kappa_zz_running_err)
         d = {
             'l': l, 
+            'kappa': kappa,
             'kappa_xx': kappa_xx,
             'kappa_xx_err': kappa_xx_err,
             'kappa_yy': kappa_yy,
