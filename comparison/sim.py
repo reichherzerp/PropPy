@@ -8,4 +8,4 @@ step_sizes = np.logspace(10, 13, 8)
 for step_size in step_sizes:
     crp = CRPropa(step_size = step_size)
     crp.sim()
-    crp.analyze(step_size, 'data/sim_result_ana_')
+    crp.analyze(step_size, 'data/sim_result_crp_')

@@ -116,15 +116,13 @@ class CRPropa:
         return dataI
 
 
-    def diffusion_coefficients(self, data):
-        kappa_xx = []
-        kappa_zz = []
+    def diffusion_coefficient_isotropic(self, data):
+        kappa = []
         L = self.return_l(data)
         for l in L:
             dataI = data[data['D'] == l]
-            kappa_xx.append(np.mean(dataI.X2D.values + dataI.Y2D.values)/2.0)
-            kappa_zz.append(np.mean(dataI.Z2D.values))
-        return kappa_xx, kappa_zz
+            kappa.append(np.mean(dataI.X2D.values + dataI.Y2D.values + dataI.Y2D.values)/3.0)
+        return kappa
 
 
     def return_l(self, dataI):
@@ -133,9 +131,8 @@ class CRPropa:
 
 
     def analyze(self, step_size, file_name_output):
-        dataLin = self.load_data(self.file_name+str(step_size/10**11)+'.txt')
-        kappa_perp, kappa_para = self.diffusion_coefficients(dataLin)
-        l = self.return_l(dataLin)
-        np.save(file_name_output+str(step_size/10**11)+'_d', np.array(l))
-        np.save(file_name_output+str(step_size/10**11)+'_kappa_perp.npy', np.array(kappa_perp))
-        np.save(file_name_output+str(step_size/10**11)+'_kappa_para.npy', np.array(kappa_para))
+        data = self.load_data(self.file_name+str(step_size/10**11)+'.txt')
+        kappa = self.diffusion_coefficient_isotropic(data)
+        l = self.return_l(data)
+        np.save(file_name_output+str(step_size/10**11)+'_l', np.array(l))
+        np.save(file_name_output+str(step_size/10**11)+'_kappa.npy', np.array(kappa))
