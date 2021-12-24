@@ -154,7 +154,7 @@ class Statistics():
         y = df['y'].values
         z = df['z'].values
         d = df['d'].values
-        times = []
+        l = []
         kappa_xx = []
         kappa_yy = []
         kappa_perp = []
@@ -181,7 +181,7 @@ class Statistics():
             kappa_yy.append(kappa_yy_running)
             kappa_perp.append((kappa_xx_running+kappa_yy_running)/2)
             kappa_zz.append(kappa_zz_running)
-            times.append(d_j)
+            l.append(d_j)
             # compute the standard deviation of the mean square displacement in each step
             kappa_xx_running_err = np.std(x_squared)/(2*d_j/c)
             kappa_yy_running_err = np.std(y_squared)/(2*d_j/c)
@@ -191,7 +191,7 @@ class Statistics():
             kappa_perp_err.append((kappa_xx_running_err+kappa_yy_running_err)/2)
             kappa_zz_err.append(kappa_zz_running_err)
         d = {
-            'd': times, 
+            'l': l, 
             'kappa_xx': kappa_xx,
             'kappa_xx_err': kappa_xx_err,
             'kappa_yy': kappa_yy,
@@ -220,7 +220,7 @@ class Statistics():
         """
 
         df_kappas =  self.get_diffusion_coefficients(error = error)
-        times = df_kappas['d'].values.tolist()
+        l = df_kappas['l'].values.tolist()
         kappa_xx = df_kappas['kappa_xx'].values.tolist()
         kappa_yy = df_kappas['kappa_yy'].values.tolist()
         kappa_zz = df_kappas['kappa_zz'].values.tolist()
@@ -233,26 +233,26 @@ class Statistics():
         if error:
             # plot with error bars
             if isotropic:
-                plt.errorbar(times, kappa_xx, yerr=kappa_xx_err, fmt=".", elinewidth=0.5, markersize=4, c='k', label='$\kappa_{xx}$')
-                plt.errorbar(times, kappa_yy, yerr=kappa_yy_err, fmt=".", elinewidth=0.5, markersize=4, c='dodgerblue', label='$\kappa_{yy}$')
-                plt.errorbar(times, kappa_zz, yerr=kappa_zz_err, fmt=".", elinewidth=0.5, markersize=4, c='brown', label='$\kappa_{zz}$')
+                plt.errorbar(l, kappa_xx, yerr=kappa_xx_err, fmt=".", elinewidth=0.5, markersize=4, c='k', label='$\kappa_{xx}$')
+                plt.errorbar(l, kappa_yy, yerr=kappa_yy_err, fmt=".", elinewidth=0.5, markersize=4, c='dodgerblue', label='$\kappa_{yy}$')
+                plt.errorbar(l, kappa_zz, yerr=kappa_zz_err, fmt=".", elinewidth=0.5, markersize=4, c='brown', label='$\kappa_{zz}$')
             else:
-                plt.errorbar(times, kappa_zz, yerr=kappa_zz_err, fmt=".", elinewidth=0.5, markersize=4, c='dodgerblue', label='$\kappa_\parallel$')
-                plt.errorbar(times, kappa_perp, yerr=kappa_perp_err, fmt=".", elinewidth=0.5, markersize=4, c='brown', label='$\kappa_\perp$')
+                plt.errorbar(l, kappa_zz, yerr=kappa_zz_err, fmt=".", elinewidth=0.5, markersize=4, c='dodgerblue', label='$\kappa_\parallel$')
+                plt.errorbar(l, kappa_perp, yerr=kappa_perp_err, fmt=".", elinewidth=0.5, markersize=4, c='brown', label='$\kappa_\perp$')
         else:
             # plot without error bars
             if isotropic:
-                plt.plot(times, kappa_xx, zorder=1, label='$\kappa_{xx}$', c='k') 
-                plt.scatter(times, kappa_xx, zorder=2, s=2, c='k')
-                plt.plot(times, kappa_yy, zorder=1, label='$\kappa_{yy}$', c='brown') 
-                plt.scatter(times, kappa_yy, zorder=2, s=2, c='brown')
-                plt.plot(times, kappa_zz, zorder=1, label='$\kappa_{zz}$', c='dodgerblue') 
-                plt.scatter(times, kappa_zz, zorder=2, s=2, c='dodgerblue')
+                plt.plot(l, kappa_xx, zorder=1, label='$\kappa_{xx}$', c='k') 
+                plt.scatter(l, kappa_xx, zorder=2, s=2, c='k')
+                plt.plot(l, kappa_yy, zorder=1, label='$\kappa_{yy}$', c='brown') 
+                plt.scatter(l, kappa_yy, zorder=2, s=2, c='brown')
+                plt.plot(l, kappa_zz, zorder=1, label='$\kappa_{zz}$', c='dodgerblue') 
+                plt.scatter(l, kappa_zz, zorder=2, s=2, c='dodgerblue')
             else:
-                plt.plot(times, kappa_perp, zorder=1, label='$\kappa_\perp$', c='brown') 
-                plt.scatter(times, kappa_perp, zorder=2, s=2, c='brown')
-                plt.plot(times, kappa_zz, zorder=1, label='$\kappa_\parallel$', c='dodgerblue') 
-                plt.scatter(times, kappa_zz, zorder=2, s=2, c='dodgerblue')
+                plt.plot(l, kappa_perp, zorder=1, label='$\kappa_\perp$', c='brown') 
+                plt.scatter(l, kappa_perp, zorder=2, s=2, c='brown')
+                plt.plot(l, kappa_zz, zorder=1, label='$\kappa_\parallel$', c='dodgerblue') 
+                plt.scatter(l, kappa_zz, zorder=2, s=2, c='dodgerblue')
         
         plt.xlabel('trajectory length [m]')
         plt.ylabel('running diff. coeff. [m$^2$/s]')
@@ -265,13 +265,13 @@ class Statistics():
             plt.show()
 
         n = n_points_plateau
-        print('diffusion coefficients computed between ' + str("{:.2e}".format(times[-n_points_plateau])) + 'm and ' + str("{:.2e}".format(times[-1])) +'m with ' + str(n) + ' data points')
+        print('diffusion coefficients computed between ' + str("{:.2e}".format(l[-n_points_plateau])) + 'm and ' + str("{:.2e}".format(l[-1])) +'m with ' + str(n) + ' data points')
         print('kappa_{xx}:', f"{np.mean(kappa_xx[-n:]):.3}", 'm²/s', '+-', f"{np.std(kappa_xx[-n:]):.3}", 'm²/s')
         print('kappa_{yy}:', f"{np.mean(kappa_yy[-n:]):.3}", 'm²/s', '+-', f"{np.std(kappa_yy[-n:]):.3}", 'm²/s')
         print('kappa_{zz}:', f"{np.mean(kappa_zz[-n:]):.3}", 'm²/s', '+-', f"{np.std(kappa_zz[-n:]):.3}", 'm²/s')
         
         d = {
-            'd': times, 
+            'l': l, 
             'kappa_xx': kappa_xx, 
             'kappa_yy': kappa_yy,
             'kappa_zz': kappa_zz,
