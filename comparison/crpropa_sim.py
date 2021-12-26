@@ -118,8 +118,8 @@ class CRPropa:
 
     def diffusion_coefficient_isotropic(self, data):
         kappa = []
-        L = self.return_l(data)
-        for l in L:
+        trajectory_lengths = self.return_l(data)
+        for l in trajectory_lengths:
             dataI = data[data['D'] == l]
             kappa.append(np.mean(dataI.X2D.values + dataI.Y2D.values + dataI.Y2D.values)/3.0)
         return kappa
