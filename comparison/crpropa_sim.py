@@ -12,7 +12,7 @@ class CRPropa:
         self.brms = crp.gauss
         self.l_max = 5*10**11 # [m]
         self.l_min = 5*10**9 # [m]
-        self.n_wavemodes = 100
+        self.n_wavemodes = 250
         self.step_size = step_size
         self.traj_max = traj_max
         self.file_name = 'data/raw_data/sim_result_'

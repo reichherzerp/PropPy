@@ -4,7 +4,7 @@ from crpropa_sim import *
 import numpy as np
 
 
-step_sizes = np.logspace(10, 13, 8)[::-1]
+step_sizes = np.logspace(9, 13, 12)[::-1]
 for step_size in step_sizes:
     crp = CRPropa(step_size = step_size, traj_max = 10**16)
     crp.sim()
