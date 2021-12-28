@@ -133,6 +133,8 @@ class CRPropa:
     def analyze(self, step_size, file_name_output):
         data = self.load_data(self.file_name+str(step_size/10**11)+'.txt')
         kappa = self.diffusion_coefficient_isotropic(data)
+        kappa_final = np.mean(kappa[-10:])
         l = self.return_l(data)
         np.save(file_name_output+str(step_size/10**11)+'_l', np.array(l))
         np.save(file_name_output+str(step_size/10**11)+'_kappa.npy', np.array(kappa))
+        return kappa_final
