@@ -6,7 +6,7 @@ import pandas as pd
 class CRPropa:
     def __init__(self, step_size = 10**11, traj_max = 10**14):
         # all simulation parameters
-        self.energy = 3*10**16*crp.eV
+        self.energy = 10**17*crp.eV
         self.n_obs = 100
         self.n_particles = 10**3
         self.brms = crp.gauss
