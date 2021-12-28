@@ -17,6 +17,7 @@ for i, step_size in enumerate(step_sizes):
 
     df_sim_data.loc[i] = [step_size, time_needed, kappa]
 
+
 # save simulation result
 file_name_results = 'data/crp_sim_data.pkl'
 df_sim_data.to_pickle(file_name_results)
