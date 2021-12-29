@@ -133,6 +133,10 @@ class Comparison():
     def plot_deviation_vs_time_steps(self):
         fig = plt.figure(figsize=(5,3.5))
         plt.axhline(y=0, color='k', linestyle='-', zorder=-1, label='theory')
+        plt.axvline(x=1, color='grey', linestyle=(0, (5, 0.4)), zorder=-1, label='1 sec')
+        plt.axvline(x=60, color='grey', linestyle=(0, (5, 2.5)), zorder=-1, label='1 min')
+        plt.axvline(x=60*60, color='grey', linestyle=(0, (5, 7)), zorder=-1, label='1 hour')
+        plt.axvline(x=60*60*24, color='grey', linestyle=(0, (5, 13)), zorder=-1, label='1 day')
 
         err_rwp = np.abs(np.log10(self.df_rwp_results['kappa'])-np.log10(self.kappa_theory))
         err_crp = np.abs(np.log10(self.df_crp_results['kappa'])-np.log10(self.kappa_theory))
@@ -150,7 +154,7 @@ class Comparison():
 
         plt.xlabel('simulation time [s]')
         plt.ylabel('deviation = |log($\kappa_\mathrm{sim}$) / log($\kappa_\mathrm{theory}$)|')
-        plt.legend(loc='center left')
+        plt.legend(loc='upper right')
         plt.savefig(self.path_figs+'/deviation_vs_time_steps.pdf', bbox_inches='tight', pad_inches=0.02)
         plt.show()
 
@@ -163,7 +167,6 @@ class Comparison():
         plt.axhline(y=60, color='grey', linestyle=(0, (5, 2.5)), zorder=-1, label='1 min')
         plt.axhline(y=60*60, color='grey', linestyle=(0, (5, 7)), zorder=-1, label='1 hour')
         plt.axhline(y=60*60*24, color='grey', linestyle=(0, (5, 13)), zorder=-1, label='1 day')
-
 
         err_rwp = np.abs(np.log10(self.df_rwp_results['kappa'])-np.log10(self.kappa_theory))
         err_crp = np.abs(np.log10(self.df_crp_results['kappa'])-np.log10(self.kappa_theory))
