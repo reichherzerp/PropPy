@@ -1,17 +1,29 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
+import pandas as pd
 
 class Comparison():
 
-    def __init__(self, kappa_theory, lambda_theory, step_sizes, path_data, path_figs):
+    def __init__(self, kappa_theory, lambda_theory, step_sizes, l_c, r_g, path_data, path_figs):
         self.kappa_theory = kappa_theory
         self.lambda_theory = lambda_theory
         self.step_sizes = step_sizes
+        self.l_c = l_c
+        self.r_g = r_g
         self.path_data = path_data
         self.path_figs = path_figs
+        self.load_sim_data()
 
-    def running_diffusion_coefficients(self):
+    def load_sim_data(self):
+        ### load data
+        self.df_rwp_results = pd.read_pickle(self.path_data+'/rwp_sim_data.pkl')
+        self.df_crp_results = pd.read_pickle(self.path_data+'/crp_sim_data.pkl')
+        ### time needed for CRPropa simulations with 10^3 particles need to be scaled down 
+        ### to times of RWPropa simulations with only 10^2 particles
+        self.df_crp_results['time'] = np.array(self.df_crp_results['time'].values.tolist())/10.0
+
+    def plot_running_diffusion_coefficients(self):
         fig, ax1 = plt.subplots(figsize=(5,3.5))
 
         plt.plot([1e17, 4e17], [self.kappa_theory*10**4,self.kappa_theory*10**4], color='k', linestyle=(0, (3, 1, 1, 1)), label='theory', zorder=-1)
@@ -49,4 +61,47 @@ class Comparison():
         ax1.set_ylabel('running $\kappa$ [cm$^2$/s]')
         plt.legend()
         plt.savefig(self.path_figs+'/running_kappa.pdf', bbox_inches='tight', pad_inches=0.02)
+        plt.show()
+
+
+    def plot_kappa_convergence_tests(self):
+        fig = plt.figure(figsize=(5,3.5))
+        zs = np.concatenate([self.df_rwp_results['time'], self.df_crp_results['time']], axis=0)
+        min_, max_ = zs.min(), zs.max()
+        plt.scatter(self.df_rwp_results['step_size'], self.df_rwp_results['kappa'], c=self.df_rwp_results['time'], cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s', label='RWPropa')
+        plt.clim(min_, max_)
+        plt.scatter(self.df_crp_results['step_size'], self.df_crp_results['kappa'], c=self.df_crp_results['time'], cmap='viridis', norm=matplotlib.colors.LogNorm(), label='CRPropa')
+        plt.clim(min_, max_)
+        plt.colorbar(label='simulation time [s]')
+        plt.loglog()
+        plt.axvline(x=self.l_c, label='$l_\mathrm{c}$', color='grey', ls=':')
+        plt.axvline(x=self.r_g, label='$r_\mathrm{g}$', color='grey', ls='--')
+        plt.axhline(y=self.kappa_theory, color='grey', linestyle='-', label='theory')
+
+        plt.xlabel('step size [m]')
+        plt.ylabel('$\kappa$ [m$^2$/s]')
+        plt.legend()
+        plt.savefig(self.path_figs+'/kappa_vs_stepsize.pdf', bbox_inches='tight', pad_inches=0.02)
+        plt.show()
+
+
+    def plot_kappa_vs_time_steps(self):
+        fig = plt.figure(figsize=(5,3.5))
+        zs = np.concatenate([self.df_rwp_results['step_size'], self.df_crp_results['step_size']], axis=0)
+        min_, max_ = zs.min(), zs.max()
+        plt.scatter(self.df_rwp_results['time'], self.df_rwp_results['kappa'], c=self.df_rwp_results['step_size'], cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s')
+        plt.clim(min_, max_)
+        plt.scatter(self.df_crp_results['time'], self.df_crp_results['kappa'], c=self.df_crp_results['step_size'], cmap='viridis', norm=matplotlib.colors.LogNorm())
+        plt.clim(min_, max_)
+        plt.colorbar(label='step size [s]')
+        plt.loglog()
+        plt.axhline(y=self.kappa_theory, color='grey', linestyle='-', label='theory')
+
+        plt.scatter([0],[0], label='RWPropa', marker='s', color='grey')
+        plt.scatter([0],[0], label='CRPropa', color='grey')
+
+        plt.xlabel('simulation time [s]')
+        plt.ylabel('$\kappa$ [m$^2$/s]')
+        plt.legend(loc = 'center left')
+        plt.savefig(self.path_figs+'/kappa_vs_time_steps.pdf', bbox_inches='tight', pad_inches=0.02)
         plt.show()
