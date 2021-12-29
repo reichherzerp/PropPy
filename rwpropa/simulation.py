@@ -241,4 +241,3 @@ class AnisotropicSimulation():
             self.sim.source.get_description()
             self.sim.propagator.get_description()
             self.sim.observer.get_description()
-
