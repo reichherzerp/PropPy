@@ -5,7 +5,7 @@ import numpy as np
 import time
 
 step_sizes = np.logspace(10, 14, 15)[::-1]
-df_sim_data = pd.DataFrame(columns=('step_size', 'time', 'kappa'))
+df_sim_data = pd.DataFrame(columns=('step_size', 'time', 'kappa', 'kappa_err'))
 
 for i, step_size in enumerate(step_sizes):
     crp = CRPropa(step_size = step_size, traj_max = 10**17)
@@ -13,9 +13,9 @@ for i, step_size in enumerate(step_sizes):
     crp.sim()
     time_needed = time.process_time() - start_time
     
-    kappa = crp.analyze(step_size, 'data/sim_result_crp_')
+    kappa, kappa_err = crp.analyze(step_size, 'data/sim_result_crp_')
 
-    df_sim_data.loc[i] = [step_size, time_needed, kappa]
+    df_sim_data.loc[i] = [step_size, time_needed, kappa, kappa_err]
 
 
 # save simulation result
