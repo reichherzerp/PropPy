@@ -16,6 +16,7 @@ class CRPropa:
         self.step_size = step_size
         self.traj_max = traj_max
         self.file_name = 'data/raw_data/sim_result_'
+        self.propagation_module = self.set_propagation_module('BP')
 
 
     def set_energy(self, energy):
@@ -47,6 +48,14 @@ class CRPropa:
 
     def set_file_name(self, file_name):
         self.file_name = file_name
+
+    def set_propagation_module(self, module):
+        if module == 'BP':
+            self.propagation_module = module
+        elif module == 'CK':
+            self.propagation_module = module
+        else:
+            print("Error: use either module 'BP' (boris push) or 'CK' (cash karp).")
 
     def sim(self):
         sim = crp.ModuleList()
