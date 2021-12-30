@@ -37,14 +37,14 @@ class Comparison():
                 rwp_kappa = np.load(self.path_data+'/sim_result_rwp_'+str(step_size/10**11)+'_kappa.npy')
                 ax1.plot(rwp_l[:n_max], np.array(rwp_kappa[:n_max])*10**4, color='red', ls='-', zorder=2, lw=2) 
             except:
-                print('no data')
+                print('no data for RPW')
             
             try:
-                crp_l = np.load(self.path_data+'/sim_result_crp_'+str(step_size/10**11)+'_l.npy')
-                crp_kappa = np.load(self.path_data+'/sim_result_crp_'+str(step_size/10**11)+'_kappa.npy')
+                crp_l = np.load(self.path_data+'/sim_result_crp_BP_stepsize_'+str(step_size/10**11)+'_l.npy')
+                crp_kappa = np.load(self.path_data+'/sim_result_crp_BP_stepsize_'+str(step_size/10**11)+'_kappa.npy')
                 ax1.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls=(0, (1, 1)), lw=2, zorder=4)
             except:
-                print('no data')
+                print('no data for BP')
 
         # colorbar
         plt.scatter(np.zeros(len(self.step_sizes)), np.zeros(len(self.step_sizes)), c=self.step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm())

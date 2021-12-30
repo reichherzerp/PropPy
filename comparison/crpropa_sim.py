@@ -4,7 +4,7 @@ import pandas as pd
 
 
 class CRPropa:
-    def __init__(self, step_size = 10**11, traj_max = 10**14, prop_module = 'BP'):
+    def __init__(self, step_size = 10**11, traj_max = 10**14, path = '', prop_module = 'BP'):
         # all simulation parameters
         self.energy = 10**17*crp.eV
         self.n_obs = 100
@@ -15,9 +15,16 @@ class CRPropa:
         self.n_wavemodes = 250
         self.step_size = step_size
         self.traj_max = traj_max
-        self.file_name = 'data/raw_data/sim_result_'
-        self.propagation_module = self.set_propagation_module(prop_module)
+        self.path = path
+        self.set_propagation_module(prop_module)
 
+    def set_file_name(self):
+        if self.propagation_module == 'BP':
+            self.file_name_data = self.path + 'data/sim_result_crp_BP_stepsize_'
+            self.file_name_raw_data = self.path + 'data/raw_data/crpropa_BP_stepsize_'
+        elif self.propagation_module == 'CK':
+            self.file_name_data = self.path + 'data/sim_result_crp_CK_stepsize_'
+            self.file_name_raw_data = self.path + 'data/raw_data/crpropa_CK_stepsize_'
 
     def set_energy(self, energy):
         self.energy = energy
@@ -46,9 +53,6 @@ class CRPropa:
     def set_traj_max(self, traj_max):
         self.traj_max = traj_max
 
-    def set_file_name(self, file_name):
-        self.file_name = file_name
-
     def set_propagation_module(self, module):
         if module == 'BP':
             self.propagation_module = module
@@ -56,6 +60,7 @@ class CRPropa:
             self.propagation_module = module
         else:
             print("Error: use either module 'BP' (boris push) or 'CK' (cash karp).")
+        self.set_file_name()
 
     def sim(self):
         sim = crp.ModuleList()
@@ -87,7 +92,7 @@ class CRPropa:
         sim.add(maxTra)
 
         # output
-        output = crp.TextOutput(self.file_name+str(self.step_size/10**11)+'.txt', crp.Output.Trajectory3D)
+        output = crp.TextOutput(self.file_name_raw_data+str(self.step_size/10**11)+'.txt', crp.Output.Trajectory3D)
         output.enable(output.SerialNumberColumn)
 
         # observer
@@ -146,12 +151,12 @@ class CRPropa:
         return sorted(l)
 
 
-    def analyze(self, step_size, file_name_output):
-        data = self.load_data(self.file_name+str(step_size/10**11)+'.txt')
+    def analyze(self, step_size):
+        data = self.load_data(self.file_name_raw_data+str(step_size/10**11)+'.txt')
         kappa = self.diffusion_coefficient_isotropic(data)
         kappa_final = np.mean(kappa[-5:])
         kappa_final_err = np.std(kappa[-5:])
         l = self.return_l(data)
-        np.save(file_name_output+str(step_size/10**11)+'_l', np.array(l))
-        np.save(file_name_output+str(step_size/10**11)+'_kappa.npy', np.array(kappa))
+        np.save(self.file_name_data+str(step_size/10**11)+'_l', np.array(l))
+        np.save(self.file_name_data+str(step_size/10**11)+'_kappa.npy', np.array(kappa))
         return kappa_final, kappa_final_err
