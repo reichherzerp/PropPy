@@ -18,10 +18,12 @@ class Comparison():
     def load_sim_data(self):
         ### load data
         self.df_rwp_results = pd.read_pickle(self.path_data+'/rwp_sim_data.pkl')
-        self.df_crp_results = pd.read_pickle(self.path_data+'/crp_sim_data.pkl')
+        self.df_crp_ck_results = pd.read_pickle(self.path_data+'/crp_sim_data_CK.pkl')
+        self.df_crp_bp_results = pd.read_pickle(self.path_data+'/crp_sim_data_BP.pkl')
         ### time needed for CRPropa simulations with 10^3 particles need to be scaled down 
         ### to times of RWPropa simulations with only 10^2 particles
-        self.df_crp_results['time'] = np.array(self.df_crp_results['time'].values.tolist())/10.0
+        self.df_crp_ck_results['time'] = np.array(self.df_crp_ck_results['time'].values.tolist())/10.0
+        self.df_crp_bp_results['time'] = np.array(self.df_crp_bp_results['time'].values.tolist())/10.0
 
     def plot_running_diffusion_coefficients(self):
         fig, ax1 = plt.subplots(figsize=(5,3.5))
@@ -74,11 +76,13 @@ class Comparison():
 
     def plot_kappa_convergence_tests(self):
         fig = plt.figure(figsize=(5,3.5))
-        zs = np.concatenate([self.df_rwp_results['time'], self.df_crp_results['time']], axis=0)
+        zs = np.concatenate([self.df_rwp_results['time'], self.df_crp_ck_results['time'], self.df_crp_bp_results['time']], axis=0)
         min_, max_ = zs.min(), zs.max()
         plt.scatter(self.df_rwp_results['step_size'], self.df_rwp_results['kappa'], c=self.df_rwp_results['time'], cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s', label='RWPropa')
         plt.clim(min_, max_)
-        plt.scatter(self.df_crp_results['step_size'], self.df_crp_results['kappa'], c=self.df_crp_results['time'], cmap='viridis', norm=matplotlib.colors.LogNorm(), label='CRPropa')
+        plt.scatter(self.df_crp_ck_results['step_size'], self.df_crp_ck_results['kappa'], c=self.df_crp_ck_results['time'], cmap='viridis', norm=matplotlib.colors.LogNorm(), label='CRPropa')
+        plt.clim(min_, max_)
+        plt.scatter(self.df_crp_bp_results['step_size'], self.df_crp_bp_results['kappa'], c=self.df_crp_bp_results['time'], cmap='viridis', norm=matplotlib.colors.LogNorm(), label='CRPropa')
         plt.clim(min_, max_)
         plt.colorbar(label='simulation time [s]')
         plt.loglog()
