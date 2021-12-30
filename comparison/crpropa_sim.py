@@ -4,7 +4,7 @@ import pandas as pd
 
 
 class CRPropa:
-    def __init__(self, step_size = 10**11, traj_max = 10**14):
+    def __init__(self, step_size = 10**11, traj_max = 10**14, prop_module = 'BP'):
         # all simulation parameters
         self.energy = 10**17*crp.eV
         self.n_obs = 100
@@ -16,7 +16,7 @@ class CRPropa:
         self.step_size = step_size
         self.traj_max = traj_max
         self.file_name = 'data/raw_data/sim_result_'
-        self.propagation_module = self.set_propagation_module('BP')
+        self.propagation_module = self.set_propagation_module(prop_module)
 
 
     def set_energy(self, energy):
@@ -74,8 +74,15 @@ class CRPropa:
         b_field.addField(turbulence)
         
         # propagation
-        prop_bp = crp.PropagationBP(b_field, self.step_size)
-        sim.add(prop_bp)
+        if self.propagation_module == 'BP':
+            prop_bp = crp.PropagationBP(b_field, self.step_size)
+            sim.add(prop_bp)
+        elif self.propagation_module == 'CK':
+            # usage of fixed step size
+            prop_ck = crp.PropagationCK(b_field, self.step_size, self.step_size)
+            sim.add(prop_ck)
+        else: 
+            print('Error: no valid propagation module selected. Use either BP or CK.')
         maxTra = crp.MaximumTrajectoryLength(self.traj_max)
         sim.add(maxTra)
 
