@@ -45,13 +45,21 @@ class Comparison():
                 ax1.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls=(0, (1, 1)), lw=2, zorder=4)
             except:
                 print('no data for BP')
+            
+            try:
+                crp_l = np.load(self.path_data+'/sim_result_crp_CK_stepsize_'+str(step_size/10**11)+'_l.npy')
+                crp_kappa = np.load(self.path_data+'/sim_result_crp_CK_stepsize_'+str(step_size/10**11)+'_kappa.npy')
+                ax1.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls='-.', lw=2, zorder=4)
+            except:
+                print('no data for CK')
 
         # colorbar
         plt.scatter(np.zeros(len(self.step_sizes)), np.zeros(len(self.step_sizes)), c=self.step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm())
         plt.colorbar(label='step sizes [m]')
 
         #legend
-        plt.plot([0,0], [0,0], c='grey', ls=':', label='CRPropa (cc)', lw=2)
+        plt.plot([0,0], [0,0], c='grey', ls=':', label='CRPropa (BP)', lw=2)
+        plt.plot([0,0], [0,0], c='grey', ls='-.', label='CRPropa (CK)', lw=2)
         plt.plot([0,0], [0,0], c='red', ls='-', label='RWPropa', lw=2)
 
         plt.xlim([min(self.step_sizes)/3, 4e17])

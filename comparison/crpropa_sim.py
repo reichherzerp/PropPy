@@ -83,8 +83,11 @@ class CRPropa:
             prop_bp = crp.PropagationBP(b_field, self.step_size)
             sim.add(prop_bp)
         elif self.propagation_module == 'CK':
-            # usage of fixed step size
-            prop_ck = crp.PropagationCK(b_field, self.step_size, self.step_size)
+            # usage of fixed step size -> tolerance doesn't matter then
+            tolerance = 1e-4
+            min_step = self.step_size
+            max_step = self.step_size
+            prop_ck = crp.PropagationCK(b_field, tolerance, min_step, max_step)
             sim.add(prop_ck)
         else: 
             print('Error: no valid propagation module selected. Use either BP or CK.')
