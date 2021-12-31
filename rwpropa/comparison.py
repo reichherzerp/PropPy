@@ -17,22 +17,29 @@ class Comparison():
 
     def load_sim_data(self):
         try:
-            ### load data
             self.df_rwp_results = pd.read_pickle(self.path_data+'/rwp_sim_data.pkl')
-            self.df_crp_ck_results = pd.read_pickle(self.path_data+'/crp_sim_data_CK.pkl')
-            self.df_crp_bp_results = pd.read_pickle(self.path_data+'/crp_sim_data_BP.pkl')
-            ### time needed for CRPropa simulations with 10^3 particles need to be scaled down 
-            ### to times of RWPropa simulations with only 10^2 particles
-            self.df_crp_ck_results['time'] = np.array(self.df_crp_ck_results['time'].values.tolist())/10.0
-            self.df_crp_bp_results['time'] = np.array(self.df_crp_bp_results['time'].values.tolist())/10.0
         except:
-            print("couldn't loade data")
+            print("couldn't loade rpw data")
+        try:
+            self.df_crp_ck_results = pd.read_pickle(self.path_data+'/crp_sim_data_CK.pkl')
+        except:
+            print("couldn't loade CK data")
+        try:
+            self.df_crp_bp_results = pd.read_pickle(self.path_data+'/crp_sim_data_BP.pkl')
+        except:
+            print("couldn't loade BP data")
 
     def plot_running_diffusion_coefficients(self):
         fig, ax1 = plt.subplots(figsize=(5,3.5))
 
         plt.plot([1e17, 4e17], [self.kappa_theory*10**4,self.kappa_theory*10**4], color='k', linestyle=(0, (3, 1, 1, 1)), label='theory', zorder=-1)
         plt.axvline(x=self.lambda_theory, color='k', linestyle='--', label='$\lambda_\mathrm{theory}$', zorder=-1)
+        steps_rwp = []
+        steps_ck = []
+        steps_bp = []
+        kappas_rwp = []
+        kappas_ck = []
+        kappas_bp = []
 
         for i, step_size in enumerate(self.step_sizes):
             color = plt.cm.viridis(np.linspace(0, 1, len(self.step_sizes))[i])
@@ -41,6 +48,8 @@ class Comparison():
                 rwp_l = np.load(self.path_data+'/sim_result_rwp_'+str(step_size/10**11)+'_l.npy')
                 rwp_kappa = np.load(self.path_data+'/sim_result_rwp_'+str(step_size/10**11)+'_kappa.npy')
                 ax1.plot(rwp_l[:n_max], np.array(rwp_kappa[:n_max])*10**4, color='red', ls='-', zorder=2, lw=2) 
+                steps_rwp.append(step_size)
+                kappas_rwp.append(np.mean(rwp_kappa[-10:]))
             except:
                 print('no data for RPW')
             
@@ -48,6 +57,8 @@ class Comparison():
                 crp_l = np.load(self.path_data+'/sim_result_crp_BP_stepsize_'+str(step_size/10**11)+'_l.npy')
                 crp_kappa = np.load(self.path_data+'/sim_result_crp_BP_stepsize_'+str(step_size/10**11)+'_kappa.npy')
                 ax1.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls=(0, (1, 1)), lw=2, zorder=4)
+                steps_bp.append(step_size)
+                kappas_bp.append(np.mean(crp_kappa[-10:]))
             except:
                 print('no data for BP')
             
@@ -55,6 +66,8 @@ class Comparison():
                 crp_l = np.load(self.path_data+'/sim_result_crp_CK_stepsize_'+str(step_size/10**11)+'_l.npy')
                 crp_kappa = np.load(self.path_data+'/sim_result_crp_CK_stepsize_'+str(step_size/10**11)+'_kappa.npy')
                 ax1.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls='-.', lw=2, zorder=4)
+                steps_ck.append(step_size)
+                kappas_ck.append(np.mean(crp_kappa[-10:]))
             except:
                 print('no data for CK')
 
@@ -76,16 +89,52 @@ class Comparison():
         plt.savefig(self.path_figs+'/running_kappa.pdf', bbox_inches='tight', pad_inches=0.02)
         plt.show()
 
+        fig, ax1 = plt.subplots(figsize=(5,3.5))
+        plt.scatter(steps_rwp, kappas_rwp, label='RWPropa', marker='s', color='grey')
+        plt.scatter(steps_ck, kappas_ck, label='CRPropa (CK)', color='grey')
+        plt.scatter(steps_bp, kappas_bp, label='CRPropa (BP)', marker='d', color='grey')
+        plt.legend()
+        plt.show()
+
 
     def plot_kappa_convergence_tests(self):
         fig = plt.figure(figsize=(5,3.5))
-        zs = np.concatenate([self.df_rwp_results['time'], self.df_crp_ck_results['time'], self.df_crp_bp_results['time']], axis=0)
+        ### try to load data and handle if data is not available
+        try:
+            rwp_times = np.array(self.df_rwp_results['time'].values.tolist())
+            rwp_step_sizes = self.df_rwp_results['step_size']
+            rwp_kappas = self.df_rwp_results['kappa']
+        except:
+            print('no rwp data')
+            rwp_times = np.array([])
+            rwp_step_sizes = np.array([])
+            rwp_kappas = np.array([])
+        try:
+            ck_times = np.array(self.df_crp_ck_results['time'].values.tolist())
+            ck_step_sizes = self.df_crp_ck_results['step_size']
+            ck_kappas = self.df_crp_ck_results['kappa']
+        except:
+            print('no ck data')
+            ck_times = np.array([])
+            ck_step_sizes = np.array([])
+            ck_kappas = np.array([])
+        try:
+            bp_times = np.array(self.df_crp_bp_results['time'].values.tolist())
+            bp_step_sizes = self.df_crp_bp_results['step_size']
+            bp_kappas = self.df_crp_bp_results['kappa']
+        except:
+            print('no bp data')
+            bp_times = np.array([])
+            bp_step_sizes = np.array([])
+            bp_kappas = np.array([])
+        zs = np.concatenate([rwp_times, ck_times, bp_times], axis=0)
+        print(zs)
         min_, max_ = zs.min(), zs.max()
-        plt.scatter(self.df_rwp_results['step_size'], self.df_rwp_results['kappa'], c=self.df_rwp_results['time'], cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s')
+        plt.scatter(rwp_step_sizes, rwp_kappas, c=rwp_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s')
         plt.clim(min_, max_)
-        plt.scatter(self.df_crp_ck_results['step_size'], self.df_crp_ck_results['kappa'], c=self.df_crp_ck_results['time'], cmap='viridis', norm=matplotlib.colors.LogNorm())
+        plt.scatter(ck_step_sizes, ck_kappas, c=ck_times, cmap='viridis', norm=matplotlib.colors.LogNorm())
         plt.clim(min_, max_)
-        plt.scatter(self.df_crp_bp_results['step_size'], self.df_crp_bp_results['kappa'], c=self.df_crp_bp_results['time'], cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='d')
+        plt.scatter(bp_step_sizes, bp_kappas, c=bp_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='d')
         plt.clim(min_, max_)
         plt.colorbar(label='simulation time [s]')
         plt.loglog()
