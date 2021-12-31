@@ -16,14 +16,17 @@ class Comparison():
         self.load_sim_data()
 
     def load_sim_data(self):
-        ### load data
-        self.df_rwp_results = pd.read_pickle(self.path_data+'/rwp_sim_data.pkl')
-        self.df_crp_ck_results = pd.read_pickle(self.path_data+'/crp_sim_data_CK.pkl')
-        self.df_crp_bp_results = pd.read_pickle(self.path_data+'/crp_sim_data_BP.pkl')
-        ### time needed for CRPropa simulations with 10^3 particles need to be scaled down 
-        ### to times of RWPropa simulations with only 10^2 particles
-        self.df_crp_ck_results['time'] = np.array(self.df_crp_ck_results['time'].values.tolist())/10.0
-        self.df_crp_bp_results['time'] = np.array(self.df_crp_bp_results['time'].values.tolist())/10.0
+        try:
+            ### load data
+            self.df_rwp_results = pd.read_pickle(self.path_data+'/rwp_sim_data.pkl')
+            self.df_crp_ck_results = pd.read_pickle(self.path_data+'/crp_sim_data_CK.pkl')
+            self.df_crp_bp_results = pd.read_pickle(self.path_data+'/crp_sim_data_BP.pkl')
+            ### time needed for CRPropa simulations with 10^3 particles need to be scaled down 
+            ### to times of RWPropa simulations with only 10^2 particles
+            self.df_crp_ck_results['time'] = np.array(self.df_crp_ck_results['time'].values.tolist())/10.0
+            self.df_crp_bp_results['time'] = np.array(self.df_crp_bp_results['time'].values.tolist())/10.0
+        except:
+            print("couldn't loade data")
 
     def plot_running_diffusion_coefficients(self):
         fig, ax1 = plt.subplots(figsize=(5,3.5))

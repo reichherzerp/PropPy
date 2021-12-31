@@ -59,7 +59,7 @@ class CRPropa:
         elif module == 'CK':
             self.propagation_module = module
         else:
-            print("Error: use either module 'BP' (boris push) or 'CK' (cash karp).")
+            print("Error: use either module 'BP' (Boris Push) or 'CK' (Cash Karp).")
         self.set_file_name()
 
     def sim(self):
