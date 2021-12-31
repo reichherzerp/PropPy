@@ -90,10 +90,14 @@ class Comparison():
         plt.show()
 
         fig, ax1 = plt.subplots(figsize=(5,3.5))
-        plt.scatter(steps_rwp, kappas_rwp, label='RWPropa', marker='s', color='grey')
-        plt.scatter(steps_ck, kappas_ck, label='CRPropa (CK)', color='grey')
-        plt.scatter(steps_bp, kappas_bp, label='CRPropa (BP)', marker='d', color='grey')
+        plt.scatter(steps_rwp, kappas_rwp, label='RWPropa', marker='s', color='green')
+        plt.scatter(steps_ck, kappas_ck, label='CRPropa (CK)', color='r')
+        plt.scatter(steps_bp, kappas_bp, label='CRPropa (BP)', marker='d', color='k')
+        plt.axvline(x=self.l_c, label='$l_\mathrm{c}$', color='grey', ls=':')
+        plt.axvline(x=self.r_g, label='$r_\mathrm{g}$', color='grey', ls='--')
+        plt.axhline(y=self.kappa_theory, color='grey', linestyle='-', label='theory')
         plt.legend()
+        plt.loglog()
         plt.show()
 
 
