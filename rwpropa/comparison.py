@@ -95,6 +95,7 @@ class Comparison():
         plt.scatter(steps_bp, kappas_bp, label='CRPropa (BP)', marker='d', color='k')
         plt.axvline(x=self.l_c, label='$l_\mathrm{c}$', color='grey', ls=':')
         plt.axvline(x=self.r_g*2*3.14, label='$2\pi\, r_\mathrm{g}$', color='grey', ls='--')
+        plt.axvline(x=self.kappa_theory*3/(3*10**8), label='$\lambda_\mathrm{theory}$', color='grey', ls='-.')
         plt.axhline(y=self.kappa_theory, color='grey', linestyle='-', label='theory')
         plt.legend()
         plt.loglog()

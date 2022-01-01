@@ -25,6 +25,10 @@ class CRPropa:
         elif self.propagation_module == 'CK':
             self.file_name_data = self.path + 'data/sim_result_crp_CK_stepsize_'
             self.file_name_raw_data = self.path + 'data/raw_data/crpropa_CK_stepsize_'
+        elif self.propagation_module == 'SDE':
+            self.file_name_data = self.path + 'data/sim_result_crp_SDE_stepsize_'
+            self.file_name_raw_data = self.path + 'data/raw_data/crpropa_SDE_stepsize_'
+
 
     def set_energy(self, energy):
         self.energy = energy
@@ -59,7 +63,7 @@ class CRPropa:
         elif module == 'CK':
             self.propagation_module = module
         else:
-            print("Error: use either module 'BP' (Boris Push) or 'CK' (Cash Karp).")
+            print("Error: use either module 'BP' (Boris Push) or 'CK' (Cash Karp) or 'SDE' (stochastic differential equations).")
         self.set_file_name()
 
     def sim(self):
@@ -83,6 +87,13 @@ class CRPropa:
             prop_bp = crp.PropagationBP(b_field, self.step_size)
             sim.add(prop_bp)
         elif self.propagation_module == 'CK':
+            # usage of fixed step size -> tolerance doesn't matter then
+            tolerance = 1e-4
+            min_step = self.step_size
+            max_step = self.step_size
+            prop_ck = crp.PropagationCK(b_field, tolerance, min_step, max_step)
+            sim.add(prop_ck)
+        elif self.propagation_module == 'SDE':
             # usage of fixed step size -> tolerance doesn't matter then
             tolerance = 1e-4
             min_step = self.step_size
