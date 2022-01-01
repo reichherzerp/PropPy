@@ -33,6 +33,43 @@ class Comparison():
         except:
             print("couldn't loade SDE data")
 
+        try:
+            self.rwp_times = np.array(self.df_rwp_results['time'].values.tolist())
+            self.rwp_step_sizes = self.df_rwp_results['step_size']
+            self.rwp_kappas = self.df_rwp_results['kappa']
+        except:
+            print('no rwp data')
+            self.rwp_times = np.array([])
+            self.rwp_step_sizes = np.array([])
+            self.rwp_kappas = np.array([])
+        try:
+            self.ck_times = np.array(self.df_crp_ck_results['time'].values.tolist())
+            self.ck_step_sizes = self.df_crp_ck_results['step_size']
+            self.ck_kappas = self.df_crp_ck_results['kappa']
+        except:
+            print('no ck data')
+            self.ck_times = np.array([])
+            self.ck_step_sizes = np.array([])
+            self.ck_kappas = np.array([])
+        try:
+            self.bp_times = np.array(self.df_crp_bp_results['time'].values.tolist())
+            self.bp_step_sizes = self.df_crp_bp_results['step_size']
+            self.bp_kappas = self.df_crp_bp_results['kappa']
+        except:
+            print('no bp data')
+            self.bp_times = np.array([])
+            self.bp_step_sizes = np.array([])
+            self.bp_kappas = np.array([])
+        try:
+            self.sde_times = np.array(self.df_crp_sde_results['time'].values.tolist())
+            self.sde_step_sizes = self.df_crp_sde_results['step_size']
+            self.sde_kappas = self.df_crp_sde_results['kappa']
+        except:
+            print('no SDE data')
+            self.sde_times = np.array([])
+            self.sde_step_sizes = np.array([])
+            self.sde_kappas = np.array([])
+
     def plot_running_diffusion_coefficients(self):
         fig, ax1 = plt.subplots(figsize=(5,3.5))
 
@@ -122,41 +159,16 @@ class Comparison():
     def plot_kappa_convergence_tests(self):
         fig = plt.figure(figsize=(5,3.5))
         ### try to load data and handle if data is not available
-        try:
-            rwp_times = np.array(self.df_rwp_results['time'].values.tolist())
-            rwp_step_sizes = self.df_rwp_results['step_size']
-            rwp_kappas = self.df_rwp_results['kappa']
-        except:
-            print('no rwp data')
-            rwp_times = np.array([])
-            rwp_step_sizes = np.array([])
-            rwp_kappas = np.array([])
-        try:
-            ck_times = np.array(self.df_crp_ck_results['time'].values.tolist())
-            ck_step_sizes = self.df_crp_ck_results['step_size']
-            ck_kappas = self.df_crp_ck_results['kappa']
-        except:
-            print('no ck data')
-            ck_times = np.array([])
-            ck_step_sizes = np.array([])
-            ck_kappas = np.array([])
-        try:
-            bp_times = np.array(self.df_crp_bp_results['time'].values.tolist())
-            bp_step_sizes = self.df_crp_bp_results['step_size']
-            bp_kappas = self.df_crp_bp_results['kappa']
-        except:
-            print('no bp data')
-            bp_times = np.array([])
-            bp_step_sizes = np.array([])
-            bp_kappas = np.array([])
-        zs = np.concatenate([rwp_times, ck_times, bp_times], axis=0)
-        print(zs)
+        
+        zs = np.concatenate([self.rwp_times, self.ck_times, self.bp_times, self.sde_times], axis=0)
         min_, max_ = zs.min(), zs.max()
-        plt.scatter(rwp_step_sizes, rwp_kappas, c=rwp_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s')
+        plt.scatter(self.rwp_step_sizes, self.rwp_kappas, c=self.rwp_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s')
         plt.clim(min_, max_)
-        plt.scatter(ck_step_sizes, ck_kappas, c=ck_times, cmap='viridis', norm=matplotlib.colors.LogNorm())
+        plt.scatter(self.ck_step_sizes, self.ck_kappas, c=self.ck_times, cmap='viridis', norm=matplotlib.colors.LogNorm())
         plt.clim(min_, max_)
-        plt.scatter(bp_step_sizes, bp_kappas, c=bp_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='d')
+        plt.scatter(self.bp_step_sizes, self.bp_kappas, c=self.bp_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='d')
+        plt.clim(min_, max_)
+        plt.scatter(self.sde_step_sizes, self.sde_kappas, c=self.sde_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='^')
         plt.clim(min_, max_)
         plt.colorbar(label='simulation time [s]')
         plt.loglog()
@@ -168,6 +180,7 @@ class Comparison():
         plt.scatter([0],[0], label='RWPropa', marker='s', color='grey')
         plt.scatter([0],[0], label='CRPropa (CK)', color='grey')
         plt.scatter([0],[0], label='CRPropa (BP)', marker='d', color='grey')
+        plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')
 
         plt.xlabel('step size [m]')
         plt.ylabel('$\kappa$ [m$^2$/s]')
@@ -178,13 +191,15 @@ class Comparison():
 
     def plot_kappa_vs_time_steps(self):
         fig = plt.figure(figsize=(5,3.5))
-        zs = np.concatenate([self.df_rwp_results['step_size'], self.df_crp_ck_results['step_size'], self.df_crp_bp_results['step_size']], axis=0)
+        zs = np.concatenate([self.rwp_step_sizes, self.ck_step_sizes, self.bp_step_sizes, self.sde_step_sizes], axis=0)
         min_, max_ = zs.min(), zs.max()
-        plt.scatter(self.df_rwp_results['time'], self.df_rwp_results['kappa'], c=self.df_rwp_results['step_size'], cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s')
+        plt.scatter(self.rwp_times, self.rwp_kappas, c=self.rwp_step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s')
         plt.clim(min_, max_)
-        plt.scatter(self.df_crp_ck_results['time'], self.df_crp_ck_results['kappa'], c=self.df_crp_ck_results['step_size'], cmap='viridis', norm=matplotlib.colors.LogNorm())
+        plt.scatter(self.ck_times, self.ck_kappas, c=self.ck_step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm())
         plt.clim(min_, max_)
-        plt.scatter(self.df_crp_bp_results['time'], self.df_crp_bp_results['kappa'], c=self.df_crp_bp_results['step_size'], cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='d')
+        plt.scatter(self.bp_times, self.bp_kappas, c=self.bp_step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='d')
+        plt.clim(min_, max_)
+        plt.scatter(self.sde_times, self.sde_kappas, c=self.sde_step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='^')
         plt.clim(min_, max_)
         plt.colorbar(label='step size [s]')
         plt.loglog()
@@ -194,6 +209,7 @@ class Comparison():
         plt.scatter([0],[0], label='RWPropa', marker='s', color='grey')
         plt.scatter([0],[0], label='CRPropa (CK)', color='grey')
         plt.scatter([0],[0], label='CRPropa (BP)', marker='d', color='grey')
+        plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')
 
         plt.xlabel('simulation time [s]')
         plt.ylabel('$\kappa$ [m$^2$/s]')
@@ -204,16 +220,19 @@ class Comparison():
 
     def plot_kappa_vs_time_deviation(self):
         fig = plt.figure(figsize=(5,3.5))
-        err_rwp = np.abs(np.log10(self.df_rwp_results['kappa'])-np.log10(self.kappa_theory))
-        err_crp_ck = np.abs(np.log10(self.df_crp_ck_results['kappa'])-np.log10(self.kappa_theory))
-        err_crp_bp = np.abs(np.log10(self.df_crp_bp_results['kappa'])-np.log10(self.kappa_theory))
-        zs = np.concatenate([err_rwp, err_crp_ck, err_crp_bp], axis=0)
+        err_rwp = np.abs(np.log10(self.rwp_kappas)-np.log10(self.kappa_theory))
+        err_crp_ck = np.abs(np.log10(self.ck_kappas)-np.log10(self.kappa_theory))
+        err_crp_bp = np.abs(np.log10(self.bp_kappas)-np.log10(self.kappa_theory))
+        err_crp_sde = np.abs(np.log10(self.sde_kappas)-np.log10(self.kappa_theory))
+        zs = np.concatenate([err_rwp, err_crp_ck, err_crp_bp, err_crp_sde], axis=0)
         min_, max_ = zs.min(), zs.max()
-        plt.scatter(self.df_rwp_results['time'], self.df_rwp_results['kappa'], c=err_rwp, cmap='viridis', marker='s')
+        plt.scatter(self.rwp_times, self.rwp_kappas, c=err_rwp, cmap='viridis', marker='s')
         plt.clim(min_, max_)
-        plt.scatter(self.df_crp_ck_results['time'], self.df_crp_ck_results['kappa'], c=err_crp_ck, cmap='viridis')
+        plt.scatter(self.ck_times, self.ck_kappas, c=err_crp_ck, cmap='viridis')
         plt.clim(min_, max_)
-        plt.scatter(self.df_crp_bp_results['time'], self.df_crp_bp_results['kappa'], c=err_crp_bp, cmap='viridis', marker='d')
+        plt.scatter(self.bp_times, self.bp_kappas, c=err_crp_bp, cmap='viridis', marker='d')
+        plt.clim(min_, max_)
+        plt.scatter(self.sde_times, self.sde_kappas, c=err_crp_bp, cmap='viridis', marker='^')
         plt.clim(min_, max_)
         plt.colorbar(label='deviation = |log($\kappa_\mathrm{sim}$) / log($\kappa_\mathrm{theory}$)|')
         plt.loglog()
@@ -223,6 +242,7 @@ class Comparison():
         plt.scatter([0],[0], label='RWPropa', marker='s', color='grey')
         plt.scatter([0],[0], label='CRPropa (CK)', color='grey')
         plt.scatter([0],[0], label='CRPropa (BP)', marker='d', color='grey')
+        plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')
 
         plt.xlabel('simulation time [s]')
         plt.ylabel('$\kappa$ [m$^2$/s]')
