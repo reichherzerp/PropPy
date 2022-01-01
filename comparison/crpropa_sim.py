@@ -110,7 +110,7 @@ class CRPropa:
             scaling = self.kappa / default_kappa_sde
             prop_sde.setScale(scaling)
             print('get description')
-            prop_sde.getDescription()
+            print(prop_sde.getDescription())
             sim.add(prop_sde)
         else: 
             print('Error: no valid propagation module selected. Use either BP or CK or SDE.')

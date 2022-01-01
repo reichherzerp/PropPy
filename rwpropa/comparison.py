@@ -28,6 +28,10 @@ class Comparison():
             self.df_crp_bp_results = pd.read_pickle(self.path_data+'/crp_sim_data_BP.pkl')
         except:
             print("couldn't loade BP data")
+        try:
+            self.df_crp_sde_results = pd.read_pickle(self.path_data+'/crp_sim_data_SDE.pkl')
+        except:
+            print("couldn't loade SDE data")
 
     def plot_running_diffusion_coefficients(self):
         fig, ax1 = plt.subplots(figsize=(5,3.5))
@@ -37,9 +41,11 @@ class Comparison():
         steps_rwp = []
         steps_ck = []
         steps_bp = []
+        steps_sde = []
         kappas_rwp = []
         kappas_ck = []
         kappas_bp = []
+        kappas_sde = []
 
         for i, step_size in enumerate(self.step_sizes):
             color = plt.cm.viridis(np.linspace(0, 1, len(self.step_sizes))[i])
@@ -71,6 +77,15 @@ class Comparison():
             except:
                 print('no data for CK')
 
+            try:
+                crp_l = np.load(self.path_data+'/sim_result_crp_SDE_stepsize_'+str(step_size/10**11)+'_l.npy')
+                crp_kappa = np.load(self.path_data+'/sim_result_crp_SDE_stepsize_'+str(step_size/10**11)+'_kappa.npy')
+                ax1.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls='--', lw=2, zorder=4)
+                steps_sde.append(step_size)
+                kappas_sde.append(np.mean(crp_kappa[-10:]))
+            except:
+                print('no data for SDE')
+
         # colorbar
         plt.scatter(np.zeros(len(self.step_sizes)), np.zeros(len(self.step_sizes)), c=self.step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm())
         plt.colorbar(label='step sizes [m]')
@@ -78,6 +93,7 @@ class Comparison():
         #legend
         plt.plot([0,0], [0,0], c='grey', ls=':', label='CRPropa (BP)', lw=2)
         plt.plot([0,0], [0,0], c='grey', ls='-.', label='CRPropa (CK)', lw=2)
+        plt.plot([0,0], [0,0], c='grey', ls='--', label='CRPropa (SDE)', lw=2)
         plt.plot([0,0], [0,0], c='red', ls='-', label='RWPropa', lw=2)
 
         plt.xlim([min(self.step_sizes)/3, 4e17])
@@ -93,6 +109,7 @@ class Comparison():
         plt.scatter(steps_rwp, kappas_rwp, label='RWPropa', marker='s', color='green')
         plt.scatter(steps_ck, kappas_ck, label='CRPropa (CK)', color='r')
         plt.scatter(steps_bp, kappas_bp, label='CRPropa (BP)', marker='d', color='k')
+        plt.scatter(steps_sde, kappas_sde, label='CRPropa (SDE)', marker='^', color='blue')
         plt.axvline(x=self.l_c, label='$l_\mathrm{c}$', color='grey', ls=':')
         plt.axvline(x=self.r_g*2*3.14, label='$2\pi\, r_\mathrm{g}$', color='grey', ls='--')
         plt.axvline(x=self.kappa_theory*3/(3*10**8), label='$\lambda_\mathrm{theory}$', color='grey', ls='-.')
