@@ -98,8 +98,9 @@ class CRPropa:
             tolerance = 1e-4
             min_step = self.step_size
             max_step = self.step_size
-            prop_ck = crp.PropagationCK(b_field, tolerance, min_step, max_step)
-            sim.add(prop_ck)
+            epsilon = 1.0 # for isotropic 3d diffusion
+            prop_sde = crp.DiffusionSDE(b_field, tolerance, min_step, max_step, epsilon)
+            sim.add(prop_sde)
         else: 
             print('Error: no valid propagation module selected. Use either BP or CK.')
         maxTra = crp.MaximumTrajectoryLength(self.traj_max)
