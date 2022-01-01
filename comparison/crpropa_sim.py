@@ -4,7 +4,7 @@ import pandas as pd
 
 
 class CRPropa:
-    def __init__(self, step_size = 10**11, traj_max = 10**14, path = '', prop_module = 'BP'):
+    def __init__(self, step_size = 10**11, traj_max = 10**14, path = '', prop_module = 'BP', kappa=10**24):
         # all simulation parameters
         self.energy = 10**17*crp.eV
         self.n_obs = 100
@@ -16,6 +16,7 @@ class CRPropa:
         self.step_size = step_size
         self.traj_max = traj_max
         self.path = path
+        self.kappa = kappa
         self.set_propagation_module(prop_module)
 
     def set_file_name(self):
@@ -62,6 +63,8 @@ class CRPropa:
             self.propagation_module = module
         elif module == 'CK':
             self.propagation_module = module
+        elif module == 'SDE':
+            self.propagation_module = module
         else:
             print("Error: use either module 'BP' (Boris Push) or 'CK' (Cash Karp) or 'SDE' (stochastic differential equations).")
         self.set_file_name()
@@ -83,6 +86,7 @@ class CRPropa:
         b_field.addField(turbulence)
         
         # propagation
+        print('propagation module: ', self.propagation_module)
         if self.propagation_module == 'BP':
             prop_bp = crp.PropagationBP(b_field, self.step_size)
             sim.add(prop_bp)
@@ -100,9 +104,16 @@ class CRPropa:
             max_step = self.step_size
             epsilon = 1.0 # for isotropic 3d diffusion
             prop_sde = crp.DiffusionSDE(b_field, tolerance, min_step, max_step, epsilon)
+            alpha = 0 # scaling of diffusion coefficient with energy -> not needed as we have just one energy
+            prop_sde.setAlpha(alpha)
+            default_kappa_sde = 6.1e24 # [m^2/s]
+            scaling = self.kappa / default_kappa_sde
+            prop_sde.setScale(scaling)
+            print('get description')
+            prop_sde.getDescription()
             sim.add(prop_sde)
         else: 
-            print('Error: no valid propagation module selected. Use either BP or CK.')
+            print('Error: no valid propagation module selected. Use either BP or CK or SDE.')
         maxTra = crp.MaximumTrajectoryLength(self.traj_max)
         sim.add(maxTra)
 
