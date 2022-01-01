@@ -325,3 +325,40 @@ class Comparison():
         plt.legend(loc='upper right', ncol=2)
         plt.savefig(self.path_figs+'/time_vs_deviation_steps.pdf', bbox_inches='tight', pad_inches=0.02)
         plt.show()
+
+
+    def plot_time_vs_steps_deviation(self):
+        fig = plt.figure(figsize=(5,3.5))
+        err_rwp = np.abs(np.log10(self.rwp_kappas)-np.log10(self.kappa_theory))
+        err_crp_ck = np.abs(np.log10(self.ck_kappas)-np.log10(self.kappa_theory))
+        err_crp_bp = np.abs(np.log10(self.bp_kappas)-np.log10(self.kappa_theory))
+        err_crp_sde = np.abs(np.log10(self.sde_kappas)-np.log10(self.kappa_theory))
+        zs = np.concatenate([err_rwp, err_crp_ck, err_crp_bp, err_crp_sde], axis=0)
+        min_, max_ = zs.min(), zs.max()
+        plt.scatter(self.rwp_step_sizes, self.rwp_times, c=err_rwp, cmap='viridis', marker='s')
+        plt.clim(min_, max_)
+        plt.scatter(self.ck_step_sizes, self.ck_times, c=err_crp_ck, cmap='viridis')
+        plt.clim(min_, max_)
+        plt.scatter(self.bp_step_sizes, self.bp_times, c=err_crp_bp, cmap='viridis', marker='d')
+        plt.clim(min_, max_)
+        plt.scatter(self.sde_step_sizes, self.sde_times, c=err_crp_sde, cmap='viridis', marker='^')
+        plt.clim(min_, max_)
+        plt.colorbar(label='deviation = |log($\kappa_\mathrm{sim}$) / log($\kappa_\mathrm{theory}$)|')
+        plt.loglog()
+        
+        plt.axhline(y=1, color='grey', linestyle=(0, (5, 0.4)), zorder=-1, label='1 sec')
+        plt.axhline(y=60, color='grey', linestyle=(0, (5, 2.5)), zorder=-1, label='1 min')
+        plt.axhline(y=60*60, color='grey', linestyle=(0, (5, 7)), zorder=-1, label='1 hour')
+        plt.axhline(y=60*60*24, color='grey', linestyle=(0, (5, 13)), zorder=-1, label='1 day')
+
+        # legend
+        plt.scatter([0],[0], label='RWPropa', marker='s', color='grey')
+        plt.scatter([0],[0], label='CRPropa (CK)', color='grey')
+        plt.scatter([0],[0], label='CRPropa (BP)', marker='d', color='grey')
+        plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')
+
+        plt.xlabel('step sizes [m]')
+        plt.ylabel('simulation time [s]')
+        plt.legend(loc='center left')
+        plt.savefig(self.path_figs+'/time_vs_steps_deviation.pdf', bbox_inches='tight', pad_inches=0.02)
+        plt.show()
