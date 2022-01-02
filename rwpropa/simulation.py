@@ -109,7 +109,7 @@ class IsotropicSimulation():
         
 
     def simulate(self, file_name = 'isotropic'):
-        print('simulate with a diffusion coefficient of ', self.diffusion_coefficient, 'm²/s')
+        print('simulate with a diffusion coefficient of ', self.diffusion_coefficient, self.constants.print_unit_kappa())
         self.sim = Simulation(constants = self.constants)
         source = PointSourceIsotropic(self.energy, self.source_pos, self.nr_particles)
         self.sim.add_source(source)

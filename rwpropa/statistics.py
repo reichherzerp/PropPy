@@ -146,7 +146,7 @@ class Statistics():
         plt.show()
 
 
-    def get_diffusion_coefficients(self, error = False):
+    def get_diffusion_coefficients(self, speed_light=3*10**8):
         nr_particles = len(list(map(int, (set(self.df['id'])))))
         # sort the pandas dataframe so that the df can be distributed in packages of length=nr_particles
         df = self.df.sort_values('d')
@@ -164,7 +164,7 @@ class Statistics():
         kappa_perp_err = []
         kappa_zz_err = []
         kappa = []
-        c = 299792.458 # speed of light [m/s]
+        c = speed_light # speed of light
         nr_steps =  int(len(d)/nr_particles)
         # calculate the running diffusion coefficient kappa_i(t) for each step
         # running diffusion coefficients: kappa_i(t) = <x_i>^2/(2t) = <x_i>^2/(2d/c)
