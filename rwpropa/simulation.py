@@ -51,7 +51,7 @@ class Simulation():
         propagator: Object of a special propagator type set by the user.
     """
 
-    def __init__(self, constants=Constants()):
+    def __init__(self, constants=Constants(unit_distance = 1)):
         print('start simulation')
         self.init_data()
         self.constants = constants
@@ -67,7 +67,7 @@ class Simulation():
 
     def add_propagator(self, propagator):
         self.propagator = propagator
-        #self.propagator.propagator.set_constants(self.constants)
+        self.propagator.propagator.set_constants(self.constants)
 
     def run_simulation(self):
         self.init_data()

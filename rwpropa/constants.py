@@ -14,8 +14,15 @@ constants_spec = [
 @jitclass(constants_spec)
 class Constants():
     def __init__(self, unit_distance = 0):
+        self.unit_distance = unit_distance
         print('Propagator initialized')
         if unit_distance == 0:
             self.speed = 2.998*10**8 # speed of light [m/s]
         elif unit_distance == 1:
             self.speed = 2.998*10**5 # speed of light [km/s]
+
+    def get_speed_info(self):
+        if self.unit_distance == 0:
+            print('particle speed: ', self.speed, ' m/s')
+        elif self.unit_distance == 1:
+            print('particle speed: ', self.speed, ' km/s')
