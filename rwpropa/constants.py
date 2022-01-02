@@ -7,7 +7,7 @@ from abc import ABCMeta, abstractmethod
 
 
 constants_spec = [
-    ('unit_distance', b1),
+    ('unit_distance', int32),
     ('speed', float32)
 ]
 
