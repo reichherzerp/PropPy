@@ -57,6 +57,7 @@ import numpy as np
 from numba.experimental import jitclass
 from .magnetic_field import *
 from .particle_state import *
+from .constants import *
 from abc import ABCMeta, abstractmethod
 
 
@@ -83,6 +84,7 @@ propagation_spec = [
     ('distance', float32),
 
     ('magnetic_field', MagneticField.class_type.instance_type),
+    ('constants', Constants.class_type.instance_type),
     ('particle_state', ParticleState.class_type.instance_type),
 ]
 
@@ -116,7 +118,7 @@ class Propagator():
         step_size_diff_factor: Increase step size in diffusive phase by this factor. 
     """
 
-    def __init__(self, nr_steps, step_size, prob, magnetic_field, cartesian, mfp, step_size_diff_factor=1.0):
+    def __init__(self, nr_steps, step_size, prob, magnetic_field, cartesian, mfp, step_size_diff_factor=1.0, constants=Constants()):
         print('Propagator initialized')
         self.speed = 2.998*10**8 # speed of light
         self.cartesian = cartesian
@@ -130,6 +132,7 @@ class Propagator():
         self.prob = prob
         self.mfp = mfp
         self.step_size_diff_factor = step_size_diff_factor
+        self.constants = constants
         
 
     def change_direction(self, direction, particle_state):
@@ -379,6 +382,10 @@ class Propagator():
 
     def float_array(self, pos):
         return np.array([pos[0], pos[1], pos[2]], dtype=np.float32)
+
+
+    def set_constants(self, constants):
+        self.constants = constants
 
 
     def set_gyroradius(self, ps):
@@ -773,7 +780,7 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         self.set_basic_parameters()
         self.mfp = self.convert_mfp_input(self.mfp)
         probs = self.set_prob_init(self.mfp, self.speed, self.step_size)
-        propagator = Propagator(self.nr_steps, self.step_size, probs, self.magnetic_field, self.cartesian, self.mfp, step_size_diff_factor = self.step_size_diff_factor)
+        propagator = Propagator(self.nr_steps, self.step_size, probs, self.magnetic_field, self.cartesian, self.mfp)
         # have to store all relevant propagation parameters in the Propagator class that 
         # has the @jitclass label from numba. This is important, as the Particle class is also 
         # labeled with @jitclass and can thus only call @jitclass classes. The usage of numba is 

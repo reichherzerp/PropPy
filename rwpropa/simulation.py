@@ -32,6 +32,7 @@ from .source import *
 from .propagator import *
 from .observer import *
 from .statistics import *
+from .constants import *
 
 
 
@@ -50,9 +51,10 @@ class Simulation():
         propagator: Object of a special propagator type set by the user.
     """
 
-    def __init__(self):
+    def __init__(self, constants=Constants()):
         print('start simulation')
         self.init_data()
+        self.constants = constants
 
     def init_data(self):
         self.data = [[0.0, 0.0, 0.0, 0.0, -1.0, 0.0]]
@@ -65,16 +67,7 @@ class Simulation():
 
     def add_propagator(self, propagator):
         self.propagator = propagator
-
-    def change_units(self, unit_distance = 'm'):
-        if unit_distance == 'm':
-            self.unit_distance = 0
-        if unit_distance == 'pc':
-            self.unit_distance = 0
-        else:
-            print("Use either 'm' or 'pc'.")
-            return
-        self.propagator.change_unit(unit_distance)
+        #self.propagator.propagator.set_constants(self.constants)
 
     def run_simulation(self):
         self.init_data()

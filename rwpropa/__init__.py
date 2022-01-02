@@ -8,3 +8,4 @@ from rwpropa.source import *
 from rwpropa.statistics import *
 from rwpropa.trajectory import *
 from rwpropa.comparison import *
+from rwpropa.constants import *
