@@ -51,7 +51,7 @@ class Simulation():
         propagator: Object of a special propagator type set by the user.
     """
 
-    def __init__(self, constants=Constants(unit_distance = 1)):
+    def __init__(self, constants = Constants()):
         print('start simulation')
         self.init_data()
         self.constants = constants
@@ -92,7 +92,7 @@ simulations with predefined sources, propagation methods and observers.
 """
 
 class IsotropicSimulation():
-    def __init__(self, nr_particles = 10**3, energy = 10**15, nr_steps = 10**4, diffusion_coefficient_para = 1.*10**21, nr_obs_steps = 600, step_size = 1*10**12):
+    def __init__(self, nr_particles = 10**3, energy = 10**15, nr_steps = 10**4, diffusion_coefficient_para = 1.*10**21, nr_obs_steps = 600, step_size = 1*10**12, constants = Constants()):
         self.nr_particles = nr_particles
         self.source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         self.energy = energy # [eV]
@@ -105,10 +105,11 @@ class IsotropicSimulation():
         self.nr_obs_steps = nr_obs_steps
         self.substeps = [False, False, True] # observe only steps (no substeps)
         self.sim = None
+        self.constants = constants
 
     def simulate(self, file_name = 'isotropic'):
         print('simulate with a diffusion coefficient of ', self.diffusion_coefficient, 'm²/s')
-        self.sim = Simulation()
+        self.sim = Simulation(constants = self.constants)
         source = PointSourceIsotropic(self.energy, self.source_pos, self.nr_particles)
         self.sim.add_source(source)
         propagator = IsotropicPropagator(self.mfp, self.nr_steps, self.step_size)
