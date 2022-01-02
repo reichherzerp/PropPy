@@ -21,8 +21,18 @@ class Constants():
         elif unit_distance == 1:
             self.speed = 2.998*10**5 # speed of light [km/s]
 
-    def get_speed_info(self):
+    def print_unit_speed(self):
         if self.unit_distance == 0:
-            print('particle speed: ', self.speed, ' m/s')
+            return 'm/s'
         elif self.unit_distance == 1:
-            print('particle speed: ', self.speed, ' km/s')
+            return 'km/s'
+        else:
+            return ''
+
+    def print_unit_distance(self):
+        if self.unit_distance == 0:
+            return 'm'
+        elif self.unit_distance == 1:
+            return 'km'
+        else:
+            return ''

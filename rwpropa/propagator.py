@@ -120,7 +120,6 @@ class Propagator():
 
     def __init__(self, nr_steps, step_size, magnetic_field, cartesian, mfp, step_size_diff_factor=1.0, constants=Constants()):
         print('Propagator initialized')
-        self.speed = 2.998*10**8 # speed of light
         self.cartesian = cartesian
         self.cylindrical = not cartesian
         self.nr_steps = nr_steps
@@ -476,16 +475,6 @@ class Propagator():
         self.cylindrical = cylindrical
 
 
-    def set_speed(self, speed):
-        """Set particle speed.
-        
-        units = [m/s]
-        change the speed of the particles. The default speed is the speed of light 
-        that is valid for relativistic particles.
-        """
-        self.speed = speed
-
-
     def set_nr_steps(self, nr_steps):
         """Change number of steps.
         """
@@ -553,12 +542,13 @@ class Propagator():
             print('pitch angle: constant')
         else:
             print('pitch angle: not constant')
-        self.constants.get_speed_info()
+        print(self.constants.print_unit_speed())
+        print('speed: ', self.constants.speed, self.constants.print_unit_speed())
         print('number steps: ', self.nr_steps)  
-        print('step size: ', self.step_size, ' m')  
-        print('step duration: ', self.step_size / self.speed, ' s') 
-        print('total distance: ', self.step_size * self.nr_steps, ' m')
-        print('total duration: ', self.step_size * self.nr_steps / self.speed, ' s')
+        print('step size: ', self.step_size, self.constants.print_unit_distance())  
+        print('step duration: ', self.step_size / self.constants.speed, ' s') 
+        print('total distance: ', self.step_size * self.nr_steps, self.constants.print_unit_distance())
+        print('total duration: ', self.step_size * self.nr_steps / self.constants.speed, ' s')
         print('probability to change directions in step: ', self.prob*100, '%')  
 
 
@@ -795,12 +785,7 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         """Called by all special propagator classes below. Print out all relevant 
         instance parameters.
         """
-        print('particle speed: ' ,self.speed, ' m/s')
-        print('number steps: ', self.nr_steps)  
-        print('step size: ', self.step_size, ' m')  
-        print('step duration: ', self.step_size / self.speed, ' s') 
-        print('total distance: ', self.step_size * self.nr_steps, ' m')
-        print('total duration: ', self.step_size * self.nr_steps / self.speed, ' s') 
+        print('number steps: ', self.nr_steps)
         print('call get_description directly on the propagator that was added to the simulation:\n')
         print('sim = rwpropa.Simulation()')
         print('...')

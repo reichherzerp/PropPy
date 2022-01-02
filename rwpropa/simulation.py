@@ -93,19 +93,20 @@ simulations with predefined sources, propagation methods and observers.
 
 class IsotropicSimulation():
     def __init__(self, nr_particles = 10**3, energy = 10**15, nr_steps = 10**4, diffusion_coefficient_para = 1.*10**21, nr_obs_steps = 600, step_size = 1*10**12, constants = Constants()):
+        self.constants = constants
         self.nr_particles = nr_particles
         self.source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         self.energy = energy # [eV]
         self.nr_steps = nr_steps
-        self.step_size = step_size # [m]
-        self.diffusion_coefficient = diffusion_coefficient_para # [m^2/s]
-        self.speed_of_light = 3*10**8 # [m/s]
-        mfp_iso = 3*self.diffusion_coefficient/self.speed_of_light
-        self.mfp = np.array([mfp_iso, mfp_iso, mfp_iso], dtype=np.float32)  # [m]
+        self.step_size = step_size
+        self.diffusion_coefficient = diffusion_coefficient_para
+        mfp_iso = 3*self.diffusion_coefficient/self.constants.speed
+        print('mfp_ios', mfp_iso)
+        self.mfp = np.array([mfp_iso, mfp_iso, mfp_iso], dtype=np.float32) 
         self.nr_obs_steps = nr_obs_steps
         self.substeps = [False, False, True] # observe only steps (no substeps)
         self.sim = None
-        self.constants = constants
+        
 
     def simulate(self, file_name = 'isotropic'):
         print('simulate with a diffusion coefficient of ', self.diffusion_coefficient, 'm²/s')

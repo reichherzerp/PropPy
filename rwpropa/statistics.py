@@ -164,7 +164,7 @@ class Statistics():
         kappa_perp_err = []
         kappa_zz_err = []
         kappa = []
-        c = 299792458 # speed of light [m/s]
+        c = 299792.458 # speed of light [m/s]
         nr_steps =  int(len(d)/nr_particles)
         # calculate the running diffusion coefficient kappa_i(t) for each step
         # running diffusion coefficients: kappa_i(t) = <x_i>^2/(2t) = <x_i>^2/(2d/c)
