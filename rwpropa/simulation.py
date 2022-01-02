@@ -65,7 +65,17 @@ class Simulation():
 
     def add_propagator(self, propagator):
         self.propagator = propagator
-            
+
+    def change_units(self, unit_distance = 'm'):
+        if unit_distance == 'm':
+            self.unit_distance = 0
+        if unit_distance == 'pc':
+            self.unit_distance = 0
+        else:
+            print("Use either 'm' or 'pc'.")
+            return
+        self.propagator.change_unit(unit_distance)
+
     def run_simulation(self):
         self.init_data()
         particles = self.source.particles[:]
