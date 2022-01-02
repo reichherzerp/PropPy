@@ -118,7 +118,7 @@ class Propagator():
         step_size_diff_factor: Increase step size in diffusive phase by this factor. 
     """
 
-    def __init__(self, nr_steps, step_size, prob, magnetic_field, cartesian, mfp, step_size_diff_factor=1.0, constants=Constants()):
+    def __init__(self, nr_steps, step_size, magnetic_field, cartesian, mfp, step_size_diff_factor=1.0, constants=Constants()):
         print('Propagator initialized')
         self.speed = 2.998*10**8 # speed of light
         self.cartesian = cartesian
@@ -129,10 +129,34 @@ class Propagator():
         self.pitch_angle_const = True
         self.background_direction = 2
         self.magnetic_field = magnetic_field
-        self.prob = prob
         self.mfp = mfp
         self.step_size_diff_factor = step_size_diff_factor
         self.constants = constants
+        self.prob = self.set_prob_init(self.mfp, self.constants.speed, self.step_size)
+
+    
+    def set_prob_init(self, mean_free_path, speed, step_size):
+        """Calculate the propabilities to change directions.
+
+        The propabilities to change directions are based on the mean free paths
+        that depend on the diffusion coefficients.
+
+        Args:
+            mean_free_path: Mean free paths of particles in each direction in [m].
+            speed: Speed of the particles in [m/s].
+            step_size: Size of the steps in [m].
+
+        Returns:
+            probabilities: Probability to change the direction in one prop. step.
+        """
+        xi = [
+            speed / mean_free_path[0] / 2.0, 
+            speed / mean_free_path[1] / 2.0, 
+            speed / mean_free_path[2] / 2.0
+        ] # [1/s] frequency of change
+        tau_step = step_size / speed
+        propabilities = [xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step]
+        return np.array(propabilities, dtype=np.float32)
         
 
     def change_direction(self, direction, particle_state):
@@ -475,33 +499,9 @@ class Propagator():
         """
         self.nr_steps = step_size
 
-    
-    def set_prob_init(self, mean_free_path, speed, step_size):
-        """Calculate the propabilities to change directions.
-
-        The propabilities to change directions are based on the mean free paths
-        that depend on the diffusion coefficients.
-
-        Args:
-            mean_free_path: Mean free paths of particles in each direction in [m].
-            speed: Speed of the particles in [m/s]
-            step_size: Size of the steps in [m]
-
-        Returns:
-            probabilities: Probability to change the direction in one prop. step.
-        """
-        xi = [
-            speed / mean_free_path[0] / 2.0, 
-            speed / mean_free_path[1] / 2.0, 
-            speed / mean_free_path[2] / 2.0
-        ] # [1/s] frequency of change
-        tau_step = step_size / speed
-        propabilities = [xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step]
-        return np.array(propabilities, dtype=np.float32)
-
 
     def set_prob(self, mean_free_path):
-        self.prob = self.set_prob_init(mean_free_path, self.propagator.speed, self.propagator.step_size)
+        self.prob = self.set_prob_init(mean_free_path, self.constants.speed, self.propagator.step_size)
     
 
     def set_magnetic_field(self, magnetic_field):
@@ -714,33 +714,9 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         self.nr_steps = step_size
         self.propagator.nr_steps = step_size        
 
-    
-    def set_prob_init(self, mean_free_path, speed, step_size):
-        """Calculate the propabilities to change directions.
-
-        The propabilities to change directions are based on the mean free paths
-        that depend on the diffusion coefficients.
-
-        Args:
-            mean_free_path: Mean free paths of particles in each direction in [m].
-            speed: Speed of the particles in [m/s].
-            step_size: Size of the steps in [m].
-
-        Returns:
-            probabilities: Probability to change the direction in one prop. step.
-        """
-        xi = [
-            speed / mean_free_path[0] / 2.0, 
-            speed / mean_free_path[1] / 2.0, 
-            speed / mean_free_path[2] / 2.0
-        ] # [1/s] frequency of change
-        tau_step = step_size / speed
-        propabilities = [xi[0] * tau_step, xi[1] * tau_step, xi[2] * tau_step]
-        return np.array(propabilities, dtype=np.float32)
-
 
     def set_prob(self, mean_free_path):
-        self.propagator.prob = self.set_prob_init(mean_free_path, self.propagator.speed, self.propagator.step_size)
+        self.propagator.prob = self.set_prob_init(mean_free_path, self.propagator.constants.speed, self.propagator.step_size)
         self.prob = self.propagator.prob
     
 
@@ -779,8 +755,7 @@ class AbstractPropagator(object, metaclass=AbstractPropagatorMeta):
         """
         self.set_basic_parameters()
         self.mfp = self.convert_mfp_input(self.mfp)
-        probs = self.set_prob_init(self.mfp, self.speed, self.step_size)
-        propagator = Propagator(self.nr_steps, self.step_size, probs, self.magnetic_field, self.cartesian, self.mfp)
+        propagator = Propagator(self.nr_steps, self.step_size, self.magnetic_field, self.cartesian, self.mfp)
         # have to store all relevant propagation parameters in the Propagator class that 
         # has the @jitclass label from numba. This is important, as the Particle class is also 
         # labeled with @jitclass and can thus only call @jitclass classes. The usage of numba is 
