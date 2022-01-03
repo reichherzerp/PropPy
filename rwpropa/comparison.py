@@ -5,13 +5,14 @@ import pandas as pd
 
 class Comparison():
 
-    def __init__(self, kappa_theory, lambda_theory, step_sizes, l_c, r_g, path_data, path_figs):
+    def __init__(self, kappa_theory, lambda_theory, step_sizes, l_c, r_g, path_data_raw, path_data, path_figs):
         self.kappa_theory = kappa_theory
         self.lambda_theory = lambda_theory
         self.step_sizes = step_sizes
         self.l_c = l_c
         self.r_g = r_g
         self.path_data = path_data
+        self.path_data_raw = path_data_raw
         self.path_figs = path_figs
         self.load_sim_data()
 
@@ -186,6 +187,44 @@ class Comparison():
         plt.ylabel('$\kappa$ [m$^2$/s]')
         plt.legend()
         plt.savefig(self.path_figs+'/kappa_vs_stepsize.pdf', bbox_inches='tight', pad_inches=0.02)
+        plt.show()
+
+
+    def plot_particle_distributions(self, prop_type, unit):
+        fig = plt.figure(figsize=(5,3.5))
+        for i, step_size in enumerate(self.step_sizes):
+            try:
+                dataI = pd.read_csv(self.path_data_raw+'/crpropa_'+prop_type+'_stepsize_'+str(step_size/10**11)+'.txt', names=['D', 'SN', 'ID', 'E', 'X', 'Y', 'Z', 'Px', 'Py', 'Pz', 'SN0', 'SN1'], delimiter='\t', comment='#', usecols=["D", "X", "Y", "Z", "SN"])
+                dataI = dataI.sort_values('D')
+                max_l = max(dataI['D'].values.tolist())
+                dataI = dataI[dataI['D'] == max_l]                                           
+                #plt.hist(dataI.Z, bins=30, label=str(step_size/10**11))
+                #weights = np.ones_like(d)/nr_particles
+                bins = 10
+                color = plt.cm.viridis(np.linspace(0, 1, len(self.step_sizes))[i])
+                xs = np.array(dataI.X.values.tolist())
+                ys = np.array(dataI.Y.values.tolist())
+                zs = np.array(dataI.Z.values.tolist())
+                if unit == 'Mpc':
+                    scale = 3.086e22
+                else:
+                    scale = 1
+                plt.hist(np.concatenate((xs,ys,zs), axis=None)*scale, bins=30, range=[-1e17/3, 1e17/3], histtype=u'step', edgecolor=color, linewidth=1., facecolor="None")
+            
+            except:
+                print('error while loading data with step size: ', step_size)
+                pass
+            
+        # colorbar
+        plt.scatter(np.zeros(len(self.step_sizes)), np.zeros(len(self.step_sizes)), c=self.step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm())
+        plt.colorbar(label='step sizes [m]')
+
+        plt.xlabel('position $x_i$ [m]')
+        plt.ylabel('# particles')
+        plt.title('$l_\mathrm{traj} = 10^{17}$ m ('+prop_type+')')
+
+        plt.yscale('log')
+        plt.savefig(self.path_figs+'/particle_distributions_'+prop_type+'.pdf', bbox_inches='tight', pad_inches=0.02) 
         plt.show()
 
 
