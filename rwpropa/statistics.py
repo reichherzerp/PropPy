@@ -222,7 +222,7 @@ class Statistics():
             error: A bool to define if the error bars should be plotted.
         """
 
-        df_kappas =  self.get_diffusion_coefficients(error = error)
+        df_kappas =  self.get_diffusion_coefficients()
         l = df_kappas['l'].values.tolist()
         kappa_xx = df_kappas['kappa_xx'].values.tolist()
         kappa_yy = df_kappas['kappa_yy'].values.tolist()

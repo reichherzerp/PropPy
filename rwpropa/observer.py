@@ -111,7 +111,6 @@ class Observer():
                 return data_on_sphere
         if self.substeps[ps.substep]:
             if self.all_steps or ps.step in self.steps:
-                print(ps.step, ps.distance)
                 return self.data_row(ps, -1.0)
             else:
                 return None
@@ -382,7 +381,6 @@ class TimeEvolutionObserverLog(AbstractSpecialObserver):
         logarithmically.
         """
         steps = np.logspace(np.log10(self.min_steps), np.log10(self.max_steps), self.nr_steps)
-        print(steps)
         return steps
 
     def get_description_observer_type(self):
