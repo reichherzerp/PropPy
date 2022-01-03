@@ -181,6 +181,7 @@ class Comparison():
         plt.clim(min_, max_)
         plt.colorbar(label='simulation time [s]')
         plt.loglog()
+        plt.axvline(x=self.lambda_theory, label='$\lambda_\mathrm{theory}$', color='grey', ls='-.')
         plt.axvline(x=self.l_c, label='$l_\mathrm{c}$', color='grey', ls=':')
         plt.axvline(x=self.r_g*2*3.14, label='$2\pi\, r_\mathrm{g}$', color='grey', ls='--')
         plt.axhline(y=self.kappa_theory, color='grey', linestyle='-', label='theory')
