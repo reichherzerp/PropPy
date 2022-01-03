@@ -291,12 +291,9 @@ class Propagator():
             particles_state: New particle state after propagation of substep in global frame.
             move_local: An array that describes the local move in the substep.
         """
-        step_size = self.step_size #self.get_adaptive_step_size(particle_state)
+        step_size = self.get_adaptive_step_size(particle_state)
         distance_s = particle_state.direction[particle_state.substep] * step_size / 3**0.5
-        distance_prev = particle_state.distance
-        particle_state.distance = particle_state.distance + step_size / 3.0
-        if particle_state.distance == distance_prev:
-            print('didnt change distance!!!', self.step_size)
+        particle_state.distance += step_size / 3.0
         move_local = [0,0,0]
         s = particle_state.substep
         move_local[s] = distance_s
