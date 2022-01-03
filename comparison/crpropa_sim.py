@@ -4,14 +4,14 @@ import pandas as pd
 
 
 class CRPropa:
-    def __init__(self, step_size = 10**11, traj_max = 10**14, path = '', prop_module = 'BP', kappa=10**24):
+    def __init__(self, energy = 10**17, bmrs=1, l_max = 5*10**11, l_min = 5*10**9, step_size = 10**11, traj_max = 10**14, path = '', prop_module = 'BP', kappa=10**24):
         # all simulation parameters
-        self.energy = 10**17*crp.eV
+        self.energy = energy*crp.eV
         self.n_obs = 100
         self.n_particles = 10**3
-        self.brms = crp.gauss
-        self.l_max = 5*10**11 # [m]
-        self.l_min = 5*10**9 # [m]
+        self.brms = bmrs*crp.gauss
+        self.l_max = l_max # [m]
+        self.l_min = l_min # [m]
         self.n_wavemodes = 250
         self.step_size = step_size
         self.traj_max = traj_max
@@ -132,6 +132,7 @@ class CRPropa:
         # run simulation     
         r_g = (self.energy/(crp.eV*crp.c_light*self.brms))
         l_c = self.l_max/5
+        print('step_size = ', self.step_size)
         print('step_size/r_g = ', self.step_size/r_g)
         print('step_size/l_c = ', self.step_size/l_c)
         if self.step_size > r_g:

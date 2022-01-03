@@ -3,18 +3,19 @@
 from crpropa_sim import *
 import numpy as np
 import time
+pc = 3.086*10**16
 
-step_sizes = np.logspace(10, 15, 15)[::-1]
+step_sizes = np.logspace(5, 8, 7)[::-1]*pc
 df_sim_data = pd.DataFrame(columns=('step_size', 'time', 'kappa', 'kappa_err'))
-path = 'compact_sources/'
-prop_module = 'SDE'
-kappa_theory = 1.59*10**23 # [m^2/s]
+path = 'uhecrs/'
+prop_module = 'BP'
+kappa_theory = 5.6*10**32 # [m^2/s]
 
 # save simulation result
 file_name_results = path + 'data/crp_sim_data_'+prop_module+'.pkl'
 
 for i, step_size in enumerate(step_sizes[:10]):
-    crp = CRPropa(step_size = step_size, traj_max = 10**17, path = path, prop_module = prop_module, kappa = kappa_theory)
+    crp = CRPropa(energy = 1e19, bmrs = 10**(-9), l_max = 10**6*pc, l_min = 10**4*pc, step_size = step_size, traj_max = 10**11*pc, path = path, prop_module = prop_module, kappa = kappa_theory)
     start_time = time.process_time()
     crp.sim()
     time_needed = time.process_time() - start_time

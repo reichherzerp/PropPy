@@ -5,9 +5,10 @@ import pandas as pd
 
 class Comparison():
 
-    def __init__(self, kappa_theory, lambda_theory, step_sizes, l_c, r_g, path_data_raw, path_data, path_figs):
+    def __init__(self, kappa_theory, lambda_theory, step_sizes, l_c, r_g, path_data_raw, path_data, path_figs, rwp_unit = 'm'):
         self.kappa_theory = kappa_theory
         self.lambda_theory = lambda_theory
+        self.rwp_unit = rwp_unit
         self.step_sizes = step_sizes
         self.l_c = l_c
         self.r_g = r_g
@@ -36,13 +37,21 @@ class Comparison():
 
         try:
             self.rwp_times = np.array(self.df_rwp_results['time'].values.tolist())
-            self.rwp_step_sizes = self.df_rwp_results['step_size']
-            self.rwp_kappas = self.df_rwp_results['kappa']
+            if self.rwp_unit == 'm':
+                self.rwp_step_sizes = self.df_rwp_results['step_size']
+                self.rwp_kappas = self.df_rwp_results['kappa']
+            if self.rwp_unit == 'km':
+                self.rwp_step_sizes = self.df_rwp_results['step_size']*10**3
+                self.rwp_kappas = self.df_rwp_results['kappa']*10**6
+            if self.rwp_unit == 'pc':
+                self.rwp_step_sizes = self.df_rwp_results['step_size']*3.086*10**16
+                self.rwp_kappas = self.df_rwp_results['kappa']*(3.086*10**16)**2
         except:
             print('no rwp data')
             self.rwp_times = np.array([])
             self.rwp_step_sizes = np.array([])
             self.rwp_kappas = np.array([])
+            
         try:
             self.ck_times = np.array(self.df_crp_ck_results['time'].values.tolist())
             self.ck_step_sizes = self.df_crp_ck_results['step_size']
@@ -71,10 +80,9 @@ class Comparison():
             self.sde_step_sizes = np.array([])
             self.sde_kappas = np.array([])
 
-    def plot_running_diffusion_coefficients(self):
+    def plot_running_diffusion_coefficients(self, d_theory=[1e17, 4e17]):
         fig, ax1 = plt.subplots(figsize=(5,3.5))
-
-        plt.plot([1e17, 4e17], [self.kappa_theory*10**4,self.kappa_theory*10**4], color='k', linestyle=(0, (3, 1, 1, 1)), label='theory', zorder=-1)
+        plt.plot(d_theory, [self.kappa_theory*10**4,self.kappa_theory*10**4], color='k', linestyle=(0, (3, 1, 1, 1)), label='theory', zorder=-1)
         plt.axvline(x=self.lambda_theory, color='k', linestyle='--', label='$\lambda_\mathrm{theory}$', zorder=-1)
         steps_rwp = []
         steps_ck = []
@@ -134,7 +142,7 @@ class Comparison():
         plt.plot([0,0], [0,0], c='grey', ls='--', label='CRPropa (SDE)', lw=2)
         plt.plot([0,0], [0,0], c='red', ls='-', label='RWPropa', lw=2)
 
-        plt.xlim([min(self.step_sizes)/3, 4e17])
+        plt.xlim([min(self.step_sizes)/3, d_theory[1]])
 
         ax1.set_xlabel('trajectory length [m]')
         ax1.loglog()
@@ -150,7 +158,7 @@ class Comparison():
         plt.scatter(steps_sde, kappas_sde, label='CRPropa (SDE)', marker='^', color='blue')
         plt.axvline(x=self.l_c, label='$l_\mathrm{c}$', color='grey', ls=':')
         plt.axvline(x=self.r_g*2*3.14, label='$2\pi\, r_\mathrm{g}$', color='grey', ls='--')
-        plt.axvline(x=self.kappa_theory*3/(3*10**8), label='$\lambda_\mathrm{theory}$', color='grey', ls='-.')
+        plt.axvline(x=self.lambda_theory, label='$\lambda_\mathrm{theory}$', color='grey', ls='-.')
         plt.axhline(y=self.kappa_theory, color='grey', linestyle='-', label='theory')
         plt.legend()
         plt.loglog()
