@@ -7,7 +7,7 @@ import time
 step_sizes = np.logspace(10, 15, 15)[::-1]
 df_sim_data = pd.DataFrame(columns=('step_size', 'time', 'kappa', 'kappa_err'))
 path = 'compact_sources/'
-prop_module = 'SDE'
+prop_module = 'CK'
 kappa_theory = 1.59*10**23 # [m^2/s]
 
 # save simulation result
