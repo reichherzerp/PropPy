@@ -165,7 +165,7 @@ class Comparison():
         plt.show()
 
 
-    def plot_kappa_convergence_tests(self, ylabel="$\kappa$ [m$^2$/s]"):
+    def plot_kappa_convergence_tests(self, ylabel="$\kappa$ [m$^2$/s]", lambda_theory=True):
         fig = plt.figure(figsize=(5,3.5))
         ### try to load data and handle if data is not available
         
@@ -181,7 +181,8 @@ class Comparison():
         plt.clim(min_, max_)
         plt.colorbar(label='simulation time [s]')
         plt.loglog()
-        plt.axvline(x=self.lambda_theory, label='$\lambda_\mathrm{theory}$', color='grey', ls='-.', zorder=-1)
+        if lambda_theory:
+            plt.axvline(x=self.lambda_theory, label='$\lambda_\mathrm{theory}$', color='grey', ls='-.', zorder=-1)
         plt.axvline(x=self.l_c, label='$l_\mathrm{c}$', color='grey', ls=':', zorder=-1)
         plt.axvline(x=self.r_g*2*3.14, label='$2\pi\, r_\mathrm{g}$', color='grey', ls='--', zorder=-1)
         plt.axhline(y=self.kappa_theory, color='k', linestyle='-', label='theory', zorder=-1)
@@ -300,13 +301,14 @@ class Comparison():
         plt.show()
 
 
-    def plot_deviation_vs_time_steps(self):
+    def plot_deviation_vs_time_steps(self, day=True):
         fig = plt.figure(figsize=(5,3.5))
         plt.axhline(y=0, color='k', linestyle='-', zorder=-1, label='theory')
         plt.axvline(x=1, color='grey', linestyle=(0, (5, 0.4)), zorder=-1, label='1 sec')
         plt.axvline(x=60, color='grey', linestyle=(0, (5, 2.5)), zorder=-1, label='1 min')
         plt.axvline(x=60*60, color='grey', linestyle=(0, (5, 7)), zorder=-1, label='1 hour')
-        plt.axvline(x=60*60*24, color='grey', linestyle=(0, (5, 13)), zorder=-1, label='1 day')
+        if day:
+            plt.axvline(x=60*60*24, color='grey', linestyle=(0, (5, 13)), zorder=-1, label='1 day')
     
         err_rwp = np.abs(np.log10(self.rwp_kappas)-np.log10(self.kappa_theory))
         err_crp_ck = np.abs(np.log10(self.ck_kappas)-np.log10(self.kappa_theory))
@@ -338,14 +340,15 @@ class Comparison():
         plt.show()
 
     
-    def plot_time_vs_deviation_steps(self):
+    def plot_time_vs_deviation_steps(self, day=True):
         fig = plt.figure(figsize=(5,3.5))
 
         plt.axvline(x=0, color='k', linestyle='-', zorder=-1, label='theory')
         plt.axhline(y=1, color='grey', linestyle=(0, (5, 0.4)), zorder=-1, label='1 sec')
         plt.axhline(y=60, color='grey', linestyle=(0, (5, 2.5)), zorder=-1, label='1 min')
         plt.axhline(y=60*60, color='grey', linestyle=(0, (5, 7)), zorder=-1, label='1 hour')
-        plt.axhline(y=60*60*24, color='grey', linestyle=(0, (5, 13)), zorder=-1, label='1 day')
+        if day:
+            plt.axhline(y=60*60*24, color='grey', linestyle=(0, (5, 13)), zorder=-1, label='1 day')
 
         err_rwp = np.abs(np.log10(self.rwp_kappas)-np.log10(self.kappa_theory))
         err_crp_ck = np.abs(np.log10(self.ck_kappas)-np.log10(self.kappa_theory))
