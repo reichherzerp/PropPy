@@ -159,13 +159,13 @@ class Comparison():
         plt.axvline(x=self.l_c, label='$l_\mathrm{c}$', color='grey', ls=':')
         plt.axvline(x=self.r_g*2*3.14, label='$2\pi\, r_\mathrm{g}$', color='grey', ls='--')
         plt.axvline(x=self.lambda_theory, label='$\lambda_\mathrm{theory}$', color='grey', ls='-.')
-        plt.axhline(y=self.kappa_theory, color='grey', linestyle='-', label='theory')
+        plt.axhline(y=self.kappa_theory, color='k', linestyle='-', label='theory')
         plt.legend()
         plt.loglog()
         plt.show()
 
 
-    def plot_kappa_convergence_tests(self):
+    def plot_kappa_convergence_tests(self, ylabel="$\kappa$ [m$^2$/s]"):
         fig = plt.figure(figsize=(5,3.5))
         ### try to load data and handle if data is not available
         
@@ -181,10 +181,10 @@ class Comparison():
         plt.clim(min_, max_)
         plt.colorbar(label='simulation time [s]')
         plt.loglog()
-        plt.axvline(x=self.lambda_theory, label='$\lambda_\mathrm{theory}$', color='grey', ls='-.')
-        plt.axvline(x=self.l_c, label='$l_\mathrm{c}$', color='grey', ls=':')
-        plt.axvline(x=self.r_g*2*3.14, label='$2\pi\, r_\mathrm{g}$', color='grey', ls='--')
-        plt.axhline(y=self.kappa_theory, color='grey', linestyle='-', label='theory')
+        plt.axvline(x=self.lambda_theory, label='$\lambda_\mathrm{theory}$', color='grey', ls='-.', zorder=-1)
+        plt.axvline(x=self.l_c, label='$l_\mathrm{c}$', color='grey', ls=':', zorder=-1)
+        plt.axvline(x=self.r_g*2*3.14, label='$2\pi\, r_\mathrm{g}$', color='grey', ls='--', zorder=-1)
+        plt.axhline(y=self.kappa_theory, color='k', linestyle='-', label='theory', zorder=-1)
 
         # legend
         plt.scatter([0],[0], label='RWPropa', marker='s', color='grey', zorder=-1)
@@ -193,7 +193,7 @@ class Comparison():
         plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey', zorder=-1)
 
         plt.xlabel('step size [m]')
-        plt.ylabel('$\kappa$ [m$^2$/s]')
+        plt.ylabel(ylabel)
         plt.legend()
         plt.savefig(self.path_figs+'/kappa_vs_stepsize.pdf', bbox_inches='tight', pad_inches=0.02)
         plt.show()
@@ -251,7 +251,7 @@ class Comparison():
         plt.clim(min_, max_)
         plt.colorbar(label='step size [s]')
         plt.loglog()
-        plt.axhline(y=self.kappa_theory, color='grey', linestyle='-', label='theory')
+        plt.axhline(y=self.kappa_theory, color='k', linestyle='-', label='theory', zorder=-1)
 
         # legend
         plt.scatter([0],[0], label='RWPropa', marker='s', color='grey')
@@ -273,6 +273,7 @@ class Comparison():
         err_crp_bp = np.abs(np.log10(self.bp_kappas)-np.log10(self.kappa_theory))
         err_crp_sde = np.abs(np.log10(self.sde_kappas)-np.log10(self.kappa_theory))
         zs = np.concatenate([err_rwp, err_crp_ck, err_crp_bp, err_crp_sde], axis=0)
+        zs = zs[~np.isnan(zs)]
         min_, max_ = zs.min(), zs.max()
         plt.scatter(self.rwp_times, self.rwp_kappas, c=err_rwp, cmap='viridis', marker='s')
         plt.clim(min_, max_)
@@ -284,7 +285,7 @@ class Comparison():
         plt.clim(min_, max_)
         plt.colorbar(label='deviation = |log($\kappa_\mathrm{sim}$) / log($\kappa_\mathrm{theory}$)|')
         plt.loglog()
-        plt.axhline(y=self.kappa_theory, color='k', linestyle='-', label='theory')
+        plt.axhline(y=self.kappa_theory, color='k', linestyle='-', label='theory', zorder=-1)
 
         # legend
         plt.scatter([0],[0], label='RWPropa', marker='s', color='grey')
@@ -375,13 +376,14 @@ class Comparison():
         plt.show()
 
 
-    def plot_time_vs_steps_deviation(self):
+    def plot_time_vs_steps_deviation(self, day = True, lambda_theory=True):
         fig = plt.figure(figsize=(5,3.5))
         err_rwp = np.abs(np.log10(self.rwp_kappas)-np.log10(self.kappa_theory))
         err_crp_ck = np.abs(np.log10(self.ck_kappas)-np.log10(self.kappa_theory))
         err_crp_bp = np.abs(np.log10(self.bp_kappas)-np.log10(self.kappa_theory))
         err_crp_sde = np.abs(np.log10(self.sde_kappas)-np.log10(self.kappa_theory))
         zs = np.concatenate([err_rwp, err_crp_ck, err_crp_bp, err_crp_sde], axis=0)
+        zs = zs[~np.isnan(zs)]
         min_, max_ = zs.min(), zs.max()
         plt.scatter(self.rwp_step_sizes, self.rwp_times, c=err_rwp, cmap='viridis', marker='s')
         plt.clim(min_, max_)
@@ -398,10 +400,12 @@ class Comparison():
         plt.axhline(y=1, color='grey', linestyle=(0, (5, 0.4)), zorder=-1, label='1 sec')
         plt.axhline(y=60, color='grey', linestyle=(0, (5, 2.5)), zorder=-1, label='1 min')
         plt.axhline(y=60*60, color='grey', linestyle=(0, (5, 7)), zorder=-1, label='1 hour')
-        plt.axhline(y=60*60*24, color='grey', linestyle=(0, (5, 13)), zorder=-1, label='1 day')
+        if day:
+            plt.axhline(y=60*60*24, color='grey', linestyle=(0, (5, 13)), zorder=-1, label='1 day')
 
         # references for step sizes
-        plt.axvline(x=self.lambda_theory, label='$\lambda_\mathrm{theory}$', color='grey', linestyle=(0, (5, 7)), zorder=-1)
+        if lambda_theory:
+            plt.axvline(x=self.lambda_theory, label='$\lambda_\mathrm{theory}$', color='grey', linestyle=(0, (5, 7)), zorder=-1)
         plt.axvline(x=self.l_c, label='$l_\mathrm{c}$', color='grey', linestyle=(0, (5, 0.4)), zorder=-1)
         plt.axvline(x=self.r_g*2*3.14, label='$2\pi\, r_\mathrm{g}$', color='grey', linestyle=(0, (5, 2.5)), zorder=-1)
 
