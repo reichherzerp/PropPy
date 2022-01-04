@@ -187,10 +187,10 @@ class Comparison():
         plt.axhline(y=self.kappa_theory, color='grey', linestyle='-', label='theory')
 
         # legend
-        plt.scatter([0],[0], label='RWPropa', marker='s', color='grey')
-        plt.scatter([0],[0], label='CRPropa (CK)', color='grey')
-        plt.scatter([0],[0], label='CRPropa (BP)', marker='d', color='grey')
-        plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')
+        plt.scatter([0],[0], label='RWPropa', marker='s', color='grey', zorder=-1)
+        plt.scatter([0],[0], label='CRPropa (CK)', color='grey', zorder=-1)
+        plt.scatter([0],[0], label='CRPropa (BP)', marker='d', color='grey', zorder=-1)
+        plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey', zorder=-1)
 
         plt.xlabel('step size [m]')
         plt.ylabel('$\kappa$ [m$^2$/s]')
@@ -394,10 +394,16 @@ class Comparison():
         plt.colorbar(label='deviation = |log($\kappa_\mathrm{sim}$) / log($\kappa_\mathrm{theory}$)|')
         plt.loglog()
         
+        # references for simulation time
         plt.axhline(y=1, color='grey', linestyle=(0, (5, 0.4)), zorder=-1, label='1 sec')
         plt.axhline(y=60, color='grey', linestyle=(0, (5, 2.5)), zorder=-1, label='1 min')
         plt.axhline(y=60*60, color='grey', linestyle=(0, (5, 7)), zorder=-1, label='1 hour')
         plt.axhline(y=60*60*24, color='grey', linestyle=(0, (5, 13)), zorder=-1, label='1 day')
+
+        # references for step sizes
+        plt.axvline(x=self.lambda_theory, label='$\lambda_\mathrm{theory}$', color='grey', linestyle=(0, (5, 7)), zorder=-1)
+        plt.axvline(x=self.l_c, label='$l_\mathrm{c}$', color='grey', linestyle=(0, (5, 0.4)), zorder=-1)
+        plt.axvline(x=self.r_g*2*3.14, label='$2\pi\, r_\mathrm{g}$', color='grey', linestyle=(0, (5, 2.5)), zorder=-1)
 
         # legend
         plt.scatter([0],[0], label='RWPropa', marker='s', color='grey')
