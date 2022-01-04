@@ -5,8 +5,7 @@ rwpropa/__pycache__/
 rwpropa/tutorials/.ipynb_checkpoints
 /comparison/data/
 **/comparison/data/
-/comparison/figures/
 /comparison/uhecrs/
 /comparison/crs/
-/comparison/compact_sources/
-/comparison/compact_sources_short/
+/comparison/compact_sources_1e14m/
+/comparison/compact_sources_1e17m/
