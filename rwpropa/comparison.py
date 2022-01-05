@@ -19,7 +19,7 @@ class Comparison():
 
     def load_sim_data(self):
         try:
-            self.df_rwp_results = pd.read_pickle(self.path_data+'/rwp_sim_data.pkl')
+            self.df_rwp_results = pd.read_pickle(self.path_data+'/proppy_sim_data.pkl')
         except:
             print("couldn't loade rpw data")
         try:
@@ -97,13 +97,13 @@ class Comparison():
             color = plt.cm.viridis(np.linspace(0, 1, len(self.step_sizes))[i])
             n_max = -1
             try:
-                rwp_l = np.load(self.path_data+'/sim_result_rwp_'+str(step_size/10**11)+'_l.npy')
-                rwp_kappa = np.load(self.path_data+'/sim_result_rwp_'+str(step_size/10**11)+'_kappa.npy')
+                rwp_l = np.load(self.path_data+'/sim_result_proppy_stepsize_'+str(step_size/10**11)+'_l.npy')
+                rwp_kappa = np.load(self.path_data+'/sim_result_proppy_stepsize_'+str(step_size/10**11)+'_kappa.npy')
                 ax1.plot(rwp_l[:n_max], np.array(rwp_kappa[:n_max])*10**4, color='red', ls='-', zorder=2, lw=2) 
                 steps_rwp.append(step_size)
                 kappas_rwp.append(np.mean(rwp_kappa[-10:]))
             except:
-                print('no data for RPW')
+                print('no data for PropPy')
             
             try:
                 crp_l = np.load(self.path_data+'/sim_result_crp_BP_stepsize_'+str(step_size/10**11)+'_l.npy')

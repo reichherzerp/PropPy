@@ -11,7 +11,7 @@ prop_module = 'SDE'
 kappa_theory = 1.59*10**23 # [m^2/s]
 
 # save simulation result
-file_name_results = path + 'data/crp_sim_data_'+prop_module+'_run2.pkl'
+file_name_results = path + 'data/crp_sim_data_'+prop_module+'.pkl'
 
 for i, step_size in enumerate(step_sizes):
     crp = CRPropa(step_size = step_size, traj_max = 10**17, path = path, prop_module = prop_module, kappa = kappa_theory)
