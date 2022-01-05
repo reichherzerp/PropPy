@@ -6,7 +6,7 @@ import time
 
 step_sizes = np.logspace(10, 14, 15)[::-1]
 df_sim_data = pd.DataFrame(columns=('step_size', 'time', 'kappa', 'kappa_err'))
-path = 'compact_sources_short/'
+path = 'compact_sources_1e14m/'
 prop_module = 'BP'
 kappa_theory = 1.59*10**23 # [m^2/s]
 
