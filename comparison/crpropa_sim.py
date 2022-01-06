@@ -4,7 +4,7 @@ import pandas as pd
 
 
 class CRPropa:
-    def __init__(self, energy = 10**17, bmrs=1, l_max = 5*10**11, l_min = 5*10**9, step_size = 10**11, traj_max = 10**14, path = '', prop_module = 'BP', kappa=10**24, turbulence_method = 'PW', nr_grid_points = 256):
+    def __init__(self, energy = 10**17, bmrs=1, l_max = 5*10**11, l_min = 5*10**9, step_size = 10**11, traj_max = 10**14, path = '', prop_module = 'BP', kappa=10**24, turbulence_method = 'PW', nr_grid_points = 256, seed_study = False):
         # all simulation parameters
         self.energy = energy*crp.eV
         self.n_obs = 100
@@ -20,6 +20,7 @@ class CRPropa:
         self.kappa = kappa
         self.nr_grid_points = nr_grid_points
         self.random_seed = 0
+        self.seed_study = seed_study
         self.set_propagation_module(prop_module)
 
     def set_file_name(self):
@@ -120,7 +121,10 @@ class CRPropa:
         sim.add(maxTra)
 
         # output
-        output = crp.TextOutput(self.file_name_raw_data+str(self.step_size/10**11)+'.txt', crp.Output.Trajectory3D)
+        if self.seed_study:
+            output = crp.TextOutput(self.file_name_raw_data+str(self.seed)+'.txt', crp.Output.Trajectory3D)
+        else:
+            output = crp.TextOutput(self.file_name_raw_data+str(self.step_size/10**11)+'.txt', crp.Output.Trajectory3D)
         output.enable(output.SerialNumberColumn)
 
         # observer
