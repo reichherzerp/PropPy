@@ -4,7 +4,7 @@ import pandas as pd
 
 
 class CRPropa:
-    def __init__(self, energy = 10**17, bmrs=1, l_max = 5*10**11, l_min = 5*10**9, step_size = 10**11, traj_max = 10**14, path = '', prop_module = 'BP', kappa=10**24, turbulence_method = 'PW', nr_grid_points = 256, seed_study = False):
+    def __init__(self, energy = 10**17, bmrs=1, l_max = 5*10**11, l_min = 5*10**9, step_size = 10**11, traj_max = 10**14, path = '', prop_module = 'BP', kappa=10**24, turbulence_method = 'PW', nr_grid_points = 256, seed_study = False, random_seed=0):
         # all simulation parameters
         self.energy = energy*crp.eV
         self.n_obs = 100
@@ -19,7 +19,7 @@ class CRPropa:
         self.path = path
         self.kappa = kappa
         self.nr_grid_points = nr_grid_points
-        self.random_seed = 0
+        self.random_seed = random_seed
         self.seed_study = seed_study
         self.set_propagation_module(prop_module)
 
@@ -80,11 +80,13 @@ class CRPropa:
         # magnetic field 
         b_field = crp.MagneticFieldList()
         turbulence_spectrum = crp.SimpleTurbulenceSpectrum(self.brms, self.l_min, self.l_max)
-        if self.turbulence_method == 'TD':
+        if self.turbulence_method == 'PW':
             turbulence = crp.PlaneWaveTurbulence(turbulence_spectrum, self.n_wavemodes, self.random_seed)
         elif self.turbulence_method == 'grid':
             grid_properties = crp.GridProperties(crp.Vector3d(0.,0.,0.), self.nr_grid_points, self.l_min/2.001)
             turbulence = crp.SimpleGridTurbulence(turbulence_spectrum, grid_properties, self.random_seed)
+        else:
+            print('Error: use either PW or grid for the turbulence model.')
         
         b_field.addField(turbulence)
         
@@ -122,7 +124,7 @@ class CRPropa:
 
         # output
         if self.seed_study:
-            output = crp.TextOutput(self.file_name_raw_data+str(self.seed)+'.txt', crp.Output.Trajectory3D)
+            output = crp.TextOutput(self.file_name_raw_data+str(self.random_seed)+'.txt', crp.Output.Trajectory3D)
         else:
             output = crp.TextOutput(self.file_name_raw_data+str(self.step_size/10**11)+'.txt', crp.Output.Trajectory3D)
         output.enable(output.SerialNumberColumn)
