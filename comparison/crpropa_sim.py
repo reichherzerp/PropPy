@@ -18,6 +18,7 @@ class CRPropa:
         self.path = path
         self.kappa = kappa
         self.nr_grid_points = 256
+        self.random_seed = 0
         self.turbulence_method = turbulence_method # either plain wave (='PW') or 'grid' method 
         self.set_propagation_module(prop_module)
 
