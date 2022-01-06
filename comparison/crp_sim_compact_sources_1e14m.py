@@ -7,9 +7,9 @@ from pathlib import Path
 
 prop_module = 'BP'
 
-path_figs = 'comparison/compact_sources_1e17m/figures'
-path_data = 'comparison/compact_sources_1e17m/data'
-path_data_raw = 'comparison/compact_sources_1e17m/data/raw_data'
+path_figs = 'comparison/compact_sources_1e14m/figures'
+path_data = 'comparison/compact_sources_1e14m/data'
+path_data_raw = 'comparison/compact_sources_1e14m/data/raw_data'
 Path(path_figs).mkdir(parents=True, exist_ok=True)
 Path(path_data).mkdir(parents=True, exist_ok=True)
 Path(path_data_raw).mkdir(parents=True, exist_ok=True)
@@ -23,7 +23,7 @@ df_sim_data = pd.DataFrame(columns=('step_size', 'time', 'kappa', 'kappa_err'))
 kappa_theory = 1.59*10**23 # [m^2/s]
 
 for i, step_size in enumerate(step_sizes):
-    crp = CRPropa(step_size = step_size, traj_max = 10**14, path = path, prop_module = prop_module, kappa = kappa_theory)
+    crp = CRPropa(step_size = step_size, traj_max = 10**14, l_min = 5*10**10, path = path, prop_module = prop_module, kappa = kappa_theory, turbulence_method = 'grid')
     start_time = time.process_time()
     crp.sim()
     time_needed = time.process_time() - start_time

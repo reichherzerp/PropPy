@@ -4,11 +4,12 @@ import pandas as pd
 
 
 class CRPropa:
-    def __init__(self, energy = 10**17, bmrs=1, l_max = 5*10**11, l_min = 5*10**9, step_size = 10**11, traj_max = 10**14, path = '', prop_module = 'BP', kappa=10**24, turbulence_method = 'PW'):
+    def __init__(self, energy = 10**17, bmrs=1, l_max = 5*10**11, l_min = 5*10**9, step_size = 10**11, traj_max = 10**14, path = '', prop_module = 'BP', kappa=10**24, turbulence_method = 'PW', nr_grid_points = 256):
         # all simulation parameters
         self.energy = energy*crp.eV
         self.n_obs = 100
         self.n_particles = 10**3
+        self.turbulence_method = turbulence_method # either plain wave (='PW') or 'grid' method 
         self.brms = bmrs*crp.gauss
         self.l_max = l_max # [m]
         self.l_min = l_min # [m]
@@ -17,21 +18,14 @@ class CRPropa:
         self.traj_max = traj_max
         self.path = path
         self.kappa = kappa
-        self.nr_grid_points = 256
+        self.nr_grid_points = nr_grid_points
         self.random_seed = 0
-        self.turbulence_method = turbulence_method # either plain wave (='PW') or 'grid' method 
         self.set_propagation_module(prop_module)
 
     def set_file_name(self):
-        if self.propagation_module == 'BP':
-            self.file_name_data = self.path + 'data/sim_result_crp_BP_stepsize_'
-            self.file_name_raw_data = self.path + 'data/raw_data/crpropa_BP_stepsize_'
-        elif self.propagation_module == 'CK':
-            self.file_name_data = self.path + 'data/sim_result_crp_CK_stepsize_'
-            self.file_name_raw_data = self.path + 'data/raw_data/crpropa_CK_stepsize_'
-        elif self.propagation_module == 'SDE':
-            self.file_name_data = self.path + 'data/sim_result_crp_SDE_stepsize_'
-            self.file_name_raw_data = self.path + 'data/raw_data/crpropa_SDE_stepsize_'
+        self.file_name_data = self.path + 'data/sim_result_crp_'+self.propagation_module+'_'+self.turbulence_method+'_stepsize_'
+        self.file_name_raw_data = self.path + 'data/raw_data/crpropa_'+self.propagation_module+'_'+self.turbulence_method+'_stepsize_'
+        
 
 
     def set_energy(self, energy):

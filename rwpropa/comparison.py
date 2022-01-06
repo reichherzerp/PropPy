@@ -106,8 +106,8 @@ class Comparison():
                 print('no data for PropPy')
             
             try:
-                crp_l = np.load(self.path_data+'/sim_result_crp_BP_stepsize_'+str(step_size/10**11)+'_l.npy')
-                crp_kappa = np.load(self.path_data+'/sim_result_crp_BP_stepsize_'+str(step_size/10**11)+'_kappa.npy')
+                crp_l = np.load(self.path_data+'/sim_result_crp_BP_grid_stepsize_'+str(step_size/10**11)+'_l.npy')
+                crp_kappa = np.load(self.path_data+'/sim_result_crp_BP_grid_stepsize_'+str(step_size/10**11)+'_kappa.npy')
                 ax1.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls=(0, (1, 1)), lw=2, zorder=4)
                 steps_bp.append(step_size)
                 kappas_bp.append(np.mean(crp_kappa[-10:]))
