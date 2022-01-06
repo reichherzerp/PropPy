@@ -5,10 +5,10 @@ import pandas as pd
 
 class Comparison():
 
-    def __init__(self, kappa_theory, lambda_theory, step_sizes, l_c, r_g, path_data_raw, path_data, path_figs, rwp_unit = 'm'):
+    def __init__(self, kappa_theory, lambda_theory, step_sizes, l_c, r_g, path_data_raw, path_data, path_figs, proppy_unit = 'm'):
         self.kappa_theory = kappa_theory
         self.lambda_theory = lambda_theory
-        self.rwp_unit = rwp_unit
+        self.proppy_unit = proppy_unit
         self.step_sizes = step_sizes
         self.l_c = l_c
         self.r_g = r_g
@@ -19,7 +19,7 @@ class Comparison():
 
     def load_sim_data(self):
         try:
-            self.df_rwp_results = pd.read_pickle(self.path_data+'/proppy_sim_data.pkl')
+            self.df_proppy_results = pd.read_pickle(self.path_data+'/proppy_sim_data.pkl')
         except:
             print("couldn't loade rpw data")
         try:
@@ -36,21 +36,21 @@ class Comparison():
             print("couldn't loade SDE data")
 
         try:
-            self.rwp_times = np.array(self.df_rwp_results['time'].values.tolist())
-            if self.rwp_unit == 'm':
-                self.rwp_step_sizes = self.df_rwp_results['step_size']
-                self.rwp_kappas = self.df_rwp_results['kappa']
-            if self.rwp_unit == 'km':
-                self.rwp_step_sizes = self.df_rwp_results['step_size']*10**3
-                self.rwp_kappas = self.df_rwp_results['kappa']*10**6
-            if self.rwp_unit == 'pc':
-                self.rwp_step_sizes = self.df_rwp_results['step_size']*3.086*10**16
-                self.rwp_kappas = self.df_rwp_results['kappa']*(3.086*10**16)**2
+            self.proppy_times = np.array(self.df_proppy_results['time'].values.tolist())
+            if self.proppy_unit == 'm':
+                self.proppy_step_sizes = self.df_proppy_results['step_size']
+                self.proppy_kappas = self.df_proppy_results['kappa']
+            if self.proppy_unit == 'km':
+                self.proppy_step_sizes = self.df_proppy_results['step_size']*10**3
+                self.proppy_kappas = self.df_proppy_results['kappa']*10**6
+            if self.proppy_unit == 'pc':
+                self.proppy_step_sizes = self.df_proppy_results['step_size']*3.086*10**16
+                self.proppy_kappas = self.df_proppy_results['kappa']*(3.086*10**16)**2
         except:
-            print('no rwp data')
-            self.rwp_times = np.array([])
-            self.rwp_step_sizes = np.array([])
-            self.rwp_kappas = np.array([])
+            print('no PropPy data')
+            self.proppy_times = np.array([])
+            self.proppy_step_sizes = np.array([])
+            self.proppy_kappas = np.array([])
             
         try:
             self.ck_times = np.array(self.df_crp_ck_results['time'].values.tolist())
@@ -84,11 +84,11 @@ class Comparison():
         fig, ax1 = plt.subplots(figsize=(5,3.5))
         plt.plot(d_theory, [self.kappa_theory*10**4,self.kappa_theory*10**4], color='k', linestyle=(0, (3, 1, 1, 1)), label='theory', zorder=-1)
         plt.axvline(x=self.lambda_theory, color='k', linestyle='--', label='$\lambda_\mathrm{theory}$', zorder=-1)
-        steps_rwp = []
+        steps_proppy = []
         steps_ck = []
         steps_bp = []
         steps_sde = []
-        kappas_rwp = []
+        kappas_proppy = []
         kappas_ck = []
         kappas_bp = []
         kappas_sde = []
@@ -97,11 +97,11 @@ class Comparison():
             color = plt.cm.viridis(np.linspace(0, 1, len(self.step_sizes))[i])
             n_max = -1
             try:
-                rwp_l = np.load(self.path_data+'/sim_result_proppy_stepsize_'+str(step_size/10**11)+'_l.npy')
-                rwp_kappa = np.load(self.path_data+'/sim_result_proppy_stepsize_'+str(step_size/10**11)+'_kappa.npy')
-                ax1.plot(rwp_l[:n_max], np.array(rwp_kappa[:n_max])*10**4, color='red', ls='-', zorder=2, lw=2) 
-                steps_rwp.append(step_size)
-                kappas_rwp.append(np.mean(rwp_kappa[-10:]))
+                proppy_l = np.load(self.path_data+'/sim_result_proppy_stepsize_'+str(step_size/10**11)+'_l.npy')
+                proppy_kappa = np.load(self.path_data+'/sim_result_proppy_stepsize_'+str(step_size/10**11)+'_kappa.npy')
+                ax1.plot(proppy_l[:n_max], np.array(proppy_kappa[:n_max])*10**4, color='red', ls='-', zorder=2, lw=2) 
+                steps_proppy.append(step_size)
+                kappas_proppy.append(np.mean(proppy_kappa[-10:]))
             except:
                 print('no data for PropPy')
             
@@ -140,7 +140,7 @@ class Comparison():
         plt.plot([0,0], [0,0], c='grey', ls=':', label='CRPropa (BP)', lw=2)
         plt.plot([0,0], [0,0], c='grey', ls='-.', label='CRPropa (CK)', lw=2)
         plt.plot([0,0], [0,0], c='grey', ls='--', label='CRPropa (SDE)', lw=2)
-        plt.plot([0,0], [0,0], c='red', ls='-', label='RWPropa', lw=2)
+        plt.plot([0,0], [0,0], c='red', ls='-', label='PropPy', lw=2)
 
         plt.xlim([min(self.step_sizes)/3, d_theory[1]])
 
@@ -152,7 +152,7 @@ class Comparison():
         plt.show()
 
         fig, ax1 = plt.subplots(figsize=(5,3.5))
-        plt.scatter(steps_rwp, kappas_rwp, label='RWPropa', marker='s', color='green')
+        plt.scatter(steps_proppy, kappas_proppy, label='PropPy', marker='s', color='green')
         plt.scatter(steps_ck, kappas_ck, label='CRPropa (CK)', color='r')
         plt.scatter(steps_bp, kappas_bp, label='CRPropa (BP)', marker='d', color='k')
         plt.scatter(steps_sde, kappas_sde, label='CRPropa (SDE)', marker='^', color='blue')
@@ -169,9 +169,9 @@ class Comparison():
         fig = plt.figure(figsize=(5,3.5))
         ### try to load data and handle if data is not available
         
-        zs = np.concatenate([self.rwp_times, self.ck_times, self.bp_times, self.sde_times], axis=0)
+        zs = np.concatenate([self.proppy_times, self.ck_times, self.bp_times, self.sde_times], axis=0)
         min_, max_ = zs.min(), zs.max()
-        plt.scatter(self.rwp_step_sizes, self.rwp_kappas, c=self.rwp_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s')
+        plt.scatter(self.proppy_step_sizes, self.proppy_kappas, c=self.proppy_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s')
         plt.clim(min_, max_)
         plt.scatter(self.ck_step_sizes, self.ck_kappas, c=self.ck_times, cmap='viridis', norm=matplotlib.colors.LogNorm())
         plt.clim(min_, max_)
@@ -188,7 +188,7 @@ class Comparison():
         plt.axhline(y=self.kappa_theory, color='k', linestyle='-', label='theory', zorder=-1)
 
         # legend
-        plt.scatter([0],[0], label='RWPropa', marker='s', color='grey', zorder=-1)
+        plt.scatter([0],[0], label='PropPy', marker='s', color='grey', zorder=-1)
         plt.scatter([0],[0], label='CRPropa (CK)', color='grey', zorder=-1)
         plt.scatter([0],[0], label='CRPropa (BP)', marker='d', color='grey', zorder=-1)
         plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey', zorder=-1)
@@ -240,9 +240,9 @@ class Comparison():
 
     def plot_kappa_vs_time_steps(self):
         fig = plt.figure(figsize=(5,3.5))
-        zs = np.concatenate([self.rwp_step_sizes, self.ck_step_sizes, self.bp_step_sizes, self.sde_step_sizes], axis=0)
+        zs = np.concatenate([self.proppy_step_sizes, self.ck_step_sizes, self.bp_step_sizes, self.sde_step_sizes], axis=0)
         min_, max_ = zs.min(), zs.max()
-        plt.scatter(self.rwp_times, self.rwp_kappas, c=self.rwp_step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s')
+        plt.scatter(self.proppy_times, self.proppy_kappas, c=self.proppy_step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s')
         plt.clim(min_, max_)
         plt.scatter(self.ck_times, self.ck_kappas, c=self.ck_step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm())
         plt.clim(min_, max_)
@@ -255,7 +255,7 @@ class Comparison():
         plt.axhline(y=self.kappa_theory, color='k', linestyle='-', label='theory', zorder=-1)
 
         # legend
-        plt.scatter([0],[0], label='RWPropa', marker='s', color='grey')
+        plt.scatter([0],[0], label='PropPy', marker='s', color='grey')
         plt.scatter([0],[0], label='CRPropa (CK)', color='grey')
         plt.scatter([0],[0], label='CRPropa (BP)', marker='d', color='grey')
         plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')
@@ -269,14 +269,14 @@ class Comparison():
 
     def plot_kappa_vs_time_deviation(self):
         fig = plt.figure(figsize=(5,3.5))
-        err_rwp = np.abs(np.log10(self.rwp_kappas)-np.log10(self.kappa_theory))
+        err_proppy = np.abs(np.log10(self.proppy_kappas)-np.log10(self.kappa_theory))
         err_crp_ck = np.abs(np.log10(self.ck_kappas)-np.log10(self.kappa_theory))
         err_crp_bp = np.abs(np.log10(self.bp_kappas)-np.log10(self.kappa_theory))
         err_crp_sde = np.abs(np.log10(self.sde_kappas)-np.log10(self.kappa_theory))
-        zs = np.concatenate([err_rwp, err_crp_ck, err_crp_bp, err_crp_sde], axis=0)
+        zs = np.concatenate([err_proppy, err_crp_ck, err_crp_bp, err_crp_sde], axis=0)
         zs = zs[~np.isnan(zs)]
         min_, max_ = zs.min(), zs.max()
-        plt.scatter(self.rwp_times, self.rwp_kappas, c=err_rwp, cmap='viridis', marker='s')
+        plt.scatter(self.proppy_times, self.proppy_kappas, c=err_proppy, cmap='viridis', marker='s')
         plt.clim(min_, max_)
         plt.scatter(self.ck_times, self.ck_kappas, c=err_crp_ck, cmap='viridis')
         plt.clim(min_, max_)
@@ -289,7 +289,7 @@ class Comparison():
         plt.axhline(y=self.kappa_theory, color='k', linestyle='-', label='theory', zorder=-1)
 
         # legend
-        plt.scatter([0],[0], label='RWPropa', marker='s', color='grey')
+        plt.scatter([0],[0], label='PropPy', marker='s', color='grey')
         plt.scatter([0],[0], label='CRPropa (CK)', color='grey')
         plt.scatter([0],[0], label='CRPropa (BP)', marker='d', color='grey')
         plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')
@@ -310,13 +310,13 @@ class Comparison():
         if day:
             plt.axvline(x=60*60*24, color='grey', linestyle=(0, (5, 13)), zorder=-1, label='1 day')
     
-        err_rwp = np.abs(np.log10(self.rwp_kappas)-np.log10(self.kappa_theory))
+        err_proppy = np.abs(np.log10(self.proppy_kappas)-np.log10(self.kappa_theory))
         err_crp_ck = np.abs(np.log10(self.ck_kappas)-np.log10(self.kappa_theory))
         err_crp_bp = np.abs(np.log10(self.bp_kappas)-np.log10(self.kappa_theory))
         err_crp_sde = np.abs(np.log10(self.sde_kappas)-np.log10(self.kappa_theory)) 
-        zs = np.concatenate([self.rwp_step_sizes, self.ck_step_sizes, self.bp_step_sizes, self.sde_step_sizes], axis=0)
+        zs = np.concatenate([self.proppy_step_sizes, self.ck_step_sizes, self.bp_step_sizes, self.sde_step_sizes], axis=0)
         min_, max_ = zs.min(), zs.max()
-        plt.scatter(self.rwp_times, err_rwp, c=self.rwp_step_sizes, norm=matplotlib.colors.LogNorm(), cmap='viridis', marker='s')
+        plt.scatter(self.proppy_times, err_proppy, c=self.proppy_step_sizes, norm=matplotlib.colors.LogNorm(), cmap='viridis', marker='s')
         plt.clim(min_, max_)
         plt.scatter(self.ck_times, err_crp_ck, c=self.ck_step_sizes, norm=matplotlib.colors.LogNorm(), cmap='viridis')
         plt.clim(min_, max_)
@@ -328,7 +328,7 @@ class Comparison():
         plt.xscale('log')
 
         # legend
-        plt.scatter([0],[0], label='RWPropa', marker='s', color='grey')
+        plt.scatter([0],[0], label='PropPy', marker='s', color='grey')
         plt.scatter([0],[0], label='CRPropa (CK)', color='grey')
         plt.scatter([0],[0], label='CRPropa (BP)', marker='d', color='grey')
         plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')
@@ -350,13 +350,13 @@ class Comparison():
         if day:
             plt.axhline(y=60*60*24, color='grey', linestyle=(0, (5, 13)), zorder=-1, label='1 day')
 
-        err_rwp = np.abs(np.log10(self.rwp_kappas)-np.log10(self.kappa_theory))
+        err_proppy = np.abs(np.log10(self.proppy_kappas)-np.log10(self.kappa_theory))
         err_crp_ck = np.abs(np.log10(self.ck_kappas)-np.log10(self.kappa_theory))
         err_crp_bp = np.abs(np.log10(self.bp_kappas)-np.log10(self.kappa_theory))
         err_crp_sde = np.abs(np.log10(self.sde_kappas)-np.log10(self.kappa_theory)) 
-        zs = np.concatenate([self.rwp_step_sizes, self.ck_step_sizes, self.bp_step_sizes, self.sde_step_sizes], axis=0)
+        zs = np.concatenate([self.proppy_step_sizes, self.ck_step_sizes, self.bp_step_sizes, self.sde_step_sizes], axis=0)
         min_, max_ = zs.min(), zs.max()
-        plt.scatter(err_rwp, self.rwp_times, c=self.rwp_step_sizes, norm=matplotlib.colors.LogNorm(), cmap='viridis', marker='s')
+        plt.scatter(err_proppy, self.proppy_times, c=self.proppy_step_sizes, norm=matplotlib.colors.LogNorm(), cmap='viridis', marker='s')
         plt.clim(min_, max_)
         plt.scatter(err_crp_ck, self.ck_times, c=self.ck_step_sizes, norm=matplotlib.colors.LogNorm(), cmap='viridis')
         plt.clim(min_, max_)
@@ -368,7 +368,7 @@ class Comparison():
         plt.yscale('log')
 
         # legend
-        plt.scatter([0],[0], label='RWPropa', marker='s', color='grey')
+        plt.scatter([0],[0], label='PropPy', marker='s', color='grey')
         plt.scatter([0],[0], label='CRPropa (CK)', color='grey')
         plt.scatter([0],[0], label='CRPropa (BP)', marker='d', color='grey')
 
@@ -381,14 +381,14 @@ class Comparison():
 
     def plot_time_vs_steps_deviation(self, day = True, lambda_theory=True):
         fig = plt.figure(figsize=(5,3.5))
-        err_rwp = np.abs(np.log10(self.rwp_kappas)-np.log10(self.kappa_theory))
+        err_proppy = np.abs(np.log10(self.proppy_kappas)-np.log10(self.kappa_theory))
         err_crp_ck = np.abs(np.log10(self.ck_kappas)-np.log10(self.kappa_theory))
         err_crp_bp = np.abs(np.log10(self.bp_kappas)-np.log10(self.kappa_theory))
         err_crp_sde = np.abs(np.log10(self.sde_kappas)-np.log10(self.kappa_theory))
-        zs = np.concatenate([err_rwp, err_crp_ck, err_crp_bp, err_crp_sde], axis=0)
+        zs = np.concatenate([err_proppy, err_crp_ck, err_crp_bp, err_crp_sde], axis=0)
         zs = zs[~np.isnan(zs)]
         min_, max_ = zs.min(), zs.max()
-        plt.scatter(self.rwp_step_sizes, self.rwp_times, c=err_rwp, cmap='viridis', marker='s')
+        plt.scatter(self.proppy_step_sizes, self.proppy_times, c=err_proppy, cmap='viridis', marker='s')
         plt.clim(min_, max_)
         plt.scatter(self.ck_step_sizes, self.ck_times, c=err_crp_ck, cmap='viridis')
         plt.clim(min_, max_)
@@ -413,7 +413,7 @@ class Comparison():
         plt.axvline(x=self.r_g*2*3.14, label='$2\pi\, r_\mathrm{g}$', color='grey', linestyle=(0, (5, 2.5)), zorder=-1)
 
         # legend
-        plt.scatter([0],[0], label='RWPropa', marker='s', color='grey')
+        plt.scatter([0],[0], label='PropPy', marker='s', color='grey')
         plt.scatter([0],[0], label='CRPropa (CK)', color='grey')
         plt.scatter([0],[0], label='CRPropa (BP)', marker='d', color='grey')
         plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')

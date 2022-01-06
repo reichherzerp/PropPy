@@ -4,9 +4,9 @@ import time
 import rwpropa as pp
 from pathlib import Path
 
-path_figs = 'comparison/compact_sources_1e17m/figures'
-path_data = 'comparison/compact_sources_1e17m/data'
-path_data_raw = 'comparison/compact_sources_1e17m/data/raw_data'
+path_figs = 'comparison/compact_sources_1e14m/figures'
+path_data = 'comparison/compact_sources_1e14m/data'
+path_data_raw = 'comparison/compact_sources_1e14m/data/raw_data'
 Path(path_figs).mkdir(parents=True, exist_ok=True)
 Path(path_data).mkdir(parents=True, exist_ok=True)
 Path(path_data_raw).mkdir(parents=True, exist_ok=True)
@@ -18,9 +18,9 @@ energy = 10**17 # [eV]
 r_g = 3.34*10**12 # [m]
 kappa_theory = 1.59*10**23 # [m^2/s]
 lambda_theory = 1.6*10**15 # [m]
-traj_max = 10**17 # [m]
+traj_max = 10**14 # [m]
 
-step_sizes = np.logspace(9, 15, 19) # [m]
+step_sizes = np.logspace(10, 14, 15) # [m]
 
 
 df_sim_data = pd.DataFrame(columns=('step_size', 'time', 'kappa', 'kappa_err'))
