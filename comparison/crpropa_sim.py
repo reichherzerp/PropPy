@@ -21,6 +21,10 @@ class CRPropa:
         self.nr_grid_points = nr_grid_points
         self.random_seed = random_seed
         self.seed_study = seed_study
+        if self.seed_study:
+            self.file_extension = str(self.random_seed)
+        else:
+            self.file_extension = str(self.step_size/10**11)
         self.set_propagation_module(prop_module)
 
     def set_file_name(self):
@@ -123,10 +127,7 @@ class CRPropa:
         sim.add(maxTra)
 
         # output
-        if self.seed_study:
-            output = crp.TextOutput(self.file_name_raw_data+str(self.random_seed)+'.txt', crp.Output.Trajectory3D)
-        else:
-            output = crp.TextOutput(self.file_name_raw_data+str(self.step_size/10**11)+'.txt', crp.Output.Trajectory3D)
+        output = crp.TextOutput(self.file_name_raw_data+self.file_extension+'.txt', crp.Output.Trajectory3D)
         output.enable(output.SerialNumberColumn)
 
         # observer
@@ -187,11 +188,11 @@ class CRPropa:
 
 
     def analyze(self, step_size):
-        data = self.load_data(self.file_name_raw_data+str(step_size/10**11)+'.txt')
+        data = self.load_data(self.file_name_raw_data+self.file_extension+'.txt')
         kappa = self.diffusion_coefficient_isotropic(data)
         kappa_final = np.mean(kappa[-5:])
         kappa_final_err = np.std(kappa[-5:])
         l = self.return_l(data)
-        np.save(self.file_name_data+str(step_size/10**11)+'_l', np.array(l))
-        np.save(self.file_name_data+str(step_size/10**11)+'_kappa.npy', np.array(kappa))
+        np.save(self.file_name_data+self.file_extension+'_l', np.array(l))
+        np.save(self.file_name_data+self.file_extension+'_kappa.npy', np.array(kappa))
         return kappa_final, kappa_final_err
