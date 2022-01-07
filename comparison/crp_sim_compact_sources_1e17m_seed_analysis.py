@@ -18,6 +18,7 @@ kappa_theory = 1.59*10**23 # [m^2/s]
 nr_seeds = 100
 
 prop_module = 'BP'
+
 # save simulation result
 file_name_results = path + 'data/crp_sim_data_'+prop_module+'_seed_'+'.pkl'
 
