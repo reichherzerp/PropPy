@@ -16,7 +16,7 @@ file_name_results = path_data+'/proppy_sim_data.pkl'
 l_c = 1.05*10**11 # [m]
 energy = 10**17 # [eV]
 r_g = 3.34*10**12 # [m]
-kappa_theory = 1.59*10**23 # [m^2/s]
+kappa_theory = 1.59*10**23/4. # [m^2/s]
 lambda_theory = 1.6*10**15 # [m]
 traj_max = 10**17 # [m]
 
