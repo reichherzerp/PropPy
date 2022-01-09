@@ -70,7 +70,7 @@ class Comparison():
             self.bp_pw_step_sizes = self.df_crp_bp_pw_results['step_size']
             self.bp_pw_kappas = self.df_crp_bp_pw_results['kappa']
         except:
-            print('no bp data')
+            print('no bp pw data')
             self.bp_pw_times = np.array([])
             self.bp_pw_step_sizes = np.array([])
             self.bp_pw_kappas = np.array([])
@@ -79,7 +79,7 @@ class Comparison():
             self.bp_grid_step_sizes = self.df_crp_bp_grid_results['step_size']
             self.bp_grid_kappas = self.df_crp_bp_grid_results['kappa']
         except:
-            print('no bp data')
+            print('no bp grid data')
             self.bp_grid_times = np.array([])
             self.bp_grid_step_sizes = np.array([])
             self.bp_grid_kappas = np.array([])
@@ -99,11 +99,13 @@ class Comparison():
         plt.axvline(x=self.lambda_theory, color='k', linestyle='--', label='$\lambda_\mathrm{theory}$', zorder=-1)
         steps_proppy = []
         steps_ck = []
-        steps_bp = []
+        steps_bp_pw = []
+        steps_bp_grid = []
         steps_sde = []
         kappas_proppy = []
         kappas_ck = []
-        kappas_bp = []
+        kappas_bp_pw = []
+        kappas_bp_grid = []
         kappas_sde = []
 
         for i, step_size in enumerate(self.step_sizes):
@@ -119,13 +121,21 @@ class Comparison():
                 print('no data for PropPy')
             
             try:
+                crp_l = np.load(self.path_data+'/sim_result_crp_BP_pw_stepsize_'+str(step_size/10**11)+'_l.npy')
+                crp_kappa = np.load(self.path_data+'/sim_result_crp_BP_pw_stepsize_'+str(step_size/10**11)+'_kappa.npy')
+                ax1.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls=(0, (1, 1)), lw=2, zorder=4)
+                steps_bp_pw.append(step_size)
+                kappas_bp_pw.append(np.mean(crp_kappa[-10:]))
+            except:
+                print('no data for BP pw')
+            try:
                 crp_l = np.load(self.path_data+'/sim_result_crp_BP_grid_stepsize_'+str(step_size/10**11)+'_l.npy')
                 crp_kappa = np.load(self.path_data+'/sim_result_crp_BP_grid_stepsize_'+str(step_size/10**11)+'_kappa.npy')
-                ax1.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls=(0, (1, 1)), lw=2, zorder=4)
-                steps_bp.append(step_size)
-                kappas_bp.append(np.mean(crp_kappa[-10:]))
+                ax1.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls=(0, (1, 8)), lw=2, zorder=4)
+                steps_bp_grid.append(step_size)
+                kappas_bp_grid.append(np.mean(crp_kappa[-10:]))
             except:
-                print('no data for BP')
+                print('no data for BP grid')
             
             try:
                 crp_l = np.load(self.path_data+'/sim_result_crp_CK_stepsize_'+str(step_size/10**11)+'_l.npy')
@@ -150,7 +160,8 @@ class Comparison():
         plt.colorbar(label='step sizes [m]')
 
         #legend
-        plt.plot([0,0], [0,0], c='grey', ls=':', label='CRPropa (BP)', lw=2)
+        plt.plot([0,0], [0,0], c='grey', ls=':', label='CRPropa (BP) [PW]', lw=2)
+        plt.plot([0,0], [0,0], c='grey', ls=(0, (1, 8)), label='CRPropa (BP) [grid]', lw=2)
         plt.plot([0,0], [0,0], c='grey', ls='-.', label='CRPropa (CK)', lw=2)
         plt.plot([0,0], [0,0], c='grey', ls='--', label='CRPropa (SDE)', lw=2)
         plt.plot([0,0], [0,0], c='red', ls='-', label='PropPy', lw=2)
@@ -167,7 +178,8 @@ class Comparison():
         fig, ax1 = plt.subplots(figsize=(5,3.5))
         plt.scatter(steps_proppy, kappas_proppy, label='PropPy', marker='s', color='green')
         plt.scatter(steps_ck, kappas_ck, label='CRPropa (CK)', color='r')
-        plt.scatter(steps_bp, kappas_bp, label='CRPropa (BP)', marker='d', color='k')
+        plt.scatter(steps_bp_pw, kappas_bp_pw, label='CRPropa (BP) [PW]', marker='d', color='k')
+        plt.scatter(steps_bp_grid, kappas_bp_grid, label='CRPropa (BP) [grid]', marker='*', color='purple')
         plt.scatter(steps_sde, kappas_sde, label='CRPropa (SDE)', marker='^', color='blue')
         plt.axvline(x=self.l_c, label='$l_\mathrm{c}$', color='grey', ls=':')
         plt.axvline(x=self.r_g*2*3.14, label='$2\pi\, r_\mathrm{g}$', color='grey', ls='--')
