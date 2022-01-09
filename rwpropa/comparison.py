@@ -27,9 +27,13 @@ class Comparison():
         except:
             print("couldn't loade CK data")
         try:
-            self.df_crp_bp_results = pd.read_pickle(self.path_data+'/crp_sim_data_BP.pkl')
+            self.df_crp_bp_pw_results = pd.read_pickle(self.path_data+'/crp_sim_data_BP_PW.pkl')
         except:
-            print("couldn't loade BP data")
+            print("couldn't loade BP PW data")
+        try:
+            self.df_crp_bp_grid_results = pd.read_pickle(self.path_data+'/crp_sim_data_BP_grid.pkl')
+        except:
+            print("couldn't loade BP grid data")
         try:
             self.df_crp_sde_results = pd.read_pickle(self.path_data+'/crp_sim_data_SDE.pkl')
         except:
@@ -62,14 +66,23 @@ class Comparison():
             self.ck_step_sizes = np.array([])
             self.ck_kappas = np.array([])
         try:
-            self.bp_times = np.array(self.df_crp_bp_results['time'].values.tolist())
-            self.bp_step_sizes = self.df_crp_bp_results['step_size']
-            self.bp_kappas = self.df_crp_bp_results['kappa']
+            self.bp_pw_times = np.array(self.df_crp_bp_pw_results['time'].values.tolist())
+            self.bp_pw_step_sizes = self.df_crp_bp_pw_results['step_size']
+            self.bp_pw_kappas = self.df_crp_bp_pw_results['kappa']
         except:
             print('no bp data')
-            self.bp_times = np.array([])
-            self.bp_step_sizes = np.array([])
-            self.bp_kappas = np.array([])
+            self.bp_pw_times = np.array([])
+            self.bp_pw_step_sizes = np.array([])
+            self.bp_pw_kappas = np.array([])
+        try:
+            self.bp_grid_times = np.array(self.df_crp_bp_grid_results['time'].values.tolist())
+            self.bp_grid_step_sizes = self.df_crp_bp_grid_results['step_size']
+            self.bp_grid_kappas = self.df_crp_bp_grid_results['kappa']
+        except:
+            print('no bp data')
+            self.bp_grid_times = np.array([])
+            self.bp_grid_step_sizes = np.array([])
+            self.bp_grid_kappas = np.array([])
         try:
             self.sde_times = np.array(self.df_crp_sde_results['time'].values.tolist())
             self.sde_step_sizes = self.df_crp_sde_results['step_size']
@@ -124,8 +137,8 @@ class Comparison():
                 print('no data for CK')
 
             try:
-                crp_l = np.load(self.path_data+'/sim_result_crp_SDE_stepsize_'+str(step_size/10**11)+'_l.npy')
-                crp_kappa = np.load(self.path_data+'/sim_result_crp_SDE_stepsize_'+str(step_size/10**11)+'_kappa.npy')
+                crp_l = np.load(self.path_data+'/sim_result_crp_SDE__stepsize_'+str(step_size/10**11)+'_l.npy')
+                crp_kappa = np.load(self.path_data+'/sim_result_crp_SDE__stepsize_'+str(step_size/10**11)+'_kappa.npy')
                 ax1.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls='--', lw=2, zorder=4)
                 steps_sde.append(step_size)
                 kappas_sde.append(np.mean(crp_kappa[-10:]))

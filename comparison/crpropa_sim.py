@@ -9,7 +9,10 @@ class CRPropa:
         self.energy = energy*crp.eV
         self.n_obs = 100
         self.n_particles = 10**3
-        self.turbulence_method = turbulence_method # either plain wave (='PW') or 'grid' method 
+        if prop_module == 'SDE':
+            self.turbulence_method = ''
+        else:
+            self.turbulence_method = turbulence_method # either plain wave (='PW') or 'grid' method 
         self.brms = bmrs*crp.gauss
         self.l_max = l_max # [m]
         self.l_min = l_min # [m]
@@ -83,17 +86,24 @@ class CRPropa:
 
         # magnetic field 
         b_field = crp.MagneticFieldList()
-        turbulence_spectrum = crp.SimpleTurbulenceSpectrum(self.brms, self.l_min, self.l_max)
-        if self.turbulence_method == 'PW':
-            turbulence = crp.PlaneWaveTurbulence(turbulence_spectrum, self.n_wavemodes, self.random_seed)
-        elif self.turbulence_method == 'grid':
-            grid_properties = crp.GridProperties(crp.Vector3d(0.,0.,0.), self.nr_grid_points, self.l_min/2.001)
-            turbulence = crp.SimpleGridTurbulence(turbulence_spectrum, grid_properties, self.random_seed)
+        # turbulence for BP and CK methods
+        if self.propagation_module != 'SDE':
+            turbulence_spectrum = crp.SimpleTurbulenceSpectrum(self.brms, self.l_min, self.l_max)
+            if self.turbulence_method == 'PW':
+                turbulence = crp.PlaneWaveTurbulence(turbulence_spectrum, self.n_wavemodes, self.random_seed)
+            elif self.turbulence_method == 'grid':
+                grid_properties = crp.GridProperties(crp.Vector3d(0.,0.,0.), self.nr_grid_points, self.l_min/2.001)
+                turbulence = crp.SimpleGridTurbulence(turbulence_spectrum, grid_properties, self.random_seed)
+            else:
+                print('Error: use either PW or grid for the turbulence model.')
+            
+            b_field.addField(turbulence)
         else:
-            print('Error: use either PW or grid for the turbulence model.')
-        
-        b_field.addField(turbulence)
-        
+            # magnetic field
+            # this is needed but the orientation is not relevant, as we set epsilon = 1 later, which ignors the magnetic field and uses isotropic diffusion!
+            b_field_background = crp.UniformMagneticField(crp.Vector3d(1,0,0))
+            b_field.addField(b_field_background)
+
         # propagation
         print('propagation module: ', self.propagation_module)
         if self.propagation_module == 'BP':
