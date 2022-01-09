@@ -4,7 +4,7 @@ import pandas as pd
 
 
 class CRPropa:
-    def __init__(self, energy = 10**17, bmrs=1, l_max = 5*10**11, l_min = 5*10**9, step_size = 10**11, traj_max = 10**14, path = '', prop_module = 'BP', kappa=10**24, turbulence_method = 'PW', nr_grid_points = 256, seed_study = False, random_seed=0):
+    def __init__(self, energy = 10**17, brms=1, l_max = 5*10**11, l_min = 5*10**9, step_size = 10**11, traj_max = 10**14, path = '', prop_module = 'BP', kappa=10**24, turbulence_method = 'PW', nr_grid_points = 256, seed_study = False, random_seed=0, n_wavemodes=10**3):
         # all simulation parameters
         self.energy = energy*crp.eV
         self.n_obs = 100
@@ -13,10 +13,10 @@ class CRPropa:
             self.turbulence_method = ''
         else:
             self.turbulence_method = turbulence_method # either plain wave (='PW') or 'grid' method 
-        self.brms = bmrs*crp.gauss
+        self.brms = brms*crp.gauss
         self.l_max = l_max # [m]
         self.l_min = l_min # [m]
-        self.n_wavemodes = 10**3
+        self.n_wavemodes = n_wavemodes
         self.step_size = step_size
         self.traj_max = traj_max
         self.path = path
