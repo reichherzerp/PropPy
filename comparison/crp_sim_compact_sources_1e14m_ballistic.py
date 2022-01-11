@@ -23,7 +23,7 @@ kappa_theory = 1.59*10**23 # [m^2/s]
 simulation_setups = [
     {
         'prop_module': 'SDE',
-        'turbulence_method': 'PW',
+        'turbulence_method': '',
         'nr_grid_points': 0,
         'nr_modes': 0
     },
@@ -62,5 +62,5 @@ def simulate(simulation_setup):
     
     print(df_sim_data)
  
-for simulation_setup in simulation_setups[::-1]:
+for simulation_setup in simulation_setups[:1]:
     simulate(simulation_setup)

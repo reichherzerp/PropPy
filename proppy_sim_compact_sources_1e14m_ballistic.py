@@ -4,9 +4,9 @@ import time
 import rwpropa as pp
 from pathlib import Path
 
-path_figs = 'comparison/compact_sources_1e14m/figures'
-path_data = 'comparison/compact_sources_1e14m/data'
-path_data_raw = 'comparison/compact_sources_1e14m/data/raw_data'
+path_figs = 'comparison/compact_sources_1e14m_ballistic/figures'
+path_data = 'comparison/compact_sources_1e14m_ballistic/data'
+path_data_raw = 'comparison/compact_sources_1e14m_ballistic/data/raw_data'
 Path(path_figs).mkdir(parents=True, exist_ok=True)
 Path(path_data).mkdir(parents=True, exist_ok=True)
 Path(path_data_raw).mkdir(parents=True, exist_ok=True)
