@@ -5,34 +5,63 @@ import numpy as np
 import time
 from pathlib import Path
 
-path = 'compact_sources_1e17m/'
+
 path_figs = 'compact_sources_1e17m/figures'
 path_data = 'compact_sources_1e17m/data'
 path_data_raw = 'compact_sources_1e17m/data/raw_data'
 Path(path_figs).mkdir(parents=True, exist_ok=True)
 Path(path_data).mkdir(parents=True, exist_ok=True)
 Path(path_data_raw).mkdir(parents=True, exist_ok=True)
-
-step_sizes = np.logspace(9, 15, 19)
-kappa_theory = 1.59*10**23/4. # [m^2/s]
-
-prop_module = 'BP'
-turb_method = 'grid'
 # save simulation result
-file_name_results = path + 'data/crp_sim_data_'+prop_module+'_'+turb_method+'.pkl'
+path = 'compact_sources_1e17m/'
 
+step_sizes = (np.logspace(9, 15, 19)[::-1])[10:]
 df_sim_data = pd.DataFrame(columns=('step_size', 'time', 'kappa', 'kappa_err'))
 
-for i, step_size in enumerate(step_sizes[::-1]):
-    crp = CRPropa(step_size = step_size, l_min = 5*10**9, nr_grid_points = 1024, traj_max = 10**17, path = path, prop_module = prop_module, kappa = kappa_theory, turbulence_method = turb_method)
-    start_time = time.process_time()
-    crp.sim()
-    time_needed = time.process_time() - start_time
-    print('time needed: ', time_needed, 's')
-    
-    kappa, kappa_err = crp.analyze(step_size)
+kappa_theory = 3.34*10**22 # [m^2/s]
+traj_max = 10**17 # [m]
 
-    df_sim_data.loc[i] = [step_size, time_needed, kappa, kappa_err]
-    df_sim_data.to_pickle(file_name_results) # save intermediate results
+simulation_setups = [
+    {
+        'prop_module': 'SDE',
+        'turbulence_method': 'rest',
+        'nr_grid_points': 0,
+        'nr_modes': 0
+    },
+    {
+        'prop_module': 'BP',
+        'turbulence_method': 'PW',
+        'nr_grid_points': 0,
+        'nr_modes': 1000
+    },
+    {
+        'prop_module': 'CK',
+        'turbulence_method': 'PW',
+        'nr_grid_points': 0,
+        'nr_modes': 1000
+    },
+    {
+        'prop_module': 'BP',
+        'turbulence_method': 'grid',
+        'nr_grid_points': 256,
+        'nr_modes': 0,
+    },
+]
+
+def simulate(simulation_setup):
+    file_name_results = path + 'data/crp_sim_data_'+simulation_setup['prop_module']+'_'+simulation_setup['turbulence_method']+'.pkl'
+    for i, step_size in enumerate(step_sizes):
+        crp = CRPropa(step_size = step_size, traj_max = traj_max, nr_grid_points = simulation_setup['nr_grid_points'], n_wavemodes = simulation_setup['nr_modes'], l_min = 5*10**9, path = path, prop_module = simulation_setup['prop_module'], kappa = kappa_theory, turbulence_method = simulation_setup['turbulence_method'])
+        start_time = time.process_time()
+        crp.sim()
+        time_needed = time.process_time() - start_time
+        
+        kappa, kappa_err = crp.analyze(step_size)
+
+        df_sim_data.loc[i] = [step_size, time_needed, kappa, kappa_err]
+        df_sim_data.to_pickle(file_name_results) # save intermediate results
+    
+    print(df_sim_data)
  
-print(df_sim_data)
+for simulation_setup in [simulation_setups[0]]:
+    simulate(simulation_setup)

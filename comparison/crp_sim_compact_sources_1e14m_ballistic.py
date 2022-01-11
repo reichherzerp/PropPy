@@ -15,10 +15,11 @@ Path(path_data_raw).mkdir(parents=True, exist_ok=True)
 # save simulation result
 path = 'compact_sources_1e14m_ballistic/'
 
-step_sizes = np.logspace(10, 14, 15)[::-1]
+step_sizes = np.logspace(9, 15, 19)[::-1]
 df_sim_data = pd.DataFrame(columns=('step_size', 'time', 'kappa', 'kappa_err'))
 
-kappa_theory = 1.59*10**23 # [m^2/s]
+kappa_theory = 3.34*10**22 # [m^2/s]
+traj_max = 10**14 # [m]
 
 simulation_setups = [
     {
@@ -50,7 +51,7 @@ simulation_setups = [
 def simulate(simulation_setup):
     file_name_results = path + 'data/crp_sim_data_'+simulation_setup['prop_module']+'_'+simulation_setup['turbulence_method']+'.pkl'
     for i, step_size in enumerate(step_sizes):
-        crp = CRPropa(step_size = step_size, traj_max = 10**14, nr_grid_points = simulation_setup['nr_grid_points'], n_wavemodes = simulation_setup['nr_modes'], l_min = 5*10**10, path = path, prop_module = simulation_setup['prop_module'], kappa = kappa_theory, turbulence_method = simulation_setup['turbulence_method'])
+        crp = CRPropa(step_size = step_size, traj_max = traj_max, nr_grid_points = simulation_setup['nr_grid_points'], n_wavemodes = simulation_setup['nr_modes'], l_min = 5*10**9, path = path, prop_module = simulation_setup['prop_module'], kappa = kappa_theory, turbulence_method = simulation_setup['turbulence_method'])
         start_time = time.process_time()
         crp.sim()
         time_needed = time.process_time() - start_time
@@ -62,5 +63,5 @@ def simulate(simulation_setup):
     
     print(df_sim_data)
  
-for simulation_setup in simulation_setups[:1]:
+for simulation_setup in simulation_setups:
     simulate(simulation_setup)

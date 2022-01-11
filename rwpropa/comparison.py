@@ -23,7 +23,7 @@ class Comparison():
         except:
             print("couldn't loade PropPy data")
         try:
-            self.df_crp_ck_results = pd.read_pickle(self.path_data+'/crp_sim_data_CK_PW.pkl')
+            self.df_crp_ck_results = pd.read_pickle(self.path_data+'/crp_sim_data_CK.pkl')
         except:
             print("couldn't loade CK data")
         try:
@@ -138,8 +138,8 @@ class Comparison():
                 print('no data for BP grid')
             
             try:
-                crp_l = np.load(self.path_data+'/sim_result_crp_CK_stepsize_'+str(step_size/10**11)+'_l.npy')
-                crp_kappa = np.load(self.path_data+'/sim_result_crp_CK_stepsize_'+str(step_size/10**11)+'_kappa.npy')
+                crp_l = np.load(self.path_data+'/sim_result_crp_CK_PW_stepsize_'+str(step_size/10**11)+'_l.npy')
+                crp_kappa = np.load(self.path_data+'/sim_result_crp_CK_PW_stepsize_'+str(step_size/10**11)+'_kappa.npy')
                 ax1.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls='-.', lw=2, zorder=4)
                 steps_ck.append(step_size)
                 kappas_ck.append(np.mean(crp_kappa[-10:]))
