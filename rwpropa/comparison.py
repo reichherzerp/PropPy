@@ -23,7 +23,7 @@ class Comparison():
         except:
             print("couldn't loade PropPy data")
         try:
-            self.df_crp_ck_results = pd.read_pickle(self.path_data+'/crp_sim_data_CK.pkl')
+            self.df_crp_ck_results = pd.read_pickle(self.path_data+'/crp_sim_data_CK_PW.pkl')
         except:
             print("couldn't loade CK data")
         try:
@@ -235,10 +235,7 @@ class Comparison():
             dataI = pd.read_csv(file_name+'_stepsize_'+str(step_size/10**11)+'.txt', names=['D', 'SN', 'ID', 'E', 'X', 'Y', 'Z', 'Px', 'Py', 'Pz', 'SN0', 'SN1'], delimiter='\t', comment='#', usecols=["D", "X", "Y", "Z", "SN"])
             dataI = dataI.sort_values('D')
             max_l = max(dataI['D'].values.tolist())
-            dataI = dataI[dataI['D'] == max_l]                                           
-            #plt.hist(dataI.Z, bins=30, label=str(step_size/10**11))
-            #weights = np.ones_like(d)/nr_particles
-            bins = 10
+            dataI = dataI[dataI['D'] == max_l]   
             color = plt.cm.viridis(np.linspace(0, 1, len(self.step_sizes))[i])
             xs = np.array(dataI.X.values.tolist())
             ys = np.array(dataI.Y.values.tolist())
@@ -247,10 +244,9 @@ class Comparison():
                 scale = 3.086e22
             else:
                 scale = 1
-            plt.hist(np.concatenate((xs,ys,zs), axis=None)*scale, bins=30, range=[-1e17/3, 1e17/3], histtype=u'step', edgecolor=color, linewidth=1., facecolor="None")
+            plt.hist(np.concatenate((xs,ys,zs), axis=None)*scale, bins=30, range=[-1e17/4, 1e17/4], histtype=u'step', edgecolor=color, linewidth=1., facecolor="None")
             
-            
-            
+                 
         # colorbar
         plt.scatter(np.zeros(len(self.step_sizes)), np.zeros(len(self.step_sizes)), c=self.step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm())
         plt.colorbar(label='step sizes [m]')
@@ -260,6 +256,42 @@ class Comparison():
         plt.title('$l_\mathrm{traj} = 10^{17}$ m ('+prop_type+')')
 
         plt.yscale('log')
+        plt.savefig(self.path_figs+'/particle_distributions_'+prop_type+'.pdf', bbox_inches='tight', pad_inches=0.02) 
+        plt.show()
+
+
+    def plot_particle_distributions_proppy(self):
+        prop_type = 'PropPy'
+        unit = 'm'
+        fig = plt.figure(figsize=(5,3.5))
+        for i, step_size in enumerate(self.step_sizes):
+            if i == len(self.step_sizes)-1:
+                continue
+            try:
+                data = pd.read_pickle(self.path_data_raw+'/proppy_stepsize_'+str(step_size/10**11)+'.pkl')
+                data = data.sort_values('d')
+                max_l = max(data['d'].values.tolist())
+                data = data[data['d'] == max_l]        
+                bins = 10
+                color = plt.cm.viridis(np.linspace(0, 1, len(self.step_sizes))[i])
+                xs = np.array(data.x.values.tolist())
+                ys = np.array(data.y.values.tolist())
+                zs = np.array(data.z.values.tolist())
+                if unit == 'Mpc':
+                    scale = 3.086e22
+                else:
+                    scale = 1
+                plt.hist(np.concatenate((xs,ys,zs), axis=None)*scale, bins=30, range=[-1e17/4, 1e17/4], histtype=u'step', edgecolor=color, linewidth=1., facecolor="None")
+            except:
+                pass
+        # colorbar
+        plt.scatter(np.zeros(len(self.step_sizes)), np.zeros(len(self.step_sizes)), c=self.step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm())
+        plt.colorbar(label='step sizes [m]')
+
+        plt.xlabel('position $x_i$ [m]')
+        plt.ylabel('# particles')
+        plt.title('$l_\mathrm{traj} = 10^{17}$ m ('+prop_type+')')
+
         plt.savefig(self.path_figs+'/particle_distributions_'+prop_type+'.pdf', bbox_inches='tight', pad_inches=0.02) 
         plt.show()
 
