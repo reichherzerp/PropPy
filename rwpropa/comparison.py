@@ -162,7 +162,7 @@ class Comparison():
         #legend
         plt.plot([0,0], [0,0], c='grey', ls=':', label='CRPropa (BP) [PW]', lw=2)
         plt.plot([0,0], [0,0], c='grey', ls=(0, (1, 8)), label='CRPropa (BP) [grid]', lw=2)
-        plt.plot([0,0], [0,0], c='grey', ls='-.', label='CRPropa (CK)', lw=2)
+        plt.plot([0,0], [0,0], c='grey', ls='-.', label='CRPropa (CK) [PW]', lw=2)
         plt.plot([0,0], [0,0], c='grey', ls='--', label='CRPropa (SDE)', lw=2)
         plt.plot([0,0], [0,0], c='red', ls='-', label='PropPy', lw=2)
 
@@ -177,7 +177,7 @@ class Comparison():
 
         fig, ax1 = plt.subplots(figsize=(5,3.5))
         plt.scatter(steps_proppy, kappas_proppy, label='PropPy', marker='s', color='green')
-        plt.scatter(steps_ck, kappas_ck, label='CRPropa (CK)', color='r')
+        plt.scatter(steps_ck, kappas_ck, label='CRPropa (CK) [PW]', color='r')
         plt.scatter(steps_bp_pw, kappas_bp_pw, label='CRPropa (BP) [PW]', marker='d', color='k')
         plt.scatter(steps_bp_grid, kappas_bp_grid, label='CRPropa (BP) [grid]', marker='*', color='purple')
         plt.scatter(steps_sde, kappas_sde, label='CRPropa (SDE)', marker='^', color='blue')
@@ -216,7 +216,7 @@ class Comparison():
 
         # legend
         plt.scatter([0],[0], label='PropPy', marker='s', color='grey', zorder=-1)
-        plt.scatter([0],[0], label='CRPropa (CK)', color='grey', zorder=-1)
+        plt.scatter([0],[0], label='CRPropa (CK) [PW]', color='grey', zorder=-1)
         plt.scatter([0],[0], label='CRPropa (BP) [PW]', marker='d', color='grey', zorder=-1)
         plt.scatter([0],[0], label='CRPropa (BP) [grid]', marker='*', color='grey', zorder=-1)
         plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey', zorder=-1)
@@ -316,7 +316,7 @@ class Comparison():
 
         # legend
         plt.scatter([0],[0], label='PropPy', marker='s', color='grey')
-        plt.scatter([0],[0], label='CRPropa (CK)', color='grey')
+        plt.scatter([0],[0], label='CRPropa (CK) [PW]', color='grey')
         plt.scatter([0],[0], label='CRPropa (BP) [PW]', marker='d', color='grey', zorder=-1)
         plt.scatter([0],[0], label='CRPropa (BP) [grid]', marker='*', color='grey', zorder=-1)
         plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')
@@ -354,7 +354,7 @@ class Comparison():
 
         # legend
         plt.scatter([0],[0], label='PropPy', marker='s', color='grey')
-        plt.scatter([0],[0], label='CRPropa (CK)', color='grey')
+        plt.scatter([0],[0], label='CRPropa (CK) [PW]', color='grey')
         plt.scatter([0],[0], label='CRPropa (BP) [PW]', marker='d', color='grey', zorder=-1)
         plt.scatter([0],[0], label='CRPropa (BP) [grid]', marker='*', color='grey', zorder=-1)
         plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')
@@ -397,7 +397,7 @@ class Comparison():
 
         # legend
         plt.scatter([0],[0], label='PropPy', marker='s', color='grey')
-        plt.scatter([0],[0], label='CRPropa (CK)', color='grey')
+        plt.scatter([0],[0], label='CRPropa (CK) [PW]', color='grey')
         plt.scatter([0],[0], label='CRPropa (BP) [PW]', marker='d', color='grey', zorder=-1)
         plt.scatter([0],[0], label='CRPropa (BP) [grid]', marker='*', color='grey', zorder=-1)
         plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')
@@ -441,7 +441,7 @@ class Comparison():
 
         # legend
         plt.scatter([0],[0], label='PropPy', marker='s', color='grey')
-        plt.scatter([0],[0], label='CRPropa (CK)', color='grey')
+        plt.scatter([0],[0], label='CRPropa (CK) [PW]', color='grey')
         plt.scatter([0],[0], label='CRPropa (BP) [PW]', marker='d', color='grey', zorder=-1)
         plt.scatter([0],[0], label='CRPropa (BP) [grid]', marker='*', color='grey', zorder=-1)
         plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')
@@ -491,7 +491,7 @@ class Comparison():
 
         # legend
         plt.scatter([0],[0], label='PropPy', marker='s', color='grey')
-        plt.scatter([0],[0], label='CRPropa (CK)', color='grey')
+        plt.scatter([0],[0], label='CRPropa (CK) [PW]', color='grey')
         plt.scatter([0],[0], label='CRPropa (BP) [PW]', marker='d', color='grey', zorder=-1)
         plt.scatter([0],[0], label='CRPropa (BP) [grid]', marker='*', color='grey', zorder=-1)
         plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')
