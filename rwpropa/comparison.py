@@ -23,7 +23,7 @@ class Comparison():
         except:
             print("couldn't loade PropPy data")
         try:
-            self.df_crp_ck_results = pd.read_pickle(self.path_data+'/crp_sim_data_CK.pkl')
+            self.df_crp_ck_results = pd.read_pickle(self.path_data+'/crp_sim_data_CK_PW.pkl')
         except:
             print("couldn't loade CK data")
         try:
@@ -244,18 +244,18 @@ class Comparison():
                 scale = 3.086e22
             else:
                 scale = 1
-            plt.hist(np.concatenate((xs,ys,zs), axis=None)*scale, bins=30, range=[-1e17/4, 1e17/4], histtype=u'step', edgecolor=color, linewidth=1., facecolor="None")
+            plt.hist(np.concatenate((xs,ys,zs), axis=None)*scale, bins=50, range=[-1e17/5, 1e17/5], histtype=u'step', edgecolor=color, linewidth=1., facecolor="None")
             
                  
         # colorbar
-        plt.scatter(np.zeros(len(self.step_sizes)), np.zeros(len(self.step_sizes)), c=self.step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm())
+        plt.scatter(np.zeros(len(self.step_sizes)), np.zeros(len(self.step_sizes)), s=0.0001, c=self.step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm())
         plt.colorbar(label='step sizes [m]')
 
         plt.xlabel('position $x_i$ [m]')
         plt.ylabel('# particles')
         plt.title('$l_\mathrm{traj} = 10^{17}$ m ('+prop_type+')')
 
-        plt.yscale('log')
+        #plt.yscale('log')
         plt.savefig(self.path_figs+'/particle_distributions_'+prop_type+'.pdf', bbox_inches='tight', pad_inches=0.02) 
         plt.show()
 
@@ -281,11 +281,11 @@ class Comparison():
                     scale = 3.086e22
                 else:
                     scale = 1
-                plt.hist(np.concatenate((xs,ys,zs), axis=None)*scale, bins=30, range=[-1e17/4, 1e17/4], histtype=u'step', edgecolor=color, linewidth=1., facecolor="None")
+                plt.hist(np.concatenate((xs,ys,zs), axis=None)*scale, bins=50, range=[-1e17/5, 1e17/5], histtype=u'step', edgecolor=color, linewidth=1., facecolor="None")
             except:
                 pass
         # colorbar
-        plt.scatter(np.zeros(len(self.step_sizes)), np.zeros(len(self.step_sizes)), c=self.step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm())
+        plt.scatter(np.zeros(len(self.step_sizes)), np.zeros(len(self.step_sizes)), c=self.step_sizes, cmap='viridis', s=0.00001, norm=matplotlib.colors.LogNorm())
         plt.colorbar(label='step sizes [m]')
 
         plt.xlabel('position $x_i$ [m]')
