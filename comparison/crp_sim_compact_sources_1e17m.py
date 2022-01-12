@@ -24,7 +24,7 @@ traj_max = 10**17 # [m]
 simulation_setups = [
     {
         'prop_module': 'SDE',
-        'turbulence_method': 'rest',
+        'turbulence_method': '',
         'nr_grid_points': 0,
         'nr_modes': 0
     },
@@ -49,7 +49,7 @@ simulation_setups = [
 ]
 
 def simulate(simulation_setup):
-    file_name_results = path + 'data/crp_sim_data_'+simulation_setup['prop_module']+'_'+simulation_setup['turbulence_method']+'rest2.pkl'
+    file_name_results = path + 'data/crp_sim_data_'+simulation_setup['prop_module']+'_'+simulation_setup['turbulence_method']+'.pkl'
     for i, step_size in enumerate(step_sizes):
         crp = CRPropa(step_size = step_size, traj_max = traj_max, nr_grid_points = simulation_setup['nr_grid_points'], n_wavemodes = simulation_setup['nr_modes'], l_min = 5*10**9, path = path, prop_module = simulation_setup['prop_module'], kappa = kappa_theory, turbulence_method = simulation_setup['turbulence_method'])
         start_time = time.process_time()
