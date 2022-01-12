@@ -26,6 +26,7 @@ step_sizes = np.logspace(9, 15, 19) # [m]
 df_sim_data = pd.DataFrame(columns=('step_size', 'time', 'kappa', 'kappa_err'))
 
 # start with large step sizes first, as these simulations are faster
+step_sizes = step_sizes[np.where(step_sizes <= traj_max)]
 step_sized_reversed = np.insert(step_sizes[::-1], 0, step_sizes[-1], axis=0)
 for i, step_size in enumerate(step_sized_reversed):
     print('______________________________________________________________')
