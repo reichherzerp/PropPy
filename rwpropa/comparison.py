@@ -190,7 +190,7 @@ class Comparison():
         plt.show()
 
 
-    def plot_kappa_convergence_tests(self, ylabel="$\kappa$ [m$^2$/s]", lambda_theory=True):
+    def plot_kappa_convergence_tests(self, ylabel="$\kappa$ [m$^2$/s]", lambda_theory=True, kappa_mean_seeds=0, kappa_mean_seeds_err=0):
         fig = plt.figure(figsize=(5,3.5))
         ### try to load data and handle if data is not available
         
