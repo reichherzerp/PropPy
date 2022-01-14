@@ -173,7 +173,7 @@ The top panel shows the running diffusion coefficients as a function of time. Th
 The lowest panel shows the required processor time of the simulation as a function of the step size. The same processor was used for all simulations for better comparability. 
 
 
-![Comparison between different propagation approaches for the computation of running diffusion coefficients. $10^3$ protons with $E=10^{15}$ eV simulated in magnetic field configurations described in the text. Configuration 1 without the ordered background magnetic field is used for the left panel and configuration 2 for the right panel. Detailed explanations and the code, respectively, the data for the reproducibility are available in tutorial 4 of the public repository. \label{fig:comparison}](comparison_compact_source.pdf)
+![Comparison between different propagation approaches for the computation of running diffusion coefficients. $10^3$ protons with $E=10^{15}$ eV simulated in magnetic field configurations described in the text. \textit{Left panel} shows the ballistic propagation regime at the beginning of particle trajectories ($\leq 10^{14}$ m) and the \textit{right panel} shows also long trajectory lengths, for which the particle transport will become diffusive ($\gg \lambda$). \label{fig:comparison}](comparison_compact_source.pdf)
 
 
 The comparisons yield the following conclusions:
