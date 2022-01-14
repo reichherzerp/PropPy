@@ -126,79 +126,48 @@ Since CRPropa is the only code that supports both EOM and diffusive with anisotr
 There are numerous possible sources covering a large parameter space of physical properties relevant to particle transport. For the comparison between PropPy propagation and CRPropa modules, we use typical parameters used in the literature for AGN plasmoids (see, e.g. [@Hoerbe2020] and references therein):
 
 - isotropic 3d Kolmogorov turbulence
-
 - magnetic field strength: 1 Gaus
-
-- correlation length turbulence: $\sim10^{11}$ m
-
+- correlation length turbulence: $\sim 10^{11}$ m
 - particle energies: 100 PeV
-
-
 
 For these parameters, we can derive the expected diffusion coefficient from theory [@Subedi2017]. These parameters will result in gyroradii of the charged CRs
 
-\begin{align}
-
+\begin{equation}
 r_\mathrm{g} = \frac{\sqrt{2}E}{q\,c\,B} = \frac{141\,\mathrm{PeV}}{q\,c \cdot 1\mathrm{G}} \approx 4.72\cdot10^{12}\,\mathrm{m}.
-
-\end{align}
+\end{equation}
 
 Note that the factor $\sqrt{2}$ is introduced because of the isotropic directions of the magnetic field vectors in the turbulence. Particles are in the quasi-ballistic transport regime ($r_\mathrm{g} \gg l_\mathrm{c}$), where they experience only minor deflections. The expected diffusion coefficient $\kappa$ is 
 
-\begin{align}
-
+\begin{equation}
 \kappa_\mathrm{theory} = \frac{r_\mathrm{g}^2 \cdot c}{2l_\mathrm{c}} = \frac{(4.72\cdot10^{12}\,\mathrm{m})^2 \cdot c}{2\cdot 10^{11}\,m} \approx 3.34\cdot10^{22}\,\frac{\mathrm{m^2}}{\mathrm{s}}.
-
-\end{align}
-
-
+\end{equation}
 
 This theoretical diffusion coefficient serves as an input for the CRPropa SDE and the PropPy simulation and as a reference for the numerical simulations.
 
-
-
 This diffusion coefficient results in expected mean-free paths of
 
-\begin{align}
-
+\begin{equation}
 \lambda_\mathrm{theory} = \frac{3 \kappa_\mathrm{theory}}{c} \approx 3.34\cdot10^{14}\,\mathrm{m}.
-
-\end{align}
+\end{equation}
 
 Particles become diffusive at trajectory lengths of about $\lambda$, which is why we stop the simulations after trajectory lengths of $10^{17}$ to have some buffer and a clear plateau in the running diffusion coefficients.
 
-
-
 As a simulation setting, we consider $10^3$ protons isotropically emitted from a point source. The simulations and the presented results can be reproduced via the simulation and analysis scripts provided in the comparison folder of PropPy.  
 
-
-
 The summation of planar waves with different wave numbers, amplitudes, and directions generates the synthetic turbulence. Here, there are two possible approaches:
-
 1. The complete turbulence can be generated in advance of the simulation and stored on a large grid by using an inverse discrete Fourier transform. During run-time, the local magnetic field is computed via interpolation of the surrounding grid points that store the magnetic field information. Here, we use tri-linear interpolation as it is fast and sufficiently accurate [@Schlegel2020]. We store the turbulence on $1024^3$ grid points.
-
 2. The summation of different amplitudes, wavenumbers, and directions can also be performed during run-time at the exact position where it is needed. Numerous constraints of the grid method are avoided here, with the disadvantage that the simulations take longer. We use 1000 wave modes, which was determined to be sufficient in convergence tests.
 
 
-
 We consider three different propagation methods implemented in CRPropa:
-
-
-
 1. Solving EOM with the Boris-Push (BP) method [@CRPropa2021]. 
-
 2. Solving EOM with the Cash-Karp (CK) method [@CRPropa2016].
-
 3. Solving Stochastic Differential Equations (SDE) [@CRPropa2017]. For this method, no turbulence has to be generated, but only the diffusion coefficient has to be passed, which already contains the information on how the particles move statistically in the turbulence.
-
-
 
 \autoref{fig:comparison} shows a comparison of the simulation results for the calculated running diffusion coefficients for the different propagation methods and turbulence generation methods. 
 
 
-
 The left and right panels differ only in the simulation length considered. In the left panel, only trajectories up to $10^{14}$ m are considered, whereas in the right panel, trajectories up to $10^{17}$ m are considered. Since the mean-free path length indicates the transition between ballistic to diffusive propagation, the left panel shows ballistic particle propagation and the right panel diffusive propagation.
-
 
 
 The top panel shows the running diffusion coefficients as a function of time. The middle panel shows the effective diffusion coefficient at $10^{14}$ m on the left and the converged diffusion coefficient on the right, since the running diffusion coefficient remains constant beginning at the diffusive limit, as can be seen in the top panel. 
@@ -206,11 +175,7 @@ The top panel shows the running diffusion coefficients as a function of time. Th
 The lowest panel shows the required processor time of the simulation as a function of the step size. The same processor was used for all simulations for better comparability. 
 
 
-
-
-
 ![Comparison between different propagation approaches for the computation of running diffusion coefficients. $10^3$ protons with $E=10^{15}$ eV simulated in magnetic field configurations described in the text. Configuration 1 without the ordered background magnetic field is used for the left panel and configuration 2 for the right panel. Detailed explanations and the code, respectively, the data for the reproducibility are available in tutorial 4 of the public repository. \label{fig:comparison}](comparison_compact_source.pdf)
-
 
 
 The comparisons yield the following conclusions:
@@ -222,16 +187,12 @@ The comparisons yield the following conclusions:
 - Smaller simulation times for given step sizes in combination with the lower step size requirements, by which larger step sizes lead to comparable results, translates into huge speedups for the diffusive method and the correlated random walk method compared to the EOM-based methods. 
 
 
-
 Due to the high performance and the good statistical description of the correlated random walk method, even at early times, PropPy is excellently suited for calculating escape times of charged particles from certain zones (blob in the example), which in turn are required in (semi)analytical calculations. Also, particle distributions and arrival times can be simulated efficiently.
-
-
 
 
 # Acknowledgements
 
 I want to thank the audience in my [conference contribution](https://indico.cern.ch/event/1037017/contributions/4514419/) on the software and users, who helped with valuable feedback. 
 A special thanks to L. Schlegel, F. Schüssler, and E.G. Zweibel for valuable discussions.
-
 
 # References
