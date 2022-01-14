@@ -130,7 +130,7 @@ We consider three different propagation methods implemented in CRPropa:
 
 The left and right panels differ only in the simulation length considered. In the left panel only trajectories up to $10^{14}$ m are considered, whereas in the right panel trajectories up to $10^{17}$ m are considered. Since the mean free path length indicates the transition between ballistic to diffusive propagation, the left panel shows ballistic particle propagation and the right panel diffusive propagation.
 
-The top panel shows the running diffusion coefficients as a function of time. The middle panel shows the effective diffusion coefficient at $10^{14$} m on the left and the converged diffusion coefficient on the right, since the running diffusion coefficient remains constant beginning at the diffusive limit, as can be seen in the top panel. 
+The top panel shows the running diffusion coefficients as a function of time. The middle panel shows the effective diffusion coefficient at $10^{14}$ m on the left and the converged diffusion coefficient on the right, since the running diffusion coefficient remains constant beginning at the diffusive limit, as can be seen in the top panel. 
 The lowest panel shows the required processor time of the simulation as a function of the step size. The same processor was used for all simulations for better comparability. 
 
 
