@@ -11,8 +11,8 @@ authors:
   - name: P. Reichherzer^[first author] # note this makes a footnote saying 'first author'
     orcid: 0000-0003-4513-8241
     affiliation: "1, 2, 3" # (Multiple affiliations must be quoted)
-  - name: J. Becker Tjus #^[first author] # note this makes a footnote saying 'first author'
-    orcid: 0000-0003-4513-8241
+  - name: J. Becker Tjus
+    orcid: 0000-0002-1748-7367
     affiliation: "1, 2" # (Multiple affiliations must be quoted)
 affiliations:
  - name: Ruhr-Universität Bochum, D-44801 Bochum, Germany
@@ -109,7 +109,7 @@ Generalizing this approach for three dimensions, assuming local homogeneity, and
 
 # Comparison
 
-In principle, the correlated random walk propagation method implemented in PropPy can be applied wherever other propagation codes for charged particles such as CRPropa [@CRPropa2016; @CRPropa2021], DRAGON [@Dragon2017], GALPROP [@Galprop1998] are already in use. However, the advantages of PropPy are especially in the high performance and the accurate description of statistical transport properties also for the initial transport regime, which is not possible for pure diffusive propagation approaches. 
+In principle, the CRW propagation method implemented in PropPy can be applied wherever other propagation codes for charged particles such as CRPropa [@CRPropa2016; @CRPropa2021], DRAGON [@Dragon2017], GALPROP [@Galprop1998] are already in use. However, the advantages of PropPy are especially in the high performance and the accurate description of statistical transport properties also for the initial transport regime, which is not possible for pure diffusive propagation approaches. 
 
 
 
@@ -145,7 +145,6 @@ Note that the factor $\sqrt{2}$ is introduced because of the isotropic direction
 This theoretical diffusion coefficient serves as an input for the CRPropa SDE and the PropPy simulation and as a reference for the numerical simulations.
 
 This diffusion coefficient results in expected mean-free paths of
-
 \begin{equation}
 \lambda_\mathrm{theory} = \frac{3 \kappa_\mathrm{theory}}{c} \approx 3.34\cdot10^{14}\,\mathrm{m}.
 \end{equation}
@@ -180,19 +179,18 @@ The lowest panel shows the required processor time of the simulation as a functi
 
 The comparisons yield the following conclusions:
 
-- Both EOM-based propagation approaches BP and CK as well as the correlated random walk method from PropPy can correctly model the initial ballistic transport phase. The diffusive approach (SDE) can not describe this initial phase by construction since it always assumes diffusive particle transport. 
+- Both EOM-based propagation approaches BP and CK as well as the CRW method from PropPy can correctly model the initial ballistic transport phase. The diffusive approach (SDE) can not describe this initial phase by construction since it always assumes diffusive particle transport. 
 
-- The diffusive approach and the correlated random walk approach can use relatively large step sizes to model the correct statistical behavior. The latter only needs to resolve the mean-free paths sufficiently well, which is guaranteed by choosing the step size at least 10 times smaller than the mean-free path. The EOM-based methods must choose step sizes small enough to resolve both the gyration motion and the scales of turbulence sufficiently well. This can be seen as the diffusion coefficients in the middle panel in the right figure converge to a constant value only when the step size is smaller than the gyration radii and smaller than the correlation length of the turbulence.
+- The diffusive approach and the CRW approach can use relatively large step sizes to model the correct statistical behavior. The latter only needs to resolve the mean-free paths sufficiently well, which is guaranteed by choosing the step size at least ten times smaller than the mean-free path. The EOM-based methods must choose step sizes small enough to resolve both the gyration motion and the scales of turbulence sufficiently well. This can be seen as the diffusion coefficients in the middle panel in the right figure converge to a constant value only when the step size is smaller than the gyration radii and smaller than the correlation length of the turbulence.
 
-- Smaller simulation times for given step sizes in combination with the lower step size requirements, by which larger step sizes lead to comparable results, translates into huge speedups for the diffusive method and the correlated random walk method compared to the EOM-based methods. 
+- Smaller simulation times for given step sizes in combination with the lower step size requirements, by which larger step sizes lead to comparable results, translates into huge speedups for the diffusive method and the CRW method compared to the EOM-based methods. 
 
-
-Due to the high performance and the good statistical description of the correlated random walk method, even at early times, PropPy is excellently suited for calculating escape times of charged particles from certain zones (blob in the example), which in turn are required in (semi)analytical calculations. Also, particle distributions and arrival times can be simulated efficiently.
+Due to the high performance and the good statistical description of the CRW method, even at early times, PropPy is excellently suited for calculating escape times of charged particles from certain zones (blob in the example), which in turn are required in (semi)analytical calculations. Also, particle distributions and arrival times can be simulated efficiently.
 
 
 # Acknowledgements
 
-I want to thank the audience in my [conference contribution](https://indico.cern.ch/event/1037017/contributions/4514419/) on the software and users, who helped with valuable feedback. 
-A special thanks to L. Schlegel, F. Schüssler, and E.G. Zweibel for valuable discussions.
+PR wants to thank the audience in his [conference contribution](https://indico.cern.ch/event/1037017/contributions/4514419/) on the software and users, who helped with valuable feedback. We thank for funding from the German Science Foundation DFG, within the Collaborative Research Center SFB1491 "Cosmic Interacting Matters - From Source to Signal".
+Special thanks to L. Schlegel, F. Schüssler, J. Suc, and E.G. Zweibel for valuable discussions.
 
 # References
