@@ -148,7 +148,7 @@ This diffusion coefficient results in expected mean-free paths of
 \lambda_\mathrm{theory} = \frac{3 \kappa_\mathrm{theory}}{c} \approx 3.34\cdot10^{14}\,\mathrm{m}.
 \end{equation}
 
-Particles become diffusive at trajectory lengths of about $\lambda$, which is why we stop the simulations after trajectory lengths of $10^{17}$ to have some buffer and a clear plateau in the running diffusion coefficients.
+Particles become diffusive at trajectory lengths of about $\lambda$, which is why we stop the simulations after trajectory lengths of $10^{17}$ m to have some buffer and a clear plateau in the running diffusion coefficients.
 
 As a simulation setting, we consider $10^3$ protons isotropically emitted from a point source. The simulations and the presented results can be reproduced via the simulation and analysis scripts provided in the comparison folder of PropPy.  
 
