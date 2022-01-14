@@ -8,9 +8,12 @@ tags:
   - AGN
   - transport
 authors:
-  - name: P. Reichherzer #^[first author] # note this makes a footnote saying 'first author'
+  - name: P. Reichherzer^[first author] # note this makes a footnote saying 'first author'
     orcid: 0000-0003-4513-8241
     affiliation: "1, 2, 3" # (Multiple affiliations must be quoted)
+  - name: J. Becker Tjus #^[first author] # note this makes a footnote saying 'first author'
+    orcid: 0000-0003-4513-8241
+    affiliation: "1, 2" # (Multiple affiliations must be quoted)
 affiliations:
  - name: Ruhr-Universität Bochum, D-44801 Bochum, Germany
    index: 1
@@ -18,7 +21,7 @@ affiliations:
    index: 2
  - name: Université Paris-Saclay, F-91190 Gif-sur-Yvette, France
    index: 3
-date: 20 September 2021
+date: 14 January 2022
 bibliography: paper.bib
 
 ---
@@ -142,7 +145,7 @@ The comparisons yield the following conclusions:
 # Acknowledgements
 
 I want to thank the audience in my [conference contribution](https://indico.cern.ch/event/1037017/contributions/4514419/) on the software and users, who helped with valuable feedback. 
-A special thanks to J. Becker Tjus, L. Schlegel, F. Schüssler, and E.G. Zweibel for valuable discussions.
+A special thanks to L. Schlegel, F. Schüssler, and E.G. Zweibel for valuable discussions.
 
 
 # References
