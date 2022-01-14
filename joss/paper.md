@@ -109,12 +109,20 @@ Generalizing this approach for three dimensions, assuming local homogeneity, and
 
 # Comparison
 
-In principle, PropPy can be applied wherever other propagation codes for charged particles such as CRPropa [@CRPropa2016; @CRPropa2021], DRAGON [@Dragon2017], GALPROP [@Galprop1998] are already in use. However, the advantages of PropPy are especially in the improved performance and the accurate description of statistical transport properties also for the initial propagation, which is not possible for pure diffusive propagation approaches. 
+In principle, the correlated random walk propagation method implemented in PropPy can be applied wherever other propagation codes for charged particles such as CRPropa [@CRPropa2016; @CRPropa2021], DRAGON [@Dragon2017], GALPROP [@Galprop1998] are already in use. However, the advantages of PropPy are especially in the high performance and the accurate description of statistical transport properties also for the initial transport regime, which is not possible for pure diffusive propagation approaches. 
 
-For example, the propagation of charged particles in blobs of blazar jets is discussed in the following. Due to the high performance and the good statistical description, even at early times, the software is excellently suited for calculating escape times of charged particles from certain zones (blob in the example), which in turn are required in (semi)analytical calculations. Also, particle distributions and arrival times can be simulated efficiently. 
+Charged particles (comsic rays (CRs)) are accelerated to high energies in astrophysical sources until the gyration radius exceeds the system size according to the Hillas criterion and the CRs can no longer be confined by the accelerator. Since strong magnetic fields with a significant amount of turbulence typically prevail in these sources, the description of particle propagation in the sources is nontrivial and complicate the analytical description of transport. As an example, we consider the transport of charged particles in AGN jets, an environment for which the above codes are not optimized, but whose underlying transport mechanisms can still be applied. 
 
-Since CRPropa is the only code that supports both EOM and diffusive with anisotropic diffusion coefficients, this software is used for comparison simulations with the CRW approach. As a simulation setting, we consider $10^3$ protons isotropically emitted from a point source with an energy of $3\cdot 10^{15}$ eV. 
+Simulations are used for describing as accurately as possible the particle transport that has an impact on numerous observable mulstimessenger signatures. In the following, we focus on the transport properties in these sources, which are described by the (effective) diffusion coefficient.
 
+Since CRPropa is the only code that supports both EOM and diffusive with anisotropic diffusion coefficients, this software is used for comparison simulations with PropPy. 
+There are numerous possible sources covering a large parameter space of physical properties relevant to particle transport. For the comparison between PropPy propagation and CRPropa modules, we use typical parameters used in the literature for AGN plasmoids (see e.g. [@Hoerbe2019] and references therein):
+- isotropic 3d Kolmogorov turbulence
+- magnetic field strength: 1 Gaus
+- correlation length turbulence: $\sim10^{11}$ m
+- particle energies: 100 PeV
+
+As a simulation setting, we consider $10^3$ protons isotropically emitted from a point source. 
 
 The synthetic turbulence is generated as a superposition of planar waves of different amplitudes, wave numbers, and direction. Here, there are two possible approaches:
 1. The complete turbulence can be generated in advance of the simulation and stored on a large grid by using inverse discrete Fourier transform. During run-time, the local magnetic field is computed via a interpolation of the surrounding grid points that store the magnetic field information. Here, we use tri-linear interpolation as it is fast and sufficiently accurate [@Schlegel2020]. We store the turbulence on $1024^3$ grid points.
@@ -128,7 +136,7 @@ We consider three different propagation methods implemented in CRPropa:
 
 \autoref{fig:comparison} shows a comparison of the simulation results for the calculated running diffusion coefficients for the different propagation methods and turbulence generation methods. 
 
-The left and right panels differ only in the simulation length considered. In the left panel only trajectories up to $10^{14}$ m are considered, whereas in the right panel trajectories up to $10^{17}$ m are considered. Since the mean free path length indicates the transition between ballistic to diffusive propagation, the left panel shows ballistic particle propagation and the right panel diffusive propagation.
+The left and right panels differ only in the simulation length considered. In the left panel only trajectories up to $10^{14}$ m are considered, whereas in the right panel trajectories up to $10^{17}$ m are considered. Since the mean-free path length indicates the transition between ballistic to diffusive propagation, the left panel shows ballistic particle propagation and the right panel diffusive propagation.
 
 The top panel shows the running diffusion coefficients as a function of time. The middle panel shows the effective diffusion coefficient at $10^{14}$ m on the left and the converged diffusion coefficient on the right, since the running diffusion coefficient remains constant beginning at the diffusive limit, as can be seen in the top panel. 
 The lowest panel shows the required processor time of the simulation as a function of the step size. The same processor was used for all simulations for better comparability. 
@@ -137,9 +145,11 @@ The lowest panel shows the required processor time of the simulation as a functi
 ![Comparison between different propagation approaches for the computation of running diffusion coefficients. $10^3$ protons with $E=10^{15}$ eV simulated in magnetic field configurations described in the text. Configuration 1 without the ordered background magnetic field is used for the left panel and configuration 2 for the right panel. Detailed explanations and the code, respectively, the data for the reproducibility are available in tutorial 4 of the public repository. \label{fig:comparison}](comparison_compact_source.pdf)
 
 The comparisons yield the following conclusions:
-- Both EOM-based propagation approaches BP and CK and the correlated random walk from PropPy can correctly model the initial ballistic propagation phase. The Diffusive approach (SDE) cannot by construction, since it assumes diffusive particle transport. 
-- The diffusive approach and the correlated random walk approach can use relatively large step sizes to model the correct statistical behavior. The latter only needs to resolve the mean-free paths sufficiently well, which is given by choosing the step size approximately 10 times smaller than the mean-free path. The EOM-based methods must choose step sizes small enough to resolve both the gyration motion and the scales of tubulence sufficiently well. This can be seen as the diffusion coefficients in the middle panel in the right figure converge to a constant value only when the step size is smaller than the gyration radii and smaller than the correlation lengths.
-- The combination of smaller simulation times at the same step sizes with the lower step size requirements, by which larger step sizes lead to comparable results, translates into huge speedups for the diffusive method and the correlated random walk method implemented here in PropPy compared to the EOM-based methods. 
+- Both EOM-based propagation approaches BP and CK as well as the correlated random walk method from PropPy can correctly model the initial ballistic transport phase. The diffusive approach (SDE) cannoct describe this initial phase by construction, since it always assumes diffusive particle transport. 
+- The diffusive approach and the correlated random walk approach can use relatively large step sizes to model the correct statistical behavior. The latter only needs to resolve the mean-free paths sufficiently well, which is guaranteed by choosing the step size at least 10 times smaller than the mean-free path. The EOM-based methods must choose step sizes small enough to resolve both the gyration motion and the scales of tubulence sufficiently well. This can be seen as the diffusion coefficients in the middle panel in the right figure converge to a constant value only when the step size is smaller than the gyration radii and smaller than the correlation length of the turbulence.
+- Smaller simulation times for given step sizes in combination with the lower step size requirements, by which larger step sizes lead to comparable results, translates into huge speedups for the diffusive method and the correlated random walk method compared to the EOM-based methods. 
+
+Due to the high performance and the good statistical description of the correlated random walk method, even at early times, PropPy is excellently suited for calculating escape times of charged particles from certain zones (blob in the example), which in turn are required in (semi)analytical calculations. Also, particle distributions and arrival times can be simulated efficiently.
 
 
 # Acknowledgements
