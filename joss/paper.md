@@ -139,7 +139,7 @@ This diffusion coefficient results in expected mean-free paths of
 \end{align}
 Particles become diffusive at trajectory lengths of about $\lambda$, which is why we stop the simulations after trajectory lengths of $10^{17}$ to have some buffer and a clear plateau in the running diffusion coefficients.
 
-As a simulation setting, we consider $10^3$ protons isotropically emitted from a point source. The simulations and the presented results can be reproduced via \href{https://gitlab.ruhr-uni-bochum.de/reichp2y/rwpropa/-/blob/master/comparison/Comparison%20in%20compact%20astrophysical%20sources%201e17m%20trajectory.ipynb}{simulation and analysis scripts}.  
+As a simulation setting, we consider $10^3$ protons isotropically emitted from a point source. The simulations and the presented results can be reproduced via the simulation and analysis scripts provided in the comparison folder of PropPy.  
 
 The summation of planar waves with different wave numbers, amplitudes, and directions generates the synthetic turbulence. Here, there are two possible approaches:
 1. The complete turbulence can be generated in advance of the simulation and stored on a large grid by using inverse discrete Fourier transform. During run-time, the local magnetic field is computed via a interpolation of the surrounding grid points that store the magnetic field information. Here, we use tri-linear interpolation as it is fast and sufficiently accurate [@Schlegel2020]. We store the turbulence on $1024^3$ grid points.
