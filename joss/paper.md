@@ -47,7 +47,7 @@ Understanding the transport of charged high-energy particles in turbulent magnet
 * Due to the enormous distance from sources to our galaxy, cosmic rays have to travel through the turbulent intergalactic medium [@2018arXiv181103062A]. 
 * In our Galaxy, the Galactic magnetic field influences their trajectory and, finally, their arrival in the Earth's atmosphere [@Reichherzerb2021].
 
-Analytical theories have been developed over the last century [@Jokipii_1966; @Zweibel2013; @Schlickeiser2015] to describe the transport of cosmic rays. However, these theories are often limited by simplifying assumptions; hence propagation codes have been developed over the last decades to overcome these limitations [@Giacalone1999; @Casse2001; @Shukurov2017; @Reichherzer2020]. In the most basic propagation method, particles are moved stepwise, with the next step always determined based on the Lorentz force. For this, however, the magnetic field must be computed for each propagation step for all particle positions, a process that is typically time-consuming in numerical simulations [@Schlegel2020]. A much more efficient method (diffusive approach) is based on the statistical properties of the particles and exploits their theoretical description via a transport equation [@CRPropa2017]. In the limit of infinitely large times, a diffusive transport occurs for all charged particles in isotropic turbulence, which can be described by the diffusion tensor. 
+Analytical theories have been developed over the last century [@Jokipii_1966; @Zweibel2013; @Schlickeiser2015] to describe the transport of cosmic rays. However, these theories are often limited by simplifying assumptions; hence propagation codes have been developed over the last decades to overcome these limitations with dedicated simulations [@Giacalone1999; @Casse2001; @Shukurov2017; @Reichherzer2020; @Reichherzer2021b]. In the most basic propagation method, particles are moved stepwise, with the next step always determined based on the Lorentz force. For this, however, the magnetic field must be computed for each propagation step for all particle positions, a process that is typically time-consuming in numerical simulations [@Schlegel2020]. A much more efficient method (diffusive approach) is based on the statistical properties of the particles and exploits their theoretical description via a transport equation [@CRPropa2017]. In the limit of infinitely large times, a diffusive transport occurs for all charged particles in isotropic turbulence, which can be described by the diffusion tensor. 
 
 However, by definition, this approach can only model the transport of charged particles over large time scales so that the particles have enough time to become diffusive, which is a major drawback, especially when modeling transport in compact sources, where diffusion does not necessarily occur [@Reichherzerp2021].
 
@@ -116,15 +116,32 @@ Charged particles (comsic rays (CRs)) are accelerated to high energies in astrop
 Simulations are used for describing as accurately as possible the particle transport that has an impact on numerous observable mulstimessenger signatures. In the following, we focus on the transport properties in these sources, which are described by the (effective) diffusion coefficient.
 
 Since CRPropa is the only code that supports both EOM and diffusive with anisotropic diffusion coefficients, this software is used for comparison simulations with PropPy. 
-There are numerous possible sources covering a large parameter space of physical properties relevant to particle transport. For the comparison between PropPy propagation and CRPropa modules, we use typical parameters used in the literature for AGN plasmoids (see e.g. [@Hoerbe2019] and references therein):
+There are numerous possible sources covering a large parameter space of physical properties relevant to particle transport. For the comparison between PropPy propagation and CRPropa modules, we use typical parameters used in the literature for AGN plasmoids (see e.g. [@Hoerbe2020] and references therein):
 - isotropic 3d Kolmogorov turbulence
 - magnetic field strength: 1 Gaus
 - correlation length turbulence: $\sim10^{11}$ m
 - particle energies: 100 PeV
 
-As a simulation setting, we consider $10^3$ protons isotropically emitted from a point source. 
+For these parameters, we can derive the expected diffusion coefficient from theory [@Subedi2017]. These parameters will result in gyroradii of the charged CRs
+\begin{align}
+r_\mathrm{g} = \frac{\sqrt{2}E}{q\,c\,B} = \frac{141\,\mathrm{PeV}}{q\,c \cdot 1\mathrm{G}} \approx 4.72\cdot10^{12}\,\mathrm{m}.
+\end{align}
+Note that the factor $\sqrt{2}$ is introduced because of the isotropic directions of the magnetic field vectors in the turbulence. Particles are in the quasi-ballistic transport regime ($r_\mathrm{g} \gg l_\mathrm{c}$), where they experience only minor deflections. The expected diffusion coefficient $\kappa$ is 
+\begin{align}
+\kappa_\mathrm{theory} = \frac{r_\mathrm{g}^2 \cdot c}{2l_\mathrm{c}} = \frac{(4.72\cdot10^{12}\,\mathrm{m})^2 \cdot c}{2\cdot 10^{11}\,m} \approx 3.34\cdot10^{22}\,\frac{\mathrm{m^2}}{\mathrm{s}}.
+\end{align}
 
-The synthetic turbulence is generated as a superposition of planar waves of different amplitudes, wave numbers, and direction. Here, there are two possible approaches:
+This theoretical diffusion coefficient serves as an input for the CRPropa SDE and the PropPy simulation and as a reference for the numerical simulations.
+
+This diffusion coefficient results in expected mean-free paths of
+\begin{align}
+\lambda_\mathrm{theory} = \frac{3 \kappa_\mathrm{theory}}{c} \approx 3.34\cdot10^{14}\,\mathrm{m}.
+\end{align}
+Particles become diffusive at trajectory lengths of about $\lambda$, which is why we stop the simulations after trajectory lengths of $10^{17}$ to have some buffer and a clear plateau in the running diffusion coefficients.
+
+As a simulation setting, we consider $10^3$ protons isotropically emitted from a point source. The simulations and the presented results can be reproduced via \href{https://gitlab.ruhr-uni-bochum.de/reichp2y/rwpropa/-/blob/master/comparison/Comparison%20in%20compact%20astrophysical%20sources%201e17m%20trajectory.ipynb}{simulation and analysis scripts}.  
+
+The summation of planar waves with different wave numbers, amplitudes, and directions generates the synthetic turbulence. Here, there are two possible approaches:
 1. The complete turbulence can be generated in advance of the simulation and stored on a large grid by using inverse discrete Fourier transform. During run-time, the local magnetic field is computed via a interpolation of the surrounding grid points that store the magnetic field information. Here, we use tri-linear interpolation as it is fast and sufficiently accurate [@Schlegel2020]. We store the turbulence on $1024^3$ grid points.
 2. The summation of different amplitudes, wave numbers, and directions can also be performed during run-time at the exact position where it is needed. Numerous constraints of the grid method are avoided here, with the disadvantage that the simulations take longer. We use 1000 wave modes, which was determined to be sufficient in convergence tests.
 
