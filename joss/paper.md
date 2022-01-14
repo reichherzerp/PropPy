@@ -58,7 +58,7 @@ The comparison of the three different approaches illustrates the good agreement 
 
 # Theory
 
-Let us generally assume particle transport in one dimension. The following derivation is discussed in other contexts in the literature, such as when describing animal trails (see e.g., @Codling2008 for a review).
+Let us generally assume particle transport in one dimension. The following derivation is discussed in various contexts in the literature, such as when describing animal trails (see e.g., @Codling2008 for a review), but also for cosmic-ray propagation (see e.g., @Seta2019).
 
 During the CRW, the following two substeps are performed in each propagation step:
 \begin{enumerate}
@@ -113,7 +113,7 @@ In principle, the CRW propagation method implemented in PropPy can be applied wh
 
 
 
-Charged particles (cosmic rays (CRs)) are accelerated to high energies in astrophysical sources until the gyration radius exceeds the system size according to the Hillas criterion, and the CRs can no longer be confined by the accelerator. Since strong magnetic fields with a significant amount of turbulence typically prevail in these sources, the description of particle propagation in the sources is nontrivial and complicate the analytical description of transport. As an example, we consider the transport of charged particles in AGN jets, an environment for which the above codes are not optimized but whose underlying transport mechanisms can still be applied. 
+Charged particles (cosmic rays) are accelerated to high energies in astrophysical sources until the gyration radius exceeds the system size according to the Hillas criterion, and the cosmic rays can no longer be confined by the accelerator. Since strong magnetic fields with a significant amount of turbulence typically prevail in these sources, the description of particle propagation in the sources is nontrivial and complicate the analytical description of transport. As an example, we consider the transport of charged particles in AGN jets, an environment for which the above codes are not optimized but whose underlying transport mechanisms can still be applied. 
 
 
 
@@ -130,8 +130,7 @@ There are numerous possible sources covering a large parameter space of physical
 - correlation length turbulence: $\sim 10^{11}$ m
 - particle energies: 100 PeV
 
-For these parameters, we can derive the expected diffusion coefficient from theory [@Subedi2017]. These parameters will result in gyroradii of the charged CRs
-
+For these parameters, we can derive the expected diffusion coefficient from theory [@Subedi2017]. These parameters will result in gyroradii of the charged cosmic rays
 \begin{equation}
 r_\mathrm{g} = \frac{\sqrt{2}E}{q\,c\,B} = \frac{141\,\mathrm{PeV}}{q\,c \cdot 1\mathrm{G}} \approx 4.72\cdot10^{12}\,\mathrm{m}.
 \end{equation}
