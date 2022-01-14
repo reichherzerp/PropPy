@@ -121,7 +121,7 @@ Simulations are used for describing as accurately as possible the particle trans
 
 
 
-Since CRPropa is the only code that supports both EOM and diffusive with anisotropic diffusion coefficients, this software is used for comparison simulations with PropPy. 
+Since CRPropa is the only code that supports both EOM and diffusive with anisotropic diffusion coefficients, this software (version: CRPropa 3.1.7) is used for comparison simulations with PropPy. 
 
 There are numerous possible sources covering a large parameter space of physical properties relevant to particle transport. For the comparison between PropPy propagation and CRPropa modules, we use typical parameters used in the literature for AGN plasmoids (see, e.g. [@Hoerbe2020] and references therein):
 
@@ -173,10 +173,7 @@ The top panel shows the running diffusion coefficients as a function of time. Th
 The lowest panel shows the required processor time of the simulation as a function of the step size. The same processor was used for all simulations for better comparability. 
 
 
-![Comparison between different propagation approaches for the computation of running diffusion coefficients. $10^3$ protons with $E=10^{15}$ eV simulated in magnetic field configurations described in the text. \textit{Left panel} shows the ballistic propagation regime at the beginning of particle trajectories ($\leq 10^{14}$ m) and the \textit{right panel} shows also long trajectory lengths, for which the particle transport will become diffusive ($\gg \lambda$). 
-- \textit{Upper panel:} running diffusion coefficients as functions of trajectory lengths for different propagation methods.
-- \textit{Middle panel:} diffusion coefficients at $10^{14}$ m (left) and converged ones (right) as functions of different step sizes of the propagation methods.
-- \textit{Lower panel:} Simulation time per processor as functions of step sizes. Color-coded with the deviation from theoretical predictions. Usage of 260 threads for step sizes smaller than $10^{13}$ m.
+![Comparison between different propagation approaches for the computation of running diffusion coefficients. $10^3$ protons with $E=10^{15}$ eV simulated in magnetic field configurations described in the text. \textit{Left panel} shows the ballistic propagation regime at the beginning of particle trajectories ($\leq 10^{14}$ m) and the \textit{right panel} shows also long trajectory lengths, for which the particle transport will become diffusive ($\gg \lambda$). \textit{Upper panel:} running diffusion coefficients as functions of trajectory lengths for different propagation methods. \textit{Middle panel:} diffusion coefficients at $10^{14}$ m (left) and converged ones (right) as functions of different step sizes of the propagation methods. \textit{Lower panel:} Simulation time per processor as functions of step sizes. Color-coded with the deviation from theoretical predictions. Usage of 260 threads for step sizes smaller than $10^{13}$ m.
  \label{fig:comparison}](comparison_compact_source.pdf)
 
 
