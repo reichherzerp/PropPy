@@ -8,9 +8,12 @@ tags:
   - AGN
   - transport
 authors:
-  - name: P. Reichherzer #^[first author] # note this makes a footnote saying 'first author'
+  - name: P. Reichherzer^[first author] # note this makes a footnote saying 'first author'
     orcid: 0000-0003-4513-8241
     affiliation: "1, 2, 3" # (Multiple affiliations must be quoted)
+  - name: J. Becker Tjus #^[first author] # note this makes a footnote saying 'first author'
+    orcid: 0000-0003-4513-8241
+    affiliation: "1, 2" # (Multiple affiliations must be quoted)
 affiliations:
  - name: Ruhr-Universität Bochum, D-44801 Bochum, Germany
    index: 1
@@ -18,14 +21,14 @@ affiliations:
    index: 2
  - name: Université Paris-Saclay, F-91190 Gif-sur-Yvette, France
    index: 3
-date: 20 September 2021
+date: 14 January 2022
 bibliography: paper.bib
 
 ---
 
 # Summary
 
-RWPropa is an open-source python software for propagating charged high-energy particles (cosmic rays) in a turbulent magnetic field. Its modular architecture comprises various sources, magnetic fields, propagators, observers, and analyzing modules covering a wide range of applications.
+PropPy is an open-source python software for propagating charged high-energy particles (cosmic rays) in a turbulent magnetic field. Its modular architecture comprises various sources, magnetic fields, propagators, observers, and analyzing modules covering a wide range of applications.
 
 Here, propagation is based on a correlated random walk (CRW) in Cartesian (for isotropic diffusion) or cylindrical (for anisotropic diffusion) coordinates, which makes each simulation step significantly faster than comparable codes that have to solve the equation of motion (EOM) in each propagation time. This novel approach is justified by the fact that a transport equation can be derived via the formulation of the CRW (see theory section below), which is used in analytical descriptions of particle transport [@Litvinenko2015; @Tautz2016]
 \begin{equation}\label{eq:telegraph}
@@ -33,7 +36,7 @@ Here, propagation is based on a correlated random walk (CRW) in Cartesian (for i
 \end{equation}
 $i$ indicates the three spatial directions, and $\tau_i$ denotes the time scale for particles to become diffusive. From the diffusion coefficients $\kappa_i$, the relevant parameters of the CRW can be determined. These considerations confirm the validity for the diffusive phase of particle transport that the CRW approach correctly describes. The initial propagation phase is not yet diffusive and is therefore only tested by comparison tests between CRW and EOM that show that statistical properties such as the running diffusion coefficient $\kappa_i(t) = \langle x_i^2\rangle /2t$ and the escape times from regions such as are relevant and present in many astronomical environments are comparable in both approaches.
 
-This makes RWPropa a high-performance software for the simulation of charged particles in turbulent magnetic fields, especially for compact objects and transient events with short time scales, such as gamma-ray bursts (GRBs), active galactic nuclei (AGN) flares, where the accurate description of the initial particle propagation is crucial. Fast simulations of transient events can help to analyze observations and provide information to evaluate the need for follow-up observations in the context of real-time multimessenger astrophysics [@AstroColibri2021].
+This makes PropPy a high-performance software for the simulation of charged particles in turbulent magnetic fields, especially for compact objects and transient events with short time scales, such as gamma-ray bursts (GRBs), active galactic nuclei (AGN) flares, where the accurate description of the initial particle propagation is crucial. Fast simulations of transient events can help to analyze observations and provide information to evaluate the need for follow-up observations in the context of real-time multimessenger astrophysics [@AstroColibri2021].
 
 
 # Statement of need 
@@ -48,7 +51,7 @@ Analytical theories have been developed over the last century [@Jokipii_1966; @Z
 
 However, by definition, this approach can only model the transport of charged particles over large time scales so that the particles have enough time to become diffusive, which is a major drawback, especially when modeling transport in compact sources, where diffusion does not necessarily occur [@Reichherzerp2021].
 
-RWPropa was established to tackle this issue and meet the need for realistic and fast simulations of the compact sources of cosmic rays, such as GRB and AGN flares. With this publication, we present RWPropa, which applies the novel approach of CRW, where statistical aspects are used for speed-up while also providing a good description of the initial phase, where classic diffusion approaches fail. Furthermore, the properties of the CRW can be determined directly from the diffusion tensor and the gyration radius of the particle.
+PropPy was established to tackle this issue and meet the need for realistic and fast simulations of the compact sources of cosmic rays, such as GRB and AGN flares. With this publication, we present PropPy, which applies the novel approach of CRW, where statistical aspects are used for speed-up while also providing a good description of the initial phase, where classic diffusion approaches fail. Furthermore, the properties of the CRW can be determined directly from the diffusion tensor and the gyration radius of the particle.
 
 The comparison of the three different approaches illustrates the good agreement of the CRW with the solution of the equation of motion. 
 
@@ -106,27 +109,43 @@ Generalizing this approach for three dimensions, assuming local homogeneity, and
 
 # Comparison
 
-In principle, RWPropa can be applied wherever other propagation codes for charged particles such as CRPropa [@CRPropa2016; @CRPropa2021], DRAGON [@Dragon2017], GALPROP [@Galprop1998] are already in use. However, the advantages of RWPropa are especially in the improved performance and the accurate description of statistical transport properties also for the initial propagation, which is not possible for pure diffusive propagation approaches. 
+In principle, PropPy can be applied wherever other propagation codes for charged particles such as CRPropa [@CRPropa2016; @CRPropa2021], DRAGON [@Dragon2017], GALPROP [@Galprop1998] are already in use. However, the advantages of PropPy are especially in the improved performance and the accurate description of statistical transport properties also for the initial propagation, which is not possible for pure diffusive propagation approaches. 
 
 For example, the propagation of charged particles in blobs of blazar jets is discussed in the following. Due to the high performance and the good statistical description, even at early times, the software is excellently suited for calculating escape times of charged particles from certain zones (blob in the example), which in turn are required in (semi)analytical calculations. Also, particle distributions and arrival times can be simulated efficiently. 
 
-Since CRPropa is the only code that supports both EOM and diffusive with anisotropic diffusion coefficients, this software is used for comparison simulations with the CRW approach. As a simulation setting, we consider $10^3$ protons isotropically emitted from a point source with an energy of $3\cdot 10^{15}$ eV. We consider two different magnetic field configurations in the following:
-
-1. only an isotropic tubular magnetic field with magnetic field strength $B = 1$ Gaus. A Kolmogorov spectrum is assumed for the turbulence since this is a good description in many astronomical environments.
-2. in addition to the turbulent field from 1. a directed background magnetic field in the $z$-direction is added. This configuration leads to anisotropic diffusion.
-
-\autoref{fig:comparison} shows a comparison of the simulation results for the calculated running diffusion coefficients for the three different propagation methods. 
+Since CRPropa is the only code that supports both EOM and diffusive with anisotropic diffusion coefficients, this software is used for comparison simulations with the CRW approach. As a simulation setting, we consider $10^3$ protons isotropically emitted from a point source with an energy of $3\cdot 10^{15}$ eV. 
 
 
-![Comparison between different propagation approaches for the computation of running diffusion coefficients. $10^3$ protons with $E=10^{15}$ eV simulated in magnetic field configurations described in the text. Configuration 1 without the ordered background magnetic field is used for the left panel and configuration 2 for the right panel. Detailed explanations and the code, respectively, the data for the reproducibility are available in tutorial 4 of the public repository. \label{fig:comparison}](figure_comparison.pdf)
+The synthetic turbulence is generated as a superposition of planar waves of different amplitudes, wave numbers, and direction. Here, there are two possible approaches:
+1. The complete turbulence can be generated in advance of the simulation and stored on a large grid by using inverse discrete Fourier transform. During run-time, the local magnetic field is computed via a interpolation of the surrounding grid points that store the magnetic field information. Here, we use tri-linear interpolation as it is fast and sufficiently accurate [@Schlegel2020]. We store the turbulence on $1024^3$ grid points.
+2. The summation of different amplitudes, wave numbers, and directions can also be performed during run-time at the exact position where it is needed. Numerous constraints of the grid method are avoided here, with the disadvantage that the simulations take longer. We use 1000 wave modes, which was determined to be sufficient in convergence tests.
 
-The diffusion approach employs a static diffusion coefficient which, by definition, is only valid in the limit of large times, as \autoref{fig:comparison} illustrates. This incorrect description of the diffusive approach of the initial propagation leads to wrong escape times of the particles from the sources region. Consequently, the number of secondary particles is significantly underestimated. The CRW approach has, despite its simplification and the associated performance improvement in comparison to the EOM approach, a comparable accuracy in the description of the relevant physics.
+We consider three different propagation methods implemented in CRPropa:
+
+1. Solving EOM with the Boris-Push (BP) method [@CRPropa2021]. 
+2. Solving EOM with the Cash-Karp (CK) method [@CRPropa2016].
+3. Solving Stochastic Differential Equations (SDE) [@CRPropa2017]. For this method, no turbulence has to be generated, but only the diffusion coefficient has to be passed, which already contains the information how the particles move statistically in the turbulence.
+
+\autoref{fig:comparison} shows a comparison of the simulation results for the calculated running diffusion coefficients for the different propagation methods and turbulence generation methods. 
+
+The left and right panels differ only in the simulation length considered. In the left panel only trajectories up to $10^{14}$ m are considered, whereas in the right panel trajectories up to $10^{17}$ m are considered. Since the mean free path length indicates the transition between ballistic to diffusive propagation, the left panel shows ballistic particle propagation and the right panel diffusive propagation.
+
+The top panel shows the running diffusion coefficients as a function of time. The middle panel shows the effective diffusion coefficient at $10^{14$} m on the left and the converged diffusion coefficient on the right, since the running diffusion coefficient remains constant beginning at the diffusive limit, as can be seen in the top panel. 
+The lowest panel shows the required processor time of the simulation as a function of the step size. The same processor was used for all simulations for better comparability. 
+
+
+![Comparison between different propagation approaches for the computation of running diffusion coefficients. $10^3$ protons with $E=10^{15}$ eV simulated in magnetic field configurations described in the text. Configuration 1 without the ordered background magnetic field is used for the left panel and configuration 2 for the right panel. Detailed explanations and the code, respectively, the data for the reproducibility are available in tutorial 4 of the public repository. \label{fig:comparison}](comparison_compact_source.pdf)
+
+The comparisons yield the following conclusions:
+- Both EOM-based propagation approaches BP and CK and the correlated random walk from PropPy can correctly model the initial ballistic propagation phase. The Diffusive approach (SDE) cannot by construction, since it assumes diffusive particle transport. 
+- The diffusive approach and the correlated random walk approach can use relatively large step sizes to model the correct statistical behavior. The latter only needs to resolve the mean-free paths sufficiently well, which is given by choosing the step size approximately 10 times smaller than the mean-free path. The EOM-based methods must choose step sizes small enough to resolve both the gyration motion and the scales of tubulence sufficiently well. This can be seen as the diffusion coefficients in the middle panel in the right figure converge to a constant value only when the step size is smaller than the gyration radii and smaller than the correlation lengths.
+- The combination of smaller simulation times at the same step sizes with the lower step size requirements, by which larger step sizes lead to comparable results, translates into huge speedups for the diffusive method and the correlated random walk method implemented here in PropPy compared to the EOM-based methods. 
 
 
 # Acknowledgements
 
 I want to thank the audience in my [conference contribution](https://indico.cern.ch/event/1037017/contributions/4514419/) on the software and users, who helped with valuable feedback. 
-A special thanks to J. Becker Tjus, L. Schlegel, F. Schüssler, and E.G. Zweibel for valuable discussions.
+A special thanks to L. Schlegel, F. Schüssler, and E.G. Zweibel for valuable discussions.
 
 
 # References

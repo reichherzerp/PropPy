@@ -201,7 +201,7 @@ class Observer():
         """
         print('spheres: ' , self.spheres)
         print('steps [0:10]: ' , self.steps[0:10])
-        print('steps [-11:-1]: ' ,self.steps[-11:-1])
+        print('steps [-11:]: ' , self.steps[-11:])
         print('nr steps: ' , len(self.steps))
         print('substeps: ', self.substeps)  
         print('all_steps: ', self.all_steps)         

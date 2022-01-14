@@ -32,6 +32,7 @@ from .source import *
 from .propagator import *
 from .observer import *
 from .statistics import *
+from .constants import *
 
 
 
@@ -50,9 +51,10 @@ class Simulation():
         propagator: Object of a special propagator type set by the user.
     """
 
-    def __init__(self):
+    def __init__(self, constants = Constants()):
         print('start simulation')
         self.init_data()
+        self.constants = constants
 
     def init_data(self):
         self.data = [[0.0, 0.0, 0.0, 0.0, -1.0, 0.0]]
@@ -65,7 +67,8 @@ class Simulation():
 
     def add_propagator(self, propagator):
         self.propagator = propagator
-            
+        self.propagator.propagator.set_constants(self.constants)
+
     def run_simulation(self):
         self.init_data()
         particles = self.source.particles[:]
@@ -89,23 +92,25 @@ simulations with predefined sources, propagation methods and observers.
 """
 
 class IsotropicSimulation():
-    def __init__(self, nr_particles = 10**3, energy = 10**15, nr_steps = 10**4, diffusion_coefficient_para = 1.*10**21, nr_obs_steps = 600, step_size = 1*10**12):
+    def __init__(self, nr_particles = 10**3, energy = 10**15, nr_steps = 10**4, diffusion_coefficient_para = 1.*10**21, nr_obs_steps = 600, step_size = 1*10**12, constants = Constants()):
+        self.constants = constants
         self.nr_particles = nr_particles
         self.source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         self.energy = energy # [eV]
         self.nr_steps = nr_steps
-        self.step_size = step_size # [m]
-        self.diffusion_coefficient = diffusion_coefficient_para # [m^2/s]
-        self.speed_of_light = 3*10**8 # [m/s]
-        mfp_iso = 3*self.diffusion_coefficient/self.speed_of_light
-        self.mfp = np.array([mfp_iso, mfp_iso, mfp_iso], dtype=np.float32)  # [m]
+        self.step_size = step_size
+        self.diffusion_coefficient = diffusion_coefficient_para
+        mfp_iso = 3*self.diffusion_coefficient/self.constants.speed
+        print('mfp_ios', mfp_iso)
+        self.mfp = np.array([mfp_iso, mfp_iso, mfp_iso], dtype=np.float32) 
         self.nr_obs_steps = nr_obs_steps
         self.substeps = [False, False, True] # observe only steps (no substeps)
         self.sim = None
+        
 
     def simulate(self, file_name = 'isotropic'):
-        print('simulate with a diffusion coefficient of ', self.diffusion_coefficient, 'm²/s')
-        self.sim = Simulation()
+        print('simulate with a diffusion coefficient of ', self.diffusion_coefficient, self.constants.print_unit_kappa())
+        self.sim = Simulation(constants = self.constants)
         source = PointSourceIsotropic(self.energy, self.source_pos, self.nr_particles)
         self.sim.add_source(source)
         propagator = IsotropicPropagator(self.mfp, self.nr_steps, self.step_size)
@@ -241,4 +246,3 @@ class AnisotropicSimulation():
             self.sim.source.get_description()
             self.sim.propagator.get_description()
             self.sim.observer.get_description()
-

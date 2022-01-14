@@ -5,7 +5,7 @@ to observers to easily write out the current particle state for analysis.
 """
 
 
-from numba import jit, b1, float32, int32
+from numba import jit, b1, float32, int32, float64
 import numpy as np
 from numba.experimental import jitclass
 
@@ -19,7 +19,7 @@ particle_state_spec = [
     ('speed', float32),
     ('energy', float32),
     ('isotropic_diffusion', b1),
-    ('distance', float32),
+    ('distance', float64),
     ('gyroradius', float32),
     ('gyroradius_eff', float32),
     ('local_move', float32[:]),
