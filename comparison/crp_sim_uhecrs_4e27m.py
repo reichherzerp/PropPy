@@ -15,10 +15,10 @@ Path(path_data_raw).mkdir(parents=True, exist_ok=True)
 # save simulation result
 path = 'uhecrs_4e27m/'
 
-step_sizes = (np.logspace(20, 26, 19)[::-1])[:5]
+step_sizes = (np.logspace(20, 26, 19)[::-1])
 df_sim_data = pd.DataFrame(columns=('step_size', 'time', 'kappa', 'kappa_err'))
 
-kappa_theory = 1.1*10**33 # [m^2/s]
+kappa_theory = 1.08*10**33 # [m^2/s]
 traj_max = 4e27 # [m]
 
 simulation_setups = [
@@ -32,7 +32,7 @@ simulation_setups = [
         'prop_module': 'BP',
         'turbulence_method': 'PW',
         'nr_grid_points': 0,
-        'nr_modes': 100
+        'nr_modes': 1000
     },
     {
         'prop_module': 'CK',
@@ -49,7 +49,7 @@ simulation_setups = [
 ]
 
 def simulate(simulation_setup):
-    file_name_results = path + 'data/crp_sim_data_'+simulation_setup['prop_module']+'_'+simulation_setup['turbulence_method']+'_rest.pkl'
+    file_name_results = path + 'data/crp_sim_data_'+simulation_setup['prop_module']+'_'+simulation_setup['turbulence_method']+'.pkl'
     for i, step_size in enumerate(step_sizes):
         crp = CRPropa(step_size = step_size, traj_max = traj_max, nr_grid_points = simulation_setup['nr_grid_points'], n_wavemodes = simulation_setup['nr_modes'], l_min = 5*3*10**20, l_max = 5*3e22, energy=1e19, brms=10**(-9), path = path, prop_module = simulation_setup['prop_module'], kappa = kappa_theory, turbulence_method = simulation_setup['turbulence_method'])
         start_time = time.process_time()
@@ -63,5 +63,5 @@ def simulate(simulation_setup):
     
     print(df_sim_data)
  
-for simulation_setup in [simulation_setups[2]]:
+for simulation_setup in simulation_setups:
     simulate(simulation_setup)

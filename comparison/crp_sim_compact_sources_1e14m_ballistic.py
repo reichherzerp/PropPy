@@ -63,5 +63,5 @@ def simulate(simulation_setup):
     
     print(df_sim_data)
  
-for simulation_setup in [simulation_setups[0]]:
+for simulation_setup in simulation_setups:
     simulate(simulation_setup)

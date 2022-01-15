@@ -19,7 +19,7 @@ energy = 10**19 # [eV]
 r_g = 1.5*10**7 # [pc]
 kappa_theory = 1.14 # [pc^2/s]
 lambda_theory =  3.51*10**8 # [pc]
-traj_max = 4e27/pc/10 # [pc]
+traj_max = 4e27/pc # [pc]
 
 
 step_sizes = ((np.logspace(20, 26, 19))/pc)
@@ -33,7 +33,7 @@ for i, step_size in enumerate(step_sized_reversed):
     print('______________________________________________________________')
     print('step_size: ', step_size)
     nr_steps = int(traj_max/step_size)
-    sim = pp.IsotropicSimulation(nr_particles = 10**2, energy = energy, step_size = step_size, nr_steps = nr_steps, diffusion_coefficient_para = kappa_theory, nr_obs_steps = 100, constants = pp.Constants(unit_distance = 2))
+    sim = pp.IsotropicSimulation(nr_particles = 10**3, energy = energy, step_size = step_size, nr_steps = nr_steps, diffusion_coefficient_para = kappa_theory, nr_obs_steps = 100, constants = pp.Constants(unit_distance = 2))
     file_name_raw = path_data_raw+'/proppy_stepsize_'+str(step_size/10**11*pc)
     start_time = time.process_time()
     sim.simulate(file_name_raw)
