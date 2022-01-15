@@ -93,7 +93,7 @@ class Comparison():
             self.sde_step_sizes = np.array([])
             self.sde_kappas = np.array([])
 
-    def plot_running_diffusion_coefficients(self, d_theory=[1e17, 4e17]):
+    def plot_running_diffusion_coefficients(self, d_theory=[1e17, 4e17], pp_step_max=0):
         fig, ax1 = plt.subplots(figsize=(5,3.5))
         plt.plot(d_theory, [self.kappa_theory*10**4,self.kappa_theory*10**4], color='k', linestyle=(0, (3, 1, 1, 1)), label='theory', zorder=-1)
         plt.axvline(x=self.lambda_theory, color='k', linestyle='--', label='$\lambda_\mathrm{theory}$', zorder=-1)
@@ -122,7 +122,8 @@ class Comparison():
                 elif self.proppy_unit == 'pc':
                     proppy_l = proppy_l*3.086*10**16 # [m]
                     proppy_kappa = proppy_kappa*(3.086*10**16)**2 # [m^2/s]
-                ax1.plot(proppy_l[:n_max], np.array(proppy_kappa[:n_max])*10**4, color='red', ls='-', zorder=2, lw=2) 
+                if pp_step_max == 0 or step_size < self.lambda_theory:
+                    ax1.plot(proppy_l[:n_max], np.array(proppy_kappa[:n_max])*10**4, color='red', ls='-', zorder=2, lw=2) 
                 steps_proppy.append(step_size)
                 kappas_proppy.append(np.mean(proppy_kappa[-10:]))
             except:

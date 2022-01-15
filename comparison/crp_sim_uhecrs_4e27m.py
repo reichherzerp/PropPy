@@ -15,7 +15,7 @@ Path(path_data_raw).mkdir(parents=True, exist_ok=True)
 # save simulation result
 path = 'uhecrs_4e27m/'
 
-step_sizes = (np.logspace(20, 26, 19)[::-1])
+step_sizes = (np.logspace(20, 26, 19)[::-1])[:5]
 df_sim_data = pd.DataFrame(columns=('step_size', 'time', 'kappa', 'kappa_err'))
 
 kappa_theory = 1.1*10**33 # [m^2/s]
@@ -32,7 +32,7 @@ simulation_setups = [
         'prop_module': 'BP',
         'turbulence_method': 'PW',
         'nr_grid_points': 0,
-        'nr_modes': 1000
+        'nr_modes': 100
     },
     {
         'prop_module': 'CK',
