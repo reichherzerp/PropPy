@@ -6,20 +6,20 @@ import time
 from pathlib import Path
 
 
-path_figs = 'compact_sources_1e17m/figures'
-path_data = 'compact_sources_1e17m/data'
-path_data_raw = 'compact_sources_1e17m/data/raw_data'
+path_figs = 'uhecrs_4e27m/figures'
+path_data = 'uhecrs_4e27m/data'
+path_data_raw = 'uhecrs_4e27m/data/raw_data'
 Path(path_figs).mkdir(parents=True, exist_ok=True)
 Path(path_data).mkdir(parents=True, exist_ok=True)
 Path(path_data_raw).mkdir(parents=True, exist_ok=True)
 # save simulation result
-path = 'compact_sources_1e17m/'
+path = 'uhecrs_4e27m/'
 
-step_sizes = (np.logspace(9, 15, 19)[::-1])
+step_sizes = (np.logspace(20, 26, 19)[::-1])
 df_sim_data = pd.DataFrame(columns=('step_size', 'time', 'kappa', 'kappa_err'))
 
-kappa_theory = 3.34*10**22 # [m^2/s]
-traj_max = 10**17 # [m]
+kappa_theory = 1.1*10**33 # [m^2/s]
+traj_max = 4e27 # [m]
 
 simulation_setups = [
     {
@@ -51,7 +51,7 @@ simulation_setups = [
 def simulate(simulation_setup):
     file_name_results = path + 'data/crp_sim_data_'+simulation_setup['prop_module']+'_'+simulation_setup['turbulence_method']+'_rest.pkl'
     for i, step_size in enumerate(step_sizes):
-        crp = CRPropa(step_size = step_size, traj_max = traj_max, nr_grid_points = simulation_setup['nr_grid_points'], n_wavemodes = simulation_setup['nr_modes'], l_min = 5*10**9, path = path, prop_module = simulation_setup['prop_module'], kappa = kappa_theory, turbulence_method = simulation_setup['turbulence_method'])
+        crp = CRPropa(step_size = step_size, traj_max = traj_max, nr_grid_points = simulation_setup['nr_grid_points'], n_wavemodes = simulation_setup['nr_modes'], l_min = 5*3*10**20, l_max = 5*3e22, energy=1e19, brms=10**(-9), path = path, prop_module = simulation_setup['prop_module'], kappa = kappa_theory, turbulence_method = simulation_setup['turbulence_method'])
         start_time = time.process_time()
         crp.sim()
         time_needed = time.process_time() - start_time
