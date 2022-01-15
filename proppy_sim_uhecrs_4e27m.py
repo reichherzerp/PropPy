@@ -34,7 +34,7 @@ for i, step_size in enumerate(step_sized_reversed):
     print('step_size: ', step_size)
     nr_steps = int(traj_max/step_size)
     sim = pp.IsotropicSimulation(nr_particles = 10**2, energy = energy, step_size = step_size, nr_steps = nr_steps, diffusion_coefficient_para = kappa_theory, nr_obs_steps = 100, constants = pp.Constants(unit_distance = 2))
-    file_name_raw = path_data_raw+'/proppy_stepsize_'+str(step_size/10**11)
+    file_name_raw = path_data_raw+'/proppy_stepsize_'+str(step_size/10**11*pc)
     start_time = time.process_time()
     sim.simulate(file_name_raw)
     time_needed = time.process_time() - start_time
@@ -49,5 +49,5 @@ for i, step_size in enumerate(step_sized_reversed):
     df_sim_data.loc[i-1] = [step_size, time_needed, np.mean(df_kappas['kappa'][-10:]), np.std(df_kappas['kappa'][-10:])]
     df_sim_data.to_pickle(file_name_results)
     file_name = path_data+'/sim_result_proppy_stepsize_'
-    np.save(file_name+str(step_size/10**11)+'_l.npy', np.array(df_kappas['l']))
-    np.save(file_name+str(step_size/10**11)+'_kappa.npy', np.array(df_kappas['kappa']))
+    np.save(file_name+str(step_size/10**11*pc)+'_l.npy', np.array(df_kappas['l']))
+    np.save(file_name+str(step_size/10**11*pc)+'_kappa.npy', np.array(df_kappas['kappa']))

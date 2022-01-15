@@ -42,14 +42,14 @@ class Comparison():
         try:
             self.proppy_times = np.array(self.df_proppy_results['time'].values.tolist())
             if self.proppy_unit == 'm':
-                self.proppy_step_sizes = self.df_proppy_results['step_size']
-                self.proppy_kappas = self.df_proppy_results['kappa']
+                self.proppy_step_sizes = self.df_proppy_results['step_size'] # [m]
+                self.proppy_kappas = self.df_proppy_results['kappa'] # [m^2/s]
             if self.proppy_unit == 'km':
-                self.proppy_step_sizes = self.df_proppy_results['step_size']*10**3
-                self.proppy_kappas = self.df_proppy_results['kappa']*10**6
+                self.proppy_step_sizes = self.df_proppy_results['step_size']*10**3 # [m]
+                self.proppy_kappas = self.df_proppy_results['kappa']*10**6 # [m^2/s]
             if self.proppy_unit == 'pc':
-                self.proppy_step_sizes = self.df_proppy_results['step_size']*3.086*10**16
-                self.proppy_kappas = self.df_proppy_results['kappa']*(3.086*10**16)**2
+                self.proppy_step_sizes = self.df_proppy_results['step_size']*3.086*10**16 # [m]
+                self.proppy_kappas = self.df_proppy_results['kappa']*(3.086*10**16)**2 # [m^2/s]
         except:
             print('no PropPy data')
             self.proppy_times = np.array([])
@@ -114,6 +114,14 @@ class Comparison():
             try:
                 proppy_l = np.load(self.path_data+'/sim_result_proppy_stepsize_'+str(step_size/10**11)+'_l.npy')
                 proppy_kappa = np.load(self.path_data+'/sim_result_proppy_stepsize_'+str(step_size/10**11)+'_kappa.npy')
+                if self.proppy_unit == 'm':
+                    pass
+                elif self.proppy_unit == 'km':
+                    proppy_l = proppy_l*10**3 # [m]
+                    proppy_kappa = proppy_kappa*10**6 # [m^2/s]
+                elif self.proppy_unit == 'pc':
+                    proppy_l = proppy_l*3.086*10**16 # [m]
+                    proppy_kappa = proppy_kappa*(3.086*10**16)**2 # [m^2/s]
                 ax1.plot(proppy_l[:n_max], np.array(proppy_kappa[:n_max])*10**4, color='red', ls='-', zorder=2, lw=2) 
                 steps_proppy.append(step_size)
                 kappas_proppy.append(np.mean(proppy_kappa[-10:]))
@@ -166,7 +174,8 @@ class Comparison():
         plt.plot([0,0], [0,0], c='grey', ls='--', label='CRPropa (SDE)', lw=2)
         plt.plot([0,0], [0,0], c='red', ls='-', label='PropPy', lw=2)
 
-        plt.xlim([min(self.step_sizes)/3, d_theory[1]])
+
+        #plt.xlim([min(self.step_sizes)/3, d_theory[1]])
 
         ax1.set_xlabel('trajectory length [m]')
         ax1.loglog()
