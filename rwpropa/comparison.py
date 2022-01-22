@@ -204,13 +204,13 @@ class Comparison():
     def color_bar_invisible(self):
         # invisible colorbar for correct spacing
         cb = plt.colorbar(pad=0.01, aspect=1000)
-        cb.set_label(self.cb_text, fontsize=10, labelpad=16)
+        cb.set_label('', fontsize=10, labelpad=16)
         cb.ax.tick_params(size=0) #Remove ticks
         cb.outline.set_visible(False)
         cb.set_ticks([])
 
 
-    def plot_kappa_convergence_tests(self, ylabel="$\kappa$ [m$^2$/s]", lambda_theory=True, kappa_mean_seeds=0, kappa_mean_seeds_err=0):
+    def plot_kappa_convergence_tests(self, ylabel="$\kappa$ [m$^2$/s]", ylabel2="log deviation",  lambda_theory=True, kappa_mean_seeds=0, kappa_mean_seeds_err=0):
         fig = plt.figure(figsize=(5,5))
         # set height ratios for subplots
         gs = gridspec.GridSpec(2, 1, height_ratios=[2.5, 1]) 
@@ -220,13 +220,6 @@ class Comparison():
         ### 1. subplot
         ax0 = plt.subplot(gs[0])
 
-
-
-
-
-        #fig = plt.figure(figsize=(5,3.5))
-        ### try to load data and handle if data is not available
-        
         zs = np.concatenate([self.proppy_times, self.ck_times, self.bp_pw_times, self.bp_grid_times, self.sde_times], axis=0)
         min_, max_ = zs.min(), zs.max()
         plt.scatter(self.proppy_step_sizes, self.proppy_kappas, c=self.proppy_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s')
@@ -239,7 +232,7 @@ class Comparison():
         plt.clim(min_, max_)
         plt.scatter(self.sde_step_sizes, self.sde_kappas, c=self.sde_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='^')
         plt.clim(min_, max_)
-        plt.colorbar(label='simulation time [s]')
+        plt.colorbar(label='simulation time [s]', pad=0.01)
         plt.loglog()
         if lambda_theory:
             plt.axvline(x=self.lambda_theory, label='$\lambda_\mathrm{theory}$', color='grey', ls='-.', zorder=-1)
@@ -258,10 +251,39 @@ class Comparison():
         plt.ylabel(ylabel)
         plt.legend()
 
-
+        ax0.tick_params(labelbottom=False)
+        ax0.tick_params(top=True, right=True, direction='in', which='both')
 
         ax1 = plt.subplot(gs[1], sharex = ax0)
-        #self.color_bar_invisible()
+
+        err_proppy = np.abs(np.log10(self.proppy_kappas)-np.log10(self.kappa_theory))
+        err_crp_ck = np.abs(np.log10(self.ck_kappas)-np.log10(self.kappa_theory))
+        err_crp_bp_pw = np.abs(np.log10(self.bp_pw_kappas)-np.log10(self.kappa_theory))
+        err_crp_bp_grid = np.abs(np.log10(self.bp_grid_kappas)-np.log10(self.kappa_theory))
+        err_crp_sde = np.abs(np.log10(self.sde_kappas)-np.log10(self.kappa_theory))
+        
+        plt.scatter(self.proppy_step_sizes, err_proppy, c=self.proppy_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s')
+        plt.clim(min_, max_)
+        plt.scatter(self.ck_step_sizes, err_crp_ck, c=self.ck_times, cmap='viridis', norm=matplotlib.colors.LogNorm())
+        plt.clim(min_, max_)
+        plt.scatter(self.bp_pw_step_sizes, err_crp_bp_pw, c=self.bp_pw_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='d')
+        plt.clim(min_, max_)
+        plt.scatter(self.bp_grid_step_sizes, err_crp_bp_grid, c=self.bp_grid_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='*')
+        plt.clim(min_, max_)
+        plt.scatter(self.sde_step_sizes, err_crp_sde, c=self.sde_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='^')
+        plt.clim(min_, max_)
+
+        if lambda_theory:
+            plt.axvline(x=self.lambda_theory, label='$\lambda_\mathrm{theory}$', color='grey', ls='-.', zorder=-1)
+        plt.axvline(x=self.l_c, label='$l_\mathrm{c}$', color='grey', ls=':', zorder=-1)
+        plt.axvline(x=self.r_g*2*3.14, label='$2\pi\, r_\mathrm{g}$', color='grey', ls='--', zorder=-1)
+
+        plt.axhline(y=0, color='k', linestyle='-', zorder=-2)
+
+        self.color_bar_invisible()
+        ax1.tick_params(top=True, right=True, direction='in', which='both')
+
+        plt.ylabel(ylabel2)
 
         plt.savefig(self.path_figs+'/kappa_vs_stepsize.pdf', bbox_inches='tight', pad_inches=0.02)
         plt.show()
