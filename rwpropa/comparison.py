@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
+from matplotlib import gridspec
 import pandas as pd
 
 class Comparison():
@@ -200,8 +201,30 @@ class Comparison():
         plt.show()
 
 
+    def color_bar_invisible(self):
+        # invisible colorbar for correct spacing
+        cb = plt.colorbar(pad=0.01, aspect=1000)
+        cb.set_label(self.cb_text, fontsize=10, labelpad=16)
+        cb.ax.tick_params(size=0) #Remove ticks
+        cb.outline.set_visible(False)
+        cb.set_ticks([])
+
+
     def plot_kappa_convergence_tests(self, ylabel="$\kappa$ [m$^2$/s]", lambda_theory=True, kappa_mean_seeds=0, kappa_mean_seeds_err=0):
-        fig = plt.figure(figsize=(5,3.5))
+        fig = plt.figure(figsize=(5,5))
+        # set height ratios for subplots
+        gs = gridspec.GridSpec(2, 1, height_ratios=[2.5, 1]) 
+        # remove vertical gap between subplots
+        plt.subplots_adjust(hspace=.035)
+
+        ### 1. subplot
+        ax0 = plt.subplot(gs[0])
+
+
+
+
+
+        #fig = plt.figure(figsize=(5,3.5))
         ### try to load data and handle if data is not available
         
         zs = np.concatenate([self.proppy_times, self.ck_times, self.bp_pw_times, self.bp_grid_times, self.sde_times], axis=0)
@@ -234,6 +257,12 @@ class Comparison():
         plt.xlabel('step size [m]')
         plt.ylabel(ylabel)
         plt.legend()
+
+
+
+        ax1 = plt.subplot(gs[1], sharex = ax0)
+        #self.color_bar_invisible()
+
         plt.savefig(self.path_figs+'/kappa_vs_stepsize.pdf', bbox_inches='tight', pad_inches=0.02)
         plt.show()
 
