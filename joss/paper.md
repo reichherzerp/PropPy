@@ -28,13 +28,16 @@ bibliography: paper.bib
 
 # Summary
 
-PropPy is an open-source python software for propagating charged high-energy particles (cosmic rays) in a turbulent magnetic field. Its modular architecture comprises various sources, magnetic fields, propagators, observers, and analyzing modules covering a wide range of applications.
+PropPy is an open-source python software for propagating charged high-energy particles (cosmic rays, CRs) in a turbulent magnetic field. Its modular architecture comprises various modules for sources, magnetic fields, propagators, and observers covering a wide range of applications.
 
-Here, propagation is based on a correlated random walk (CRW) in Cartesian (for isotropic diffusion) or cylindrical (for anisotropic diffusion) coordinates, which makes each simulation step significantly faster than comparable codes that have to solve the equation of motion (EOM) in each propagation time. This novel approach is justified by the fact that a transport equation can be derived via the formulation of the CRW (see theory section below), which is used in analytical descriptions of particle transport [@Litvinenko2015; @Tautz2016]
+When compared to codes that solve the equation of motion (EOM) in each propagation step, our propagation is based on a correlated random walk (CRW) in Cartesian (for isotropic diffusion) or cylindrical (for anisotropic diffusion) coordinates, which makes each simulation step significantly faster. This novel approach is justified by the fact that a transport equation can be derived via the formulation of the CRW (see theory section below), which is used in analytical descriptions of particle transport [@Litvinenko2015; @Tautz2016]
 \begin{equation}\label{eq:telegraph}
-\frac{\partial f}{\partial t} + \sum_i \tau_i \frac{\partial^2 f}{\partial t^2}= \sum_i \kappa_i \frac{\partial^2 f}{\partial x_i^2}.
+\frac{\partial f}{\partial t} + \sum_i \tau_i \frac{\partial^2 f}{\partial t^2}= \sum_i \kappa_i \frac{\partial^2 f}{\partial x_i^2},
 \end{equation}
-$i$ indicates the three spatial directions, and $\tau_i$ denotes the time scale for particles to become diffusive. From the diffusion coefficients $\kappa_i$, the relevant parameters of the CRW can be determined. These considerations confirm the validity for the diffusive phase of particle transport that the CRW approach correctly describes. The initial propagation phase is not yet diffusive and is therefore only tested by comparison tests between CRW and EOM that show that statistical properties such as the running diffusion coefficient $\kappa_i(t) = \langle x_i^2\rangle /2t$ and the escape times from regions such as are relevant and present in many astronomical environments are comparable in both approaches.
+where $i$ indicates the three spatial directions, $\tau_i$ denotes the time scale for particles to become diffusive, and $\kappa_i$ is the diffusion coefficient, from which the relevant parameters of the CRW can be determined. 
+
+Besides the analytical verification of the CRW ansatz, comparison simulations between PropPy and an established cosmic-ray propagation software, CRPropa, are presented.
+These tests show that both approaches are comparable in terms of the statistical properties such as the running diffusion coefficient and the escape times from regions such as are relevant and present in many astrophysical environments.
 
 This makes PropPy a high-performance software for the simulation of charged particles in turbulent magnetic fields, especially for compact objects and transient events with short time scales, such as gamma-ray bursts (GRBs), active galactic nuclei (AGN) flares, where the accurate description of the initial particle propagation is crucial. Fast simulations of transient events can help to analyze observations and provide information to evaluate the need for follow-up observations in the context of real-time multimessenger astrophysics [@AstroColibri2021].
 

@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 from matplotlib import gridspec
 import pandas as pd
+from scipy.optimize import curve_fit
 
 class Comparison():
 
@@ -94,10 +95,24 @@ class Comparison():
             self.sde_step_sizes = np.array([])
             self.sde_kappas = np.array([])
 
-    def plot_running_diffusion_coefficients(self, d_theory=[1e17, 4e17], pp_step_max=0):
-        fig, ax1 = plt.subplots(figsize=(5,3.5))
+
+    def func_kappa_run(self, x, kappa, tau):
+        return (1 - np.exp(-x/tau))*kappa
+
+
+    def plot_running_diffusion_coefficients(self, d_theory=[1e17, 4e17], pp_step_max=0, times=[], kappas_ref=[], show_lambda=True):
+        fig = plt.figure(figsize=(5,5))
+        # set height ratios for subplots
+        gs = gridspec.GridSpec(2, 1, height_ratios=[2.5, 1]) 
+        # remove vertical gap between subplots
+        plt.subplots_adjust(hspace=.035)
+
+        ### 1. subplot
+        ax0 = plt.subplot(gs[0])
+
         plt.plot(d_theory, [self.kappa_theory*10**4,self.kappa_theory*10**4], color='k', linestyle=(0, (3, 1, 1, 1)), label='theory', zorder=-1)
-        plt.axvline(x=self.lambda_theory, color='k', linestyle='--', label='$\lambda_\mathrm{theory}$', zorder=-1)
+        if show_lambda:
+            plt.axvline(x=self.lambda_theory, color='k', linestyle='--', label='$\lambda_\mathrm{theory}$', zorder=-1)
         steps_proppy = []
         steps_ck = []
         steps_bp_pw = []
@@ -109,6 +124,7 @@ class Comparison():
         kappas_bp_grid = []
         kappas_sde = []
 
+        plt.xlim([0.5*self.step_sizes[0], d_theory[-1]*1.5])
         for i, step_size in enumerate(self.step_sizes[:-2]):
             color = plt.cm.viridis(np.linspace(0, 1, len(self.step_sizes))[i])
             n_max = -1
@@ -124,7 +140,7 @@ class Comparison():
                     proppy_l = proppy_l*3.086*10**16 # [m]
                     proppy_kappa = proppy_kappa*(3.086*10**16)**2 # [m^2/s]
                 if pp_step_max == 0 or step_size < self.lambda_theory:
-                    ax1.plot(proppy_l[:n_max], np.array(proppy_kappa[:n_max])*10**4, color='red', ls='-', zorder=2, lw=2) 
+                    ax0.plot(proppy_l[:n_max], np.array(proppy_kappa[:n_max])*10**4, color='red', ls='-', zorder=2, lw=2) 
                 steps_proppy.append(step_size)
                 kappas_proppy.append(np.mean(proppy_kappa[-10:]))
             except:
@@ -133,7 +149,7 @@ class Comparison():
             try:
                 crp_l = np.load(self.path_data+'/sim_result_crp_BP_PW_stepsize_'+str(step_size/10**11)+'_l.npy')
                 crp_kappa = np.load(self.path_data+'/sim_result_crp_BP_PW_stepsize_'+str(step_size/10**11)+'_kappa.npy')
-                ax1.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls=(0, (1, 1)), lw=2, zorder=4)
+                ax0.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls=(0, (1, 1)), lw=2, zorder=4)
                 steps_bp_pw.append(step_size)
                 kappas_bp_pw.append(np.mean(crp_kappa[-10:]))
             except:
@@ -141,7 +157,7 @@ class Comparison():
             try:
                 crp_l = np.load(self.path_data+'/sim_result_crp_BP_grid_stepsize_'+str(step_size/10**11)+'_l.npy')
                 crp_kappa = np.load(self.path_data+'/sim_result_crp_BP_grid_stepsize_'+str(step_size/10**11)+'_kappa.npy')
-                ax1.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls=(0, (1, 8)), lw=2, zorder=4)
+                ax0.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls=(0, (1, 8)), lw=2, zorder=4)
                 steps_bp_grid.append(step_size)
                 kappas_bp_grid.append(np.mean(crp_kappa[-10:]))
             except:
@@ -150,7 +166,7 @@ class Comparison():
             try:
                 crp_l = np.load(self.path_data+'/sim_result_crp_CK_PW_stepsize_'+str(step_size/10**11)+'_l.npy')
                 crp_kappa = np.load(self.path_data+'/sim_result_crp_CK_PW_stepsize_'+str(step_size/10**11)+'_kappa.npy')
-                ax1.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls='-.', lw=2, zorder=4)
+                ax0.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls='-.', lw=2, zorder=4)
                 steps_ck.append(step_size)
                 kappas_ck.append(np.mean(crp_kappa[-10:]))
             except:
@@ -159,7 +175,7 @@ class Comparison():
             try:
                 crp_l = np.load(self.path_data+'/sim_result_crp_SDE__stepsize_'+str(step_size/10**11)+'_l.npy')
                 crp_kappa = np.load(self.path_data+'/sim_result_crp_SDE__stepsize_'+str(step_size/10**11)+'_kappa.npy')
-                ax1.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls='--', lw=2, zorder=4)
+                ax0.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls='--', lw=2, zorder=4)
                 steps_sde.append(step_size)
                 kappas_sde.append(np.mean(crp_kappa[-10:]))
             except:
@@ -167,7 +183,7 @@ class Comparison():
 
         # colorbar
         plt.scatter(np.zeros(len(self.step_sizes)), np.zeros(len(self.step_sizes)), c=self.step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm())
-        plt.colorbar(label='step sizes [m]')
+        plt.colorbar(label='step sizes [m]', pad=0.01)
 
         #legend
         plt.plot([0,0], [0,0], c='grey', ls=':', label='CRPropa (BP) [PW]', lw=2)
@@ -176,15 +192,88 @@ class Comparison():
         plt.plot([0,0], [0,0], c='grey', ls='--', label='CRPropa (SDE)', lw=2)
         plt.plot([0,0], [0,0], c='red', ls='-', label='PropPy', lw=2)
 
-
-        #plt.xlim([min(self.step_sizes)/3, d_theory[1]])
-
-        ax1.set_xlabel('trajectory length [m]')
-        ax1.loglog()
-        ax1.set_ylabel('running $\kappa$ [cm$^2$/s]')
+        ax0.tick_params(labelbottom=False)
+        ax0.tick_params(top=True, right=True, direction='in', which='both')
+        ax0.loglog()
+        ax0.set_ylabel('running $\kappa$ [cm$^2$/s]')
         plt.legend()
+
+
+        ax1 = plt.subplot(gs[1], sharex = ax0)
+        ax1.set_xlabel('trajectory length [m]')
+        ax1.set_ylabel('deviation [%]')
+
+        if len(times) > 0:
+            # Running diffusion coefficients can be modelled via
+            # \begin{equation}
+            # \kappa (t) = \kappa \cdot \left(1 - \mathrm{e}^{-t/\tau}\right),
+            # \end{equation}
+            # where $\kappa$ is the converged diffusion coefficient and $\tau$ can be deduced from the initial ballistic phase via
+            # \begin{equation}
+            # \tau = \frac{t}{\kappa(t)}
+            # \end{equation}
+            # for small $t$.
+            # Note that this expression was derived by using the Taylor series of $\kappa (t)$ for small times
+            # \begin{equation}
+            # \kappa (t) \approx \frac{t}{\tau}.
+            # \end{equation}
+            tau = times[0] / kappas_ref[0] * kappas_ref[-1]
+        
+
+        for i, step_size in enumerate(self.step_sizes[:-2]):
+            color = plt.cm.viridis(np.linspace(0, 1, len(self.step_sizes))[i])
+            n_max = -1
+            try:
+                proppy_l = np.load(self.path_data+'/sim_result_proppy_stepsize_'+str(step_size/10**11)+'_l.npy')
+                proppy_kappa = np.load(self.path_data+'/sim_result_proppy_stepsize_'+str(step_size/10**11)+'_kappa.npy')
+                if self.proppy_unit == 'm':
+                    pass
+                elif self.proppy_unit == 'km':
+                    proppy_l = proppy_l*10**3 # [m]
+                    proppy_kappa = proppy_kappa*10**6 # [m^2/s]
+                elif self.proppy_unit == 'pc':
+                    proppy_l = proppy_l*3.086*10**16 # [m]
+                    proppy_kappa = proppy_kappa*(3.086*10**16)**2 # [m^2/s]
+
+                if pp_step_max == 0 or step_size < self.lambda_theory:
+                    kappa_theory = self.func_kappa_run(proppy_l, kappas_ref[-1], tau)
+                    kappa_dev = np.abs(kappa_theory - proppy_kappa) / kappa_theory * 100
+                    plt.plot(proppy_l, kappa_dev, color='red', ls='-', zorder=2, lw=2)
+            except:
+                print('no data for PropPy')
+
+
+            try:
+                crp_l = np.load(self.path_data+'/sim_result_crp_BP_PW_stepsize_'+str(step_size/10**11)+'_l.npy')
+                crp_kappa = np.load(self.path_data+'/sim_result_crp_BP_PW_stepsize_'+str(step_size/10**11)+'_kappa.npy')
+                kappa_theory = self.func_kappa_run(crp_l, kappas_ref[-1], tau)
+                kappa_dev = np.abs(kappa_theory - crp_kappa) / kappa_theory * 100
+                plt.plot(crp_l, kappa_dev, color=color, ls=(0, (1, 1)), lw=2)
+            except:
+                print('no data for BP pw')
+            
+
+            try:
+                crp_l = np.load(self.path_data+'/sim_result_crp_SDE__stepsize_'+str(step_size/10**11)+'_l.npy')
+                crp_kappa = np.load(self.path_data+'/sim_result_crp_SDE__stepsize_'+str(step_size/10**11)+'_kappa.npy')
+                kappa_theory = self.func_kappa_run(crp_l, kappas_ref[-1], tau)
+                kappa_dev = np.abs(kappa_theory - crp_kappa) / kappa_theory * 100
+                plt.plot(crp_l, kappa_dev, color=color, ls='--', lw=2)
+            except:
+                print('no data for SDE')
+
+
+        plt.yscale('log')
+
+        self.color_bar_invisible()
+        ax1.tick_params(top=True, right=True, direction='in', which='both')
+        plt.axhline(y=1, color='grey', ls='-', zorder=-4)
+        
         plt.savefig(self.path_figs+'/running_kappa.pdf', bbox_inches='tight', pad_inches=0.02)
         plt.show()
+
+
+        # second figure
 
         fig, ax1 = plt.subplots(figsize=(5,3.5))
         plt.scatter(steps_proppy, kappas_proppy, label='PropPy', marker='s', color='green')
