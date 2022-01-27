@@ -53,19 +53,18 @@ Understanding the transport of charged high-energy particles in turbulent magnet
 
 Analytical theories have been developed over the last century [@Jokipii_1966; @Zweibel2013; @Schlickeiser2015] to describe the transport of cosmic rays. However, these theories are often limited by simplifying assumptions. To overcome these limitations, propagation codes have been developed over the last decades to overcome these limitations with dedicated cosmic-ray-transport simulations [@Giacalone1999; @Casse2001; @Shukurov2017; @Reichherzer2020; @Reichherzer2021b]. In EOM propagation methods, particles are moved stepwise, with the next step always determined based on the Lorentz force. Note the magnetic field must be computed for each propagation step for all particle positions, a process that is typically time-consuming in numerical simulations [@Schlegel2020]. A much more efficient method, the diffusive approach, is based on the statistical properties of the particles and exploits their theoretical description via a transport equation [@CRPropa2017]. In the limit of infinitely large times, a diffusive transport occurs for all charged particles in isotropic turbulence, which can be described by the diffusion tensor. A major drawback of this approach is that can only model the transport of charged particles over large time scales so that the particles have enough time to become diffusive. This is especially relevant for modeling transport in compact sources, where diffusion does not necessarily occur [@Reichherzerp2021].
 
-PropPy was established to tackle this issue and meet the need for realistic and fast simulations of the compact sources of cosmic rays, such as GRB and AGN flares. With this publication, we present PropPy, which applies the novel approach of CRW, where statistical aspects are used for speed-up while also providing a good description of the initial phase, where classic diffusion approaches fail. Furthermore, the properties of the CRW can be determined directly from the diffusion tensor and the gyration radius of the particle.
+To tackle this issue and meet the need for realistic and fast simulations of the compact sources of cosmic rays, we present in this paper PropPy. Our software applies the approach of CRW, where statistical aspects are used for speed-up while also providing a good description of the initial phase. Additionally, the properties of the CRW can be determined directly from the diffusion tensor and the gyration radius of the particle.
 
-The comparison of the three different approaches illustrates the good agreement of the CRW with the solution of the equation of motion. 
-
+The comparison of the three different approaches diffusive, EOM, and CRW shows that CRW simulation results are in good agreement with EOM simulations, while being considerably faster.
 
 # Theory
 
-Let us generally assume particle transport in one dimension. The following derivation is discussed in various contexts in the literature, such as when describing animal trails (see e.g., @Codling2008 for a review), but also for cosmic-ray propagation (see e.g., @Seta2019).
+First we assume particle transport in one dimension, where they can move either in positive or negative direction along the $x$-axis. The following derivation has been discussed in various contexts in the literature, such as when describing animal trails (see e.g., @Codling2008 for a review), but can also be applied for cosmic-ray propagation (see e.g., @Seta2019).
 
 During the CRW, the following two substeps are performed in each propagation step:
 \begin{enumerate}
-    \item Particles that point in direction $x$ will turn around with the probability $\xi\tau_\mathrm{s}$ and otherwise continue along that direction with the probability $1-\xi \tau_\mathrm{s}$.
-    \item The particles move the distance $\chi$ with the speed $ \chi/\tau_\mathrm{s} \equiv v$ along the direction established in the 1. substep. 
+    \item Particles that point in positive direction will turn around with the probability $\xi\tau_\mathrm{s}$ and otherwise continue along that direction with the probability $1-\xi \tau_\mathrm{s}$. The same applies for particles that point in negative direction.
+    \item The particles move the distance $\chi$ with the speed $ \chi/\tau_\mathrm{s} \equiv v$ along the direction established in the first substep. 
 \end{enumerate}
 If we divide the particle distribution per position at time $t$ into one distribution in positive direction $\alpha(x,t)$ and one in negative direction $\beta(x,t)$, the following sub distributions result one propagation step later
 \begin{equation}\label{eq:alpha_def}
@@ -74,7 +73,7 @@ If we divide the particle distribution per position at time $t$ into one distrib
 \begin{equation}\label{eq:beta_def}
 \beta(x, t + \tau_\mathrm{s}) = \xi \tau_\mathrm{s}\alpha(x+\chi,t) + (1-\xi \tau_\mathrm{s}) \beta(x+\chi,t).
 \end{equation}
-As particles move either in positive or negative direction, it yields $f(x,t) = \alpha(x,t)+\beta(x,t)$. For simplicity we define $\alpha(x,t) \equiv \alpha$ and $\beta(x,t) \equiv \beta$. 
+As particles move either in positive or negative direction, the total particle distribution yields $f(x,t) = \alpha(x,t)+\beta(x,t)$. For simplicity we define $\alpha(x,t) \equiv \alpha$ and $\beta(x,t) \equiv \beta$. 
 Expanding \autoref{eq:alpha_def} and \autoref{eq:beta_def} for small steps $\tau_s, \chi \xrightarrow{} 0$ yields
 \begin{equation}\label{eq:alpha}
 \frac{\partial \alpha}{\partial t} = - v \frac{\partial \alpha}{\partial x} + \xi(\beta-\alpha),
@@ -98,15 +97,15 @@ Inserting \autoref{eq:beta_minus_alpha} into \autoref{eq:alpha_plus_beta_deriv} 
 \begin{equation}\label{eq:alpha_plus_beta_3}
 \frac{\partial^2 (\alpha + \beta)}{\partial t^2} = v^2 \frac{\partial^2 (\alpha+\beta)}{\partial x^2} - 2\xi v\frac{\partial (\beta - \alpha)}{\partial x}.
 \end{equation}
-Inserting \autoref{eq:alpha_plus_beta} into \autoref{eq:alpha_plus_beta_3}
+Inserting \autoref{eq:alpha_plus_beta} into \autoref{eq:alpha_plus_beta_3} yields
 \begin{equation}\label{eq:alpha_plus_beta_rewritten}
-\frac{1}{2\xi}\frac{\partial^2 (\alpha + \beta)}{\partial t^2} = \frac{v^2}{2\xi} \frac{\partial^2 (\alpha+\beta)}{\partial x^2} - \frac{\partial (\alpha + \beta)}{\partial t},
+\frac{1}{2\xi}\frac{\partial^2 (\alpha + \beta)}{\partial t^2} = \frac{v^2}{2\xi} \frac{\partial^2 (\alpha+\beta)}{\partial x^2} - \frac{\partial (\alpha + \beta)}{\partial t}.
 \end{equation}
 Finally, with $f = \alpha + \beta$, we have
 \begin{equation}\label{eq:alpha_plus_beta_rewritten}
 \frac{1}{2\xi}\frac{\partial^2 f}{\partial t^2} = \frac{v^2}{2\xi} \frac{\partial^2 f}{\partial x^2} - \frac{\partial f}{\partial t}.
 \end{equation}
-Generalizing this approach for three dimensions, assuming local homogeneity, and connecting diffusion coefficients with the CRW parameters leads to \autoref{eq:telegraph}. Therefore, the statistics of particles that follow CRW can be described with the telegraph equation and thus agrees with analytical theories of particle transport of cosmic rays [@Litvinenko2015; @Tautz2016].
+In fact, when we generalize this approach for three dimensions, assuming local homogeneity, and connecting diffusion coefficients with the CRW parameters this leads to \autoref{eq:telegraph}. Therefore, the statistics of particles that follow CRW can be described with the telegraph equation and thus agrees with analytical theories of particle transport of cosmic rays [@Litvinenko2015; @Tautz2016].
 
 
 # Comparison
