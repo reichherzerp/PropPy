@@ -42,6 +42,7 @@ These tests show that both approaches are comparable in terms of the statistical
 This makes PropPy a high-performance software for the simulation of charged particles in turbulent magnetic fields. This is especially true for compact objects and transient events with short time scales, such as gamma-ray bursts (GRBs), active galactic nuclei (AGN) flares, where the accurate description of the initial particle propagation is crucial. Fast simulations of transient events can help analyze observations and provide information to evaluate the need for follow-up observations in the context of real-time multimessenger astrophysics [@AstroColibri2021].
 
 
+
 # Statement of need 
 
 Understanding the transport of charged high-energy particles in turbulent magnetic fields is essential for resolving the long-standing question of their extragalactic origin. The transport properties of cosmic rays are relevant in many ways: 
