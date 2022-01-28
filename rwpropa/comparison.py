@@ -124,8 +124,13 @@ class Comparison():
         kappas_bp_grid = []
         kappas_sde = []
 
-        plt.xlim([0.5*self.step_sizes[0], d_theory[-1]*1.5])
-        for i, step_size in enumerate(self.step_sizes[:-2]):
+        if self.proppy_unit == 'km':
+            plt.xlim([0.5*self.step_sizes[0]*10**2, d_theory[-1]*1.5])
+        if self.proppy_unit == 'pc':
+            plt.xlim([0.5*self.step_sizes[0]*3.086*10**16, d_theory[-1]*1.5])
+        else: 
+            plt.xlim([0.5*self.step_sizes[0], d_theory[-1]*1.5])
+        for i, step_size in enumerate(self.step_sizes):
             color = plt.cm.viridis(np.linspace(0, 1, len(self.step_sizes))[i])
             n_max = -1
             try:
