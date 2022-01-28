@@ -143,7 +143,8 @@ class Comparison():
                     ax0.plot(proppy_l[:n_max], np.array(proppy_kappa[:n_max])*10**4, color='red', ls='-', zorder=2, lw=2) 
                 steps_proppy.append(step_size)
                 kappas_proppy.append(np.mean(proppy_kappa[-10:]))
-            except:
+            except Exception as e: 
+                print(e)
                 print('no data for PropPy')
             
             try:
@@ -152,7 +153,8 @@ class Comparison():
                 ax0.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls=(0, (1, 1)), lw=2, zorder=4)
                 steps_bp_pw.append(step_size)
                 kappas_bp_pw.append(np.mean(crp_kappa[-10:]))
-            except:
+            except Exception as e: 
+                print(e)
                 print('no data for BP pw')
             try:
                 crp_l = np.load(self.path_data+'/sim_result_crp_BP_grid_stepsize_'+str(step_size/10**11)+'_l.npy')
@@ -160,7 +162,8 @@ class Comparison():
                 ax0.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls=(0, (1, 8)), lw=2, zorder=4)
                 steps_bp_grid.append(step_size)
                 kappas_bp_grid.append(np.mean(crp_kappa[-10:]))
-            except:
+            except Exception as e: 
+                print(e)
                 print('no data for BP grid')
             
             try:
@@ -169,7 +172,8 @@ class Comparison():
                 ax0.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls='-.', lw=2, zorder=4)
                 steps_ck.append(step_size)
                 kappas_ck.append(np.mean(crp_kappa[-10:]))
-            except:
+            except Exception as e: 
+                print(e)
                 print('no data for CK')
 
             try:
@@ -178,7 +182,8 @@ class Comparison():
                 ax0.plot(crp_l[:n_max], np.array(crp_kappa[:n_max])*10**4, color=color, ls='--', lw=2, zorder=4)
                 steps_sde.append(step_size)
                 kappas_sde.append(np.mean(crp_kappa[-10:]))
-            except:
+            except Exception as e: 
+                print(e)
                 print('no data for SDE')
 
         # colorbar
