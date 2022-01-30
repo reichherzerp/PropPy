@@ -6,17 +6,17 @@ and the propagator.
 
     Typical usage example:
 
-    import rwpropa as rw
+    import proppy as pp
 
     nr_steps = 10**4
     step_size = 10**10 # [m]
     mfp = np.array([2.13*10**12/2.0, 2.13*10**12/2.0, 2.1078*10**12], dtype=np.float32)  # [m]
     b_rms = 1 # Gaus
     b_direction = [0,0,1]
-    magnetic_field = rw.OrderedBackgroundField(b_rms, b_direction).magnetic_field
+    magnetic_field = pp.OrderedBackgroundField(b_rms, b_direction).magnetic_field
 
-    propagator = rw.AnisotropicPropagator(magnetic_field, mfp, nr_steps, step_size)
-    sim = rw.Simulation()
+    propagator = pp.AnisotropicPropagator(magnetic_field, mfp, nr_steps, step_size)
+    sim = pp.Simulation()
     sim.add_propagator(propagator)
     sim.propagator.get_description()
     .

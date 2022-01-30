@@ -6,11 +6,11 @@ or other properties.
 
     Typical usage example:
 
-    import rwpropa as rw
+    import proppy as pp
 
     df = pd.read_pickle("data.pkl")
     df_time_evolution_observer = df.loc[df['radius'] == -1.0]
-    tra = rw.Trajectory(df_time_evolution_observer)
+    tra = pp.Trajectory(df_time_evolution_observer)
     particle_ids = tra.get_particle_ids()
 
     nr_steps = 2*10**2

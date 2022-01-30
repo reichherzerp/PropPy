@@ -8,11 +8,11 @@ predictions.
 
     Typical usage example:
 
-    import rwpropa as rw
+    import proppy as pp
 
     df = pd.read_pickle("data/data_sim.pkl")
     df_time_evolution_observer = df.loc[df['radius'] == -1.0]
-    sta = rw.Statistics(df_time_evolution_observer)
+    sta = pp.Statistics(df_time_evolution_observer)
     errors = False
     df_kappas = sta.plot_diffusion_coefficients(errors)
 """

@@ -5,7 +5,7 @@ The source specifies the initial state of the particles.
 
     Typical usage example:
 
-    import rwpropa as rw
+    import proppy as pp
     
     nr_particles = 1*10**3
     source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
@@ -14,8 +14,8 @@ The source specifies the initial state of the particles.
     phi = 0.0
     pitch_angle = 2*np.pi * 54.74/360 # pitch angle for equal components in all directions
 
-    sim = rw.Simulation()
-    source = rw.PointSourceOriented(energy, source_pos, nr_particles, pitch_angle, phi)
+    sim = pp.Simulation()
+    source = pp.PointSourceOriented(energy, source_pos, nr_particles, pitch_angle, phi)
     sim.add_source(source)
     sim.source.get_description()
 """

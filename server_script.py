@@ -1,9 +1,9 @@
 import time
-import rwpropa.simulation as simulation
+import proppy.simulation as simulation
 import sys
 import os
 os.chdir('..')
-import rwpropa as rw
+import proppy as pp
 
 
 def simulate(file_name, i, total_number_simulations):
