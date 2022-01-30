@@ -22,7 +22,6 @@ traj_max = 10**17 # [m]
 
 step_sizes = np.logspace(9, 15, 19) # [m]
 
-
 df_sim_data = pd.DataFrame(columns=('step_size', 'time', 'kappa', 'kappa_err'))
 
 # start with large step sizes first, as these simulations are faster
