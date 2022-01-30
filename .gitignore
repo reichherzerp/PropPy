@@ -1,8 +1,8 @@
 large_data/
 __pycache__/
-rwpropa/__pycache__/
+proppy/__pycache__/
 .ipynb_checkpoints
-rwpropa/tutorials/.ipynb_checkpoints
+proppy/tutorials/.ipynb_checkpoints
 /comparison/data/
 **/comparison/data/
 /comparison/uhecrs/

@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import time
-import rwpropa as pp
+import proppy as pp
 from pathlib import Path
 
 path_figs = 'comparison/uhecrs_4e27m/figures'

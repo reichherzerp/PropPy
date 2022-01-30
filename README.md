@@ -1,4 +1,4 @@
-# RWPropa
+# Proppy
 
 RWPropa is a novel high-performance software tool to propagate individual charged particles in turbulent magnetic fields via a correlated random walk, while statistically satisfying the particle distribution described by the transport equation. This novel method is superior to diffusive propagation codes for compact objects, such as active galactic nuclei (AGN) blobs, pulsars, and supernovas because of its ability to describe the initial transport correctly. This novel method solves the problem of overestimating particle distributions in outer regions of the objects that exist in diffusion codes. Statistical properties of particles such as distributions, escape times, and running diffusion coefficients are in agreement with ballistic methods within the established propagation code CRPropa, while decreasing the computation time significantly.
 

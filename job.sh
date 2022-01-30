@@ -1,5 +1,5 @@
 #!/bin/sh
-file_name="/home/patrick/Documents/rwpropa/test/test_"
+file_name="/home/patrick/Documents/proppy/test/test_"
 nr=5
 for i in `seq 1 $nr`; 
 do python3 server_script.py $file_name ${i} ${nr}& 
