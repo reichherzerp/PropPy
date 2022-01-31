@@ -18,7 +18,7 @@ def simulate(file_name, i, total_number_simulations):
         'total_number_simulations': total_number_simulations
     }
     
-    sim = rw.PlasmoidSimulation(nr_particles = param['nr_particles'], radius = param['radius'], energy = param['energy'], nr_steps = param['nr_steps'], diffusion_coefficient = param['diffusion_coefficient'], step_size = param['step_size'])
+    sim = pp.PlasmoidSimulation(nr_particles = param['nr_particles'], radius = param['radius'], energy = param['energy'], nr_steps = param['nr_steps'], diffusion_coefficient = param['diffusion_coefficient'], step_size = param['step_size'])
     start = time.time()
     sim.simulate(file_name_i)
     print('finished: ', i)
