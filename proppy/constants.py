@@ -15,7 +15,6 @@ constants_spec = [
 class Constants():
     def __init__(self, unit_distance = 0):
         self.unit_distance = unit_distance
-        print('Propagator initialized')
         if unit_distance == 0:
             self.speed = 2.998*10**8 # speed of light [m/s]
         elif unit_distance == 1:
