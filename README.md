@@ -1,12 +1,12 @@
-# RWPropa
+# PropPy
 
-RWPropa is a novel high-performance software tool to propagate individual charged particles in turbulent magnetic fields via a correlated random walk, while statistically satisfying the particle distribution described by the transport equation. This novel method is superior to diffusive propagation codes for compact objects, such as active galactic nuclei (AGN) blobs, pulsars, and supernovas because of its ability to describe the initial transport correctly. This novel method solves the problem of overestimating particle distributions in outer regions of the objects that exist in diffusion codes. Statistical properties of particles such as distributions, escape times, and running diffusion coefficients are in agreement with ballistic methods within the established propagation code CRPropa, while decreasing the computation time significantly.
+PropPy is a novel high-performance software tool to propagate individual charged particles in turbulent magnetic fields via a correlated random walk, while statistically satisfying the particle distribution described by the transport equation. This novel method is superior to diffusive propagation codes for compact objects, such as active galactic nuclei (AGN) blobs, pulsars, and supernovas because of its ability to describe the initial transport correctly. This novel method solves the problem of overestimating particle distributions in outer regions of the objects that exist in diffusion codes. Statistical properties of particles such as distributions, escape times, and running diffusion coefficients are in agreement with ballistic methods within the established propagation code CRPropa, while decreasing the computation time significantly.
 
 # Getting started
 
 
 ### Installation
-Simply clone the repository and import the package `import rwpropa as rw` while specifying the correct path.
+Simply clone the repository and import the package `import proppy as pp` while specifying the correct path.
 
 
 ### Example notebooks
@@ -23,7 +23,7 @@ The software is [validated against CRPropa](https://gitlab.ruhr-uni-bochum.de/tp
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-import rwpropa as rw
+import proppy as pp
 ```
 The software is modular. After initializing the simulation, we can add the indvidual modules as needed.
 
@@ -36,7 +36,7 @@ The software is modular. After initializing the simulation, we can add the indvi
 Each module contains special classes for different use cases. In the first tutorial, we only use basic classes to demonstrate the basic usage of the propagation software. In the following tutorials, each module with its special classes will be explained in detail. For example, there exist many different observer types such as time evolution observers (lin or log spcaing) and sphercial observers. 
 
 ```
-sim = rw.Simulation()
+sim = pp.Simulation()
 ```
 
 #### Source
@@ -52,7 +52,7 @@ nr_particles = 10**3
 source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
 energy = 10**15 # eV
 
-source = rw.PointSourceIsotropicPhi(energy, source_pos, nr_particles)
+source = pp.PointSourceIsotropicPhi(energy, source_pos, nr_particles)
 sim.add_source(source)
 sim.source.get_description()
 ```
@@ -77,9 +77,9 @@ speed_of_light = 3*10**8 # [m/s]
 mfp_iso = 3*diffusion_coefficient/speed_of_light
 mfp = np.array([10**11, 10**11, 10**11], dtype=np.float32)  # [m]
 rms = 1 # Gaus
-magnetic_field = rw.OrderedBackgroundField(rms, [0,0,1]).magnetic_field
+magnetic_field = pp.OrderedBackgroundField(rms, [0,0,1]).magnetic_field
 
-propagator = rw.IsotropicPropagator( mfp, nr_steps, step_size)
+propagator = pp.IsotropicPropagator( mfp, nr_steps, step_size)
 sim.add_propagator(propagator)
 sim.propagator.get_description()
 ```
@@ -99,7 +99,7 @@ min_step = 1
 max_step = nr_steps
 nr_obs_steps = 200
 
-observer = rw.TimeEvolutionObserverLog(min_step, max_step, nr_obs_steps, substeps)
+observer = pp.TimeEvolutionObserverLog(min_step, max_step, nr_obs_steps, substeps)
 
 sim.add_observer(observer)
 sim.observer.get_description()
@@ -119,7 +119,7 @@ As the particles propagate via a random walk, statistical properties of many par
 df = pd.read_pickle("data/data_tut_1.pkl")
 df_time_evolution_observer = df.loc[df['radius'] == -1.0]
 
-sta = rw.Statistics(df_time_evolution_observer)
+sta = pp.Statistics(df_time_evolution_observer)
 isotropic = True # diffusion is isotropic
 errors = False # don't show error bars
 df_kappas = sta.plot_diffusion_coefficients(isotropic, errors)

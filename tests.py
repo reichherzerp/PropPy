@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import os
 os.chdir('..')
-import rwpropa as rw
+import proppy as pp
 
 
 class TestSource(unittest.TestCase):
@@ -17,7 +17,7 @@ class TestSource(unittest.TestCase):
         nr_particles = 10**2
         pitch_angle = 2*np.pi * 54.74/360
         phi = np.pi/4.0
-        point_source_oriented = rw.PointSourceOriented(energy, pos, nr_particles, pitch_angle, phi)
+        point_source_oriented = pp.PointSourceOriented(energy, pos, nr_particles, pitch_angle, phi)
         # test if the number of generated particles is correct
         self.assertEqual(nr_particles, len(point_source_oriented.particles))
         # test if the energy of a generated particle is correct
@@ -43,7 +43,7 @@ class TestSource(unittest.TestCase):
         energy = 10**10 #eV
         pos = [0,0,0]
         nr_particles = 10**2
-        point_source_oriented = rw.PointSourceIsotropic(energy, pos, nr_particles)
+        point_source_oriented = pp.PointSourceIsotropic(energy, pos, nr_particles)
         # test if the number of generated particles is correct
         self.assertEqual(nr_particles, len(point_source_oriented.particles))
         # test if the energy of a generated particle is correct
@@ -60,12 +60,12 @@ class TestObserver(unittest.TestCase):
     def test_time_evolution_observer_unit(self):
         print('\n----------------------------------')
         print('-> unit_test_time_evolution_observer')
-        sim = rw.Simulation()
+        sim = pp.Simulation()
         substeps = [False, False, True] # observe only steps (no substeps)
         min_step = 1
         max_step = 100
         nr_obs_steps = 10
-        observer = rw.TimeEvolutionObserverLin(min_step, max_step, nr_obs_steps, substeps)
+        observer = pp.TimeEvolutionObserverLin(min_step, max_step, nr_obs_steps, substeps)
         sim.add_observer(observer)
         self.assertEqual(min_step, sim.observer.steps[0])
         self.assertEqual(max_step, sim.observer.steps[-1])
@@ -73,11 +73,11 @@ class TestObserver(unittest.TestCase):
     def test_spherical_observer_unit(self):
         print('\n----------------------------------')
         print('-> unit_test_spherical_observer')
-        sim = rw.Simulation()
+        sim = pp.Simulation()
         nr_particles = 1
         source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         energy = 10**12 # eV
-        source = rw.PointSourceIsotropicPhi(energy, source_pos, nr_particles)
+        source = pp.PointSourceIsotropicPhi(energy, source_pos, nr_particles)
         sim.add_source(source)
 
         nr_steps = 1*10**5
@@ -86,13 +86,13 @@ class TestObserver(unittest.TestCase):
         speed_of_light = 3*10**8 # [m/s]
         mfp_iso = 3*diffusion_coefficient/speed_of_light
         mfp = np.array([mfp_iso, mfp_iso, mfp_iso], dtype=np.float32)  # [m]
-        propagator = rw.IsotropicPropagator(mfp, nr_steps, step_size)
+        propagator = pp.IsotropicPropagator(mfp, nr_steps, step_size)
         sim.add_propagator(propagator)
 
         substeps = [False, False, True] # observe only steps (no substeps)
         sphere = 10**10 # [m]
         spheres = [sphere]
-        observer = rw.SphericalObserver(substeps, spheres, on_detection_deactivate=True)
+        observer = pp.SphericalObserver(substeps, spheres, on_detection_deactivate=True)
         sim.add_observer(observer)
 
         sim.run_simulation()
@@ -116,13 +116,13 @@ class TestIntegration(unittest.TestCase):
         print('\n----------------------------------')
         print('-> integration_test_basic_propagation_isotropic_source')
 
-        sim = rw.Simulation()
+        sim = pp.Simulation()
 
         # adding a particle source
         energy = 10**10 #eV
         pos = [0,0,0]
         nr_particles = 10**1
-        source = rw.PointSourceIsotropic(energy, pos, nr_particles)
+        source = pp.PointSourceIsotropic(energy, pos, nr_particles)
         sim.add_source(source)
         
         # adding a propagator to simulation
@@ -130,8 +130,8 @@ class TestIntegration(unittest.TestCase):
         step_size = 0.5*10**10 # [m]
         mfp = np.array([2.13*10**12/2.0, 2.13*10**12/2.0, 2.1078*10**12], dtype=np.float32)  # [m]
         rms = 1 # Gaus
-        magnetic_field = rw.OrderedBackgroundField(rms, [0,0,1]).magnetic_field
-        propagator = rw.AnisotropicPropagator(magnetic_field, mfp, nr_steps, step_size)
+        magnetic_field = pp.OrderedBackgroundField(rms, [0,0,1]).magnetic_field
+        propagator = pp.AnisotropicPropagator(magnetic_field, mfp, nr_steps, step_size)
         sim.add_propagator(propagator)
 
         # adding a TimeEvolutionObserver
@@ -139,7 +139,7 @@ class TestIntegration(unittest.TestCase):
         min_step = 1
         max_step = nr_steps
         nr_obs_steps = 30
-        observer = rw.TimeEvolutionObserverLin(min_step, max_step, nr_obs_steps, substeps)
+        observer = pp.TimeEvolutionObserverLin(min_step, max_step, nr_obs_steps, substeps)
         sim.add_observer(observer)
 
         # simulate
@@ -160,7 +160,7 @@ class TestIntegration(unittest.TestCase):
         print('\n----------------------------------')
         print('-> integration_test_basic_propagation_oriented_source')
 
-        sim = rw.Simulation()
+        sim = pp.Simulation()
 
         # adding a particle source
         energy = 10**10 #eV
@@ -168,7 +168,7 @@ class TestIntegration(unittest.TestCase):
         nr_particles = 10**1
         pitch_angle = 2*np.pi * 54.74/360
         phi = np.pi/4.0
-        source = rw.PointSourceOriented(energy, pos, nr_particles, pitch_angle, phi)
+        source = pp.PointSourceOriented(energy, pos, nr_particles, pitch_angle, phi)
         sim.add_source(source)
 
         # adding a propagator to simulation
@@ -176,8 +176,8 @@ class TestIntegration(unittest.TestCase):
         step_size = 0.5*10**10 # [m]
         mfp = np.array([2.13*10**12/2.0, 2.13*10**12/2.0, 2.1078*10**12], dtype=np.float32)  # [m]
         rms = 1 # Gaus
-        magnetic_field = rw.OrderedBackgroundField(rms, [0,0,1]).magnetic_field
-        propagator = rw.AnisotropicPropagator(magnetic_field, mfp, nr_steps, step_size)
+        magnetic_field = pp.OrderedBackgroundField(rms, [0,0,1]).magnetic_field
+        propagator = pp.AnisotropicPropagator(magnetic_field, mfp, nr_steps, step_size)
         sim.add_propagator(propagator)
 
         # adding a TimeEvolutionObserver
@@ -185,7 +185,7 @@ class TestIntegration(unittest.TestCase):
         min_step = 1
         max_step = nr_steps
         nr_obs_steps = 30
-        observer = rw.TimeEvolutionObserverLin(min_step, max_step, nr_obs_steps, substeps)
+        observer = pp.TimeEvolutionObserverLin(min_step, max_step, nr_obs_steps, substeps)
         sim.add_observer(observer)
 
         # simulate
@@ -211,13 +211,13 @@ class TestIntegration(unittest.TestCase):
         print('\n----------------------------------')
         print('-> test_isotropic_diffusion_coefficient')
 
-        sim = rw.Simulation()
+        sim = pp.Simulation()
 
         # adding a particle source
         nr_particles = 10**3
         source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         energy = 10**15 # eV
-        source = rw.PointSourceIsotropicPhi(energy, source_pos, nr_particles)
+        source = pp.PointSourceIsotropicPhi(energy, source_pos, nr_particles)
         sim.add_source(source)
 
         # adding a propagator to simulation
@@ -227,7 +227,7 @@ class TestIntegration(unittest.TestCase):
         speed_of_light = 3*10**8 # [m/s]
         mfp_iso = 3*diffusion_coefficient/speed_of_light
         mfp = np.array([mfp_iso, mfp_iso, mfp_iso], dtype=np.float32)  # [m]
-        propagator = rw.IsotropicPropagator(mfp, nr_steps, step_size)
+        propagator = pp.IsotropicPropagator(mfp, nr_steps, step_size)
         sim.add_propagator(propagator)
 
         # adding a TimeEvolutionObserver
@@ -235,7 +235,7 @@ class TestIntegration(unittest.TestCase):
         min_step = 1
         max_step = nr_steps
         nr_obs_steps = 600
-        observer = rw.TimeEvolutionObserverLog(min_step, max_step, nr_obs_steps, substeps)
+        observer = pp.TimeEvolutionObserverLog(min_step, max_step, nr_obs_steps, substeps)
         sim.add_observer(observer)
 
         # simulate
@@ -248,7 +248,7 @@ class TestIntegration(unittest.TestCase):
 
         # get diffusion coefficients by using the statistics class
         df.columns = observer.get_column_names()
-        sta = rw.Statistics(df)
+        sta = pp.Statistics(df)
         isotropic = True # diffusion is isotropic
         errors = False # don't show error bars
         df_kappas = sta.plot_diffusion_coefficients(isotropic, errors, None, plot=False)
@@ -287,14 +287,14 @@ class TestIntegration(unittest.TestCase):
         print('\n----------------------------------')
         print('-> test_anisotropic_diffusion_coefficient')
 
-        sim = rw.Simulation()
+        sim = pp.Simulation()
 
         # adding a particle source
         nr_particles = 3*10**2
         source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         energy = 3*10**15 # eV
 
-        source = rw.PointSourceIsotropicPhi(energy, source_pos, nr_particles)
+        source = pp.PointSourceIsotropicPhi(energy, source_pos, nr_particles)
         sim.add_source(source)
 
         # adding a propagator to simulation
@@ -307,9 +307,9 @@ class TestIntegration(unittest.TestCase):
         mfp_para = 3*diffusion_coefficient_para/speed_of_light
         mfp = np.array([mfp_perp, mfp_perp, mfp_para], dtype=np.float32)
         rms = 1 # Gaus
-        magnetic_field = rw.OrderedBackgroundField(rms, [0,0,1]).magnetic_field
+        magnetic_field = pp.OrderedBackgroundField(rms, [0,0,1]).magnetic_field
 
-        propagator = rw.AnisotropicPropagator(magnetic_field, mfp, nr_steps, step_size)
+        propagator = pp.AnisotropicPropagator(magnetic_field, mfp, nr_steps, step_size)
         sim.add_propagator(propagator)
 
         # adding a TimeEvolutionObserver
@@ -318,7 +318,7 @@ class TestIntegration(unittest.TestCase):
         max_step = nr_steps
         nr_obs_steps = 600
 
-        observer = rw.TimeEvolutionObserverLog(min_step, max_step, nr_obs_steps, substeps)
+        observer = pp.TimeEvolutionObserverLog(min_step, max_step, nr_obs_steps, substeps)
 
         sim.add_observer(observer)
 
@@ -332,7 +332,7 @@ class TestIntegration(unittest.TestCase):
 
         # get diffusion coefficients by using the statistics class
         df.columns = observer.get_column_names()
-        sta = rw.Statistics(df)
+        sta = pp.Statistics(df)
         isotropic = True # diffusion is isotropic
         errors = False # don't show error bars
         df_kappas = sta.plot_diffusion_coefficients(isotropic, errors, None, plot=False)
@@ -372,14 +372,14 @@ class TestIntegration(unittest.TestCase):
         print('\n----------------------------------')
         print('-> test_simple_anisotropic_diffusion_coefficient')
 
-        sim = rw.Simulation()
+        sim = pp.Simulation()
 
         # adding a particle source
         nr_particles = 10**2
         source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         energy = 3*10**15 # eV
 
-        source = rw.PointSourceIsotropicPhi(energy, source_pos, nr_particles)
+        source = pp.PointSourceIsotropicPhi(energy, source_pos, nr_particles)
         sim.add_source(source)
 
         # adding a propagator to simulation
@@ -392,9 +392,9 @@ class TestIntegration(unittest.TestCase):
         mfp_para = 3*diffusion_coefficient_para/speed_of_light
         mfp = np.array([mfp_perp, mfp_perp, mfp_para], dtype=np.float32)
         rms = 1 # Gaus
-        magnetic_field = rw.OrderedBackgroundField(rms, [0,0,1]).magnetic_field
+        magnetic_field = pp.OrderedBackgroundField(rms, [0,0,1]).magnetic_field
 
-        propagator = rw.AnisotropicPropagator(magnetic_field, mfp, nr_steps, step_size)
+        propagator = pp.AnisotropicPropagator(magnetic_field, mfp, nr_steps, step_size)
         sim.add_propagator(propagator)
 
         # adding a TimeEvolutionObserver
@@ -403,7 +403,7 @@ class TestIntegration(unittest.TestCase):
         max_step = nr_steps
         nr_obs_steps = 200
 
-        observer = rw.TimeEvolutionObserverLog(min_step, max_step, nr_obs_steps, substeps)
+        observer = pp.TimeEvolutionObserverLog(min_step, max_step, nr_obs_steps, substeps)
 
         sim.add_observer(observer)
 
@@ -417,7 +417,7 @@ class TestIntegration(unittest.TestCase):
 
         # get diffusion coefficients by using the statistics class
         df.columns = observer.get_column_names()
-        sta = rw.Statistics(df)
+        sta = pp.Statistics(df)
         isotropic = True # diffusion is isotropic
         errors = False # don't show error bars
         df_kappas = sta.plot_diffusion_coefficients(isotropic, errors, None, plot=False)
@@ -450,14 +450,14 @@ class TestIntegration(unittest.TestCase):
         print('\n----------------------------------')
         print('-> test_ballistic_anisotropic_diffusion_coefficient')
 
-        sim = rw.Simulation()
+        sim = pp.Simulation()
 
         # adding a particle source
         nr_particles = 1*10**2
         source_pos = np.array([0.0, 0.0, 0.0], dtype=np.float32)
         energy = 3*10**15 # eV
 
-        source = rw.PointSourceIsotropicPhi(energy, source_pos, nr_particles)
+        source = pp.PointSourceIsotropicPhi(energy, source_pos, nr_particles)
         sim.add_source(source)
 
         # adding a propagator to simulation
@@ -470,9 +470,9 @@ class TestIntegration(unittest.TestCase):
         mfp_para = 3*diffusion_coefficient_para/speed_of_light
         mfp = np.array([mfp_perp, mfp_perp, mfp_para], dtype=np.float32)
         rms = 1 # Gaus
-        magnetic_field = rw.OrderedBackgroundField(rms, [0,0,1]).magnetic_field
+        magnetic_field = pp.OrderedBackgroundField(rms, [0,0,1]).magnetic_field
 
-        propagator = rw.AnisotropicPropagator(magnetic_field, mfp, nr_steps, step_size)
+        propagator = pp.AnisotropicPropagator(magnetic_field, mfp, nr_steps, step_size)
         sim.add_propagator(propagator)
 
         # adding a TimeEvolutionObserver
@@ -481,7 +481,7 @@ class TestIntegration(unittest.TestCase):
         max_step = nr_steps
         nr_obs_steps = 200
 
-        observer = rw.TimeEvolutionObserverLog(min_step, max_step, nr_obs_steps, substeps)
+        observer = pp.TimeEvolutionObserverLog(min_step, max_step, nr_obs_steps, substeps)
 
         sim.add_observer(observer)
 
@@ -495,7 +495,7 @@ class TestIntegration(unittest.TestCase):
 
         # get diffusion coefficients by using the statistics class
         df.columns = observer.get_column_names()
-        sta = rw.Statistics(df)
+        sta = pp.Statistics(df)
         isotropic = True # diffusion is isotropic
         errors = False # don't show error bars
         df_kappas = sta.plot_diffusion_coefficients(isotropic, errors, None, plot=False)

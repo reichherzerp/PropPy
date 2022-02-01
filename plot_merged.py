@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 os.chdir('..')
-import rwpropa as rw
+import proppy as rw
 
 trajectory_lengths = np.load('merged.npy')
 diff = 1.5*10**20

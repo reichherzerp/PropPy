@@ -6,14 +6,14 @@ on the time (-> step) or the coordinates of the particle.
 
     Typical usage example:
 
-    import rwpropa as rw
+    import proppy as pp
     
     substeps = [False, False, True] # observe only steps (no substeps)
     spheres = [1*10**13, 5*10**12]
 
-    observer = rw.SphericalObserver(substeps, spheres)
+    observer = pp.SphericalObserver(substeps, spheres)
 
-    sim = rw.Simulation()
+    sim = pp.Simulation()
     sim.add_observer(observer)
     sim.observer.get_description()
 """

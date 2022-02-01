@@ -118,20 +118,21 @@ Charged particles (cosmic rays) are accelerated to high energies in astrophysica
 
 
 
-Simulations are used for describing as accurately as possible the particle transport that has an impact on numerous observable multimessenger signatures. In the following, we focus on the transport properties in these sources, which are described by the (effective) diffusion coefficient.
+Simulations are used for describing as accurately as possible the particle transport that has an impact on numerous observable multimessenger signatures. In the following comparison, we focus on the transport properties in these sources, which are described by the diffusion coefficient.
 
 
 
-Since CRPropa is the only code that supports both EOM and diffusive with anisotropic diffusion coefficients, this software (version: CRPropa 3.1.7) is used for comparison simulations with PropPy. 
+Since CRPropa is the only code that supports both EOM and diffusive propagation methods with anisotropic diffusion coefficients, this software (version: CRPropa 3.1.7) is used for comparison simulations with PropPy. 
 
-There are numerous possible sources covering a large parameter space of physical properties relevant to particle transport. For the comparison between PropPy propagation and CRPropa modules, we use typical parameters used in the literature for AGN plasmoids (see, e.g. [@Hoerbe2020] and references therein):
+While there are numerous possible sources covering a large parameter space of physical properties relevant to particle transport, for this comparison between PropPy propagation and CRPropa modules, we use typical parameters used in the literature for AGN plasmoids (see, e.g. [@Hoerbe2020] and references therein):
 
+- particle energies: $E=100\,$PeV
 - isotropic 3d Kolmogorov turbulence
-- magnetic field strength: 1 Gaus
-- correlation length turbulence: $\sim 10^{11}$ m
-- particle energies: 100 PeV
+- magnetic field strength: $B_\mathrm{rms} = 1\,$Gaus
+- correlation length turbulence: $l_\mathrm{c} = \sim 10^{11}\,$m
 
-For these parameters, we can derive the expected diffusion coefficient from theory [@Subedi2017]. These parameters will result in gyroradii of the charged cosmic rays
+
+With these parameters, we can derive the expected diffusion coefficient from theory [@Subedi2017]. These parameters result in gyroradii of the charged cosmic rays
 \begin{equation}
 r_\mathrm{g} = \frac{\sqrt{2}E}{q\,c\,B} = \frac{141\,\mathrm{PeV}}{q\,c \cdot 1\mathrm{G}} \approx 4.72\cdot10^{12}\,\mathrm{m}.
 \end{equation}
@@ -142,31 +143,31 @@ Note that the factor $\sqrt{2}$ is introduced because of the isotropic direction
 \kappa_\mathrm{theory} = \frac{r_\mathrm{g}^2 \cdot c}{2l_\mathrm{c}} = \frac{(4.72\cdot10^{12}\,\mathrm{m})^2 \cdot c}{2\cdot 10^{11}\,m} \approx 3.34\cdot10^{22}\,\frac{\mathrm{m^2}}{\mathrm{s}}.
 \end{equation}
 
-This theoretical diffusion coefficient serves as an input for the CRPropa SDE and the PropPy simulation and as a reference for the numerical simulations.
+This theoretical diffusion coefficient serves as an input for the CRPropa SDE and the PropPy simulation, and as a reference for the numerical simulations.
 
 This diffusion coefficient results in expected mean-free paths of
 \begin{equation}
 \lambda_\mathrm{theory} = \frac{3 \kappa_\mathrm{theory}}{c} \approx 3.34\cdot10^{14}\,\mathrm{m}.
 \end{equation}
 
-Particles become diffusive at trajectory lengths of about $\lambda$, which is why we stop the simulations after trajectory lengths of $10^{17}$ m to have some buffer and a clear plateau in the running diffusion coefficients.
+Particles become diffusive at trajectory lengths of about $\lambda$, which is why the simulations are stopped after trajectory lengths of $10^{17}$ m to have some buffer and a clear plateau in the running diffusion coefficients.
 
-As a simulation setting, we consider $10^3$ protons isotropically emitted from a point source. The simulations and the presented results can be reproduced via the simulation and analysis scripts provided in the comparison folder of PropPy.  
+As a simulation setting, $10^3$ protons with $E=100\,$PeV are emitted isotropically from a point source. The simulations and the presented results can be reproduced via the simulation and analysis scripts provided in the comparison folder of PropPy.  
 
 The summation of planar waves with different wave numbers, amplitudes, and directions generates the synthetic turbulence. Here, there are two possible approaches:
-1. The complete turbulence can be generated in advance of the simulation and stored on a large grid by using an inverse discrete Fourier transform. During run-time, the local magnetic field is computed via interpolation of the surrounding grid points that store the magnetic field information. Here, we use tri-linear interpolation as it is fast and sufficiently accurate [@Schlegel2020]. We store the turbulence on $1024^3$ grid points.
-2. The summation of different amplitudes, wavenumbers, and directions can also be performed during run-time at the exact position where it is needed. Numerous constraints of the grid method are avoided here, with the disadvantage that the simulations take longer. We use 1000 wave modes, which was determined to be sufficient in convergence tests.
+- The complete turbulence can be generated in advance of the simulation and stored on a large grid by using an inverse discrete Fourier transform. During run-time, the local magnetic field is computed via interpolation of the surrounding grid points that store the magnetic field information. Here, the tri-linear interpolation is used as it is fast and sufficiently accurate [@Schlegel2020]. The turbulence is stored on $1024^3$ grid points.
+- The summation of different amplitudes, wavenumbers, and directions can also be performed during run-time at the exact position where it is needed. Numerous constraints of the first method, the grid method, are avoided in this plane-wave (PW) approach, with the disadvantage that the simulations take longer. 1000 wave modes are used, which was determined to be sufficient in convergence tests.
 
 
-We consider three different propagation methods implemented in CRPropa:
-1. Solving EOM with the Boris-Push (BP) method [@CRPropa2021]. 
-2. Solving EOM with the Cash-Karp (CK) method [@CRPropa2016].
-3. Solving Stochastic Differential Equations (SDE) [@CRPropa2017]. For this method, no turbulence has to be generated, but only the diffusion coefficient has to be passed, which already contains the information on how the particles move statistically in the turbulence.
+Three different propagation methods implemented in CRPropa are considered:
+- Solving EOM with the Boris-Push (BP) method [@CRPropa2021]. 
+- Solving EOM with the Cash-Karp (CK) method [@CRPropa2016].
+- Solving Stochastic Differential Equations (SDE) [@CRPropa2017]. For this method, no turbulence has to be generated, but only the diffusion coefficient has to be inputted, which already contains the information on how the particles move statistically in the turbulence.
 
-\autoref{fig:comparison} shows a comparison of the simulation results for the calculated running diffusion coefficients for the different propagation methods and turbulence generation methods. 
+\autoref{fig:comparison} shows a comparison of the simulation results for the calculated running diffusion coefficients for the different methods of propagation and turbulence generation. 
 
 
-The left and right panels differ only in the simulation length considered. In the left panel, only trajectories up to $10^{14}$ m are considered, whereas in the right panel, trajectories up to $10^{17}$ m are considered. Since the mean-free path length indicates the transition between ballistic to diffusive propagation, the left panel shows ballistic particle propagation and the right panel diffusive propagation.
+The left and right panels differ only in the simulation length. In the left panel, only trajectories up to $10^{14}$ m are considered, whereas in the right panel, trajectories up to $10^{17}$ m are displayed. Since the mean-free path length indicates the transition between ballistic to diffusive propagation, the left panel shows ballistic particle propagation and the right panel diffusive propagation.
 
 
 The top panel shows the running diffusion coefficients as a function of time. The middle panel shows the effective diffusion coefficient at $10^{14}$ m on the left and the converged diffusion coefficient on the right, since the running diffusion coefficient remains constant beginning at the diffusive limit, as can be seen in the top panel. 
@@ -174,19 +175,19 @@ The top panel shows the running diffusion coefficients as a function of time. Th
 The lowest panel shows the required processor time of the simulation as a function of the step size. The same processor was used for all simulations for better comparability. 
 
 
-![Comparison between different propagation approaches for the computation of running diffusion coefficients. $10^3$ protons with $E=10^{15}$ eV simulated in magnetic field configurations described in the text. \textit{Left panel} shows the ballistic propagation regime at the beginning of particle trajectories ($\leq 10^{14}$ m) and the \textit{right panel} shows also long trajectory lengths, for which the particle transport will become diffusive ($\gg \lambda$). \textit{Upper panel:} running diffusion coefficients as functions of trajectory lengths for different propagation methods. \textit{Middle panel:} diffusion coefficients at $10^{14}$ m (left) and converged ones (right) as functions of different step sizes of the propagation methods. \textit{Lower panel:} Simulation time per processor as functions of step sizes. Color-coded with the deviation from theoretical predictions. Usage of 260 threads for step sizes smaller than $10^{13}$ m.
+![Comparison between different propagation approaches for the computation of running diffusion coefficients. $10^3$ protons with $E=10^{15}$ eV simulated in the magnetic field configurations described in the text. \textit{Left panel} shows the ballistic propagation regime at the beginning of particle trajectories ($\leq 10^{14}$ m) and the \textit{right panel} shows also long trajectory lengths, for which the particle transport becomes diffusive ($\gg \lambda$). \textit{Upper panel:} running diffusion coefficients as functions of trajectory lengths for different propagation methods. \textit{Middle panel:} diffusion coefficients at $10^{14}$ m (left) and converged ones (right) as functions of different step sizes of the propagation methods. \textit{Lower panel:} Simulation time per processor as functions of step sizes. Color-coded with the deviation from theoretical predictions. Usage of 260 threads for step sizes smaller than $10^{13}$ m.
  \label{fig:comparison}](comparison_compact_source.pdf)
 
 
 The comparisons yield the following conclusions:
 
-- Both EOM-based propagation approaches BP and CK as well as the CRW method from PropPy can correctly model the initial ballistic transport phase. The diffusive approach (SDE) can not describe this initial phase by construction since it always assumes diffusive particle transport. 
+- The EOM-based propagation approaches BP and CK, as well as the CRW method from PropPy can correctly model the initial ballistic transport phase. The diffusive approach (SDE) can not describe this initial ballistic phase by construction since it always assumes diffusive particle transport. 
 
-- The diffusive approach and the CRW approach can use relatively large step sizes to model the correct statistical behavior. The latter only needs to resolve the mean-free paths sufficiently well, which is guaranteed by choosing the step size at least ten times smaller than the mean-free path. The EOM-based methods must choose step sizes small enough to resolve both the gyration motion and the scales of turbulence sufficiently well. This can be seen as the diffusion coefficients in the middle panel in the right figure converge to a constant value only when the step size is smaller than the gyration radii and smaller than the correlation length of the turbulence.
+- The diffusive approach and the CRW approach can use relatively large step sizes to model the correct statistical behavior. The latter only needs to resolve the mean-free paths sufficiently well, which is guaranteed if the step size at least ten times smaller than the mean-free path. In the case of the EOM-based methods step sizes must be small enough to resolve both the gyration motion and the scales of turbulence sufficiently well. This can be seen as the diffusion coefficients in the middle right panel converge to a constant value only when the step sizes are smaller than the gyration radii and smaller than the correlation length of the turbulence.
 
-- Smaller simulation times for given step sizes in combination with the lower step size requirements, by which larger step sizes lead to comparable results, translates into huge speedups for the diffusive method and the CRW method compared to the EOM-based methods. 
+- Smaller simulation times for given step sizes in combination with the fewer step size requirements translate into significant increasion in speed for the diffusive method and the CRW method compared to the EOM-based methods. 
 
-Due to the high performance and the good statistical description of the CRW method, even at early times, PropPy is excellently suited for calculating escape times of charged particles from certain zones (blob in the example), which in turn are required in (semi)analytical calculations. Also, particle distributions and arrival times can be simulated efficiently.
+PropPy is excellently suited for calculating escape times of charged particles from certain zones (blob in the example) due to the high performance and the good statistical description of the CRW method, also for the ballistic transport phase. For example, escape times are needed in (semi)analytical calculations of flare dynimacs. PropPy can also efficiently simulate particle distributions and arrival times.
 
 
 # Acknowledgements
