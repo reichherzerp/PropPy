@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import matplotlib
 from matplotlib import gridspec
 import pandas as pd
-from scipy.optimize import curve_fit
 
 class Comparison():
 
@@ -100,8 +99,9 @@ class Comparison():
         return (1 - np.exp(-x/tau))*kappa
 
 
-    def plot_running_diffusion_coefficients(self, d_theory=[1e17, 4e17], pp_step_max=0, times=[], kappas_ref=[], show_lambda=True, save_fig=True):
-        fig = plt.figure(figsize=(5,5))
+    def plot_running_diffusion_coefficients(self, d_theory=[1e17, 4e17], pp_step_max=0, times=[], kappas_ref=[], show_lambda=True, fig_display=True):
+        if fig_display:
+            fig = plt.figure(figsize=(5,5))
         # set height ratios for subplots
         gs = gridspec.GridSpec(2, 1, height_ratios=[2.5, 1]) 
         # remove vertical gap between subplots
@@ -274,12 +274,12 @@ class Comparison():
         ax1.tick_params(top=True, right=True, direction='in', which='both')
         plt.axhline(y=1, color='grey', ls='-', zorder=-4)
         
-        plt.savefig(self.path_figs+'/running_kappa.pdf', bbox_inches='tight', pad_inches=0.02)
-        plt.show()
+        if fig_display:
+            plt.savefig(self.path_figs+'/running_kappa.pdf', bbox_inches='tight', pad_inches=0.02)
+            plt.show()
 
 
         # second figure
-
         fig, ax1 = plt.subplots(figsize=(5,3.5))
         plt.scatter(steps_proppy, kappas_proppy, label='PropPy', marker='s', color='green')
         plt.scatter(steps_ck, kappas_ck, label='CRPropa (CK) [PW]', color='r')
@@ -292,7 +292,8 @@ class Comparison():
         plt.axhline(y=self.kappa_theory, color='k', linestyle='-', label='theory')
         plt.legend()
         plt.loglog()
-        plt.show()
+        if fig_display:
+            plt.show()
 
 
     def color_bar_invisible(self):
@@ -304,7 +305,7 @@ class Comparison():
         cb.set_ticks([])
 
 
-    def plot_kappa_convergence_tests(self, ylabel="$\kappa$ [m$^2$/s]", ylabel2="log deviation",  lambda_theory=True, kappa_mean_seeds=0, kappa_mean_seeds_err=0):
+    def plot_kappa_convergence_tests(self, ylabel="$\kappa$ [m$^2$/s]", ylabel2="log deviation",  lambda_theory=True, kappa_mean_seeds=0, kappa_mean_seeds_err=0, fig_display=True):
         fig = plt.figure(figsize=(5,5))
         # set height ratios for subplots
         gs = gridspec.GridSpec(2, 1, height_ratios=[2.5, 1]) 
@@ -379,11 +380,12 @@ class Comparison():
 
         plt.ylabel(ylabel2)
 
-        plt.savefig(self.path_figs+'/kappa_vs_stepsize.pdf', bbox_inches='tight', pad_inches=0.02)
-        plt.show()
+        if fig_display:
+            plt.savefig(self.path_figs+'/kappa_vs_stepsize.pdf', bbox_inches='tight', pad_inches=0.02)
+            plt.show()
 
 
-    def plot_particle_distributions_crp(self, file_name, prop_type='BP', unit='m'):
+    def plot_particle_distributions_crp(self, file_name, prop_type='BP', unit='m', fig_display=True):
         fig = plt.figure(figsize=(5,3.5))
         for i, step_size in enumerate(self.step_sizes):
             
@@ -410,12 +412,12 @@ class Comparison():
         plt.ylabel('# particles')
         plt.title('$l_\mathrm{traj} = 10^{17}$ m ('+prop_type+')')
 
-        #plt.yscale('log')
-        plt.savefig(self.path_figs+'/particle_distributions_'+prop_type+'.pdf', bbox_inches='tight', pad_inches=0.02) 
-        plt.show()
+        if fig_display:
+            plt.savefig(self.path_figs+'/particle_distributions_'+prop_type+'.pdf', bbox_inches='tight', pad_inches=0.02) 
+            plt.show()
 
 
-    def plot_particle_distributions_proppy(self):
+    def plot_particle_distributions_proppy(self, fig_display=True):
         prop_type = 'PropPy'
         unit = 'm'
         fig = plt.figure(figsize=(5,3.5))
@@ -447,11 +449,12 @@ class Comparison():
         plt.ylabel('# particles')
         plt.title('$l_\mathrm{traj} = 10^{17}$ m ('+prop_type+')')
 
-        plt.savefig(self.path_figs+'/particle_distributions_'+prop_type+'.pdf', bbox_inches='tight', pad_inches=0.02) 
-        plt.show()
+        if fig_display:
+            plt.savefig(self.path_figs+'/particle_distributions_'+prop_type+'.pdf', bbox_inches='tight', pad_inches=0.02) 
+            plt.show()
 
 
-    def plot_kappa_vs_time_steps(self):
+    def plot_kappa_vs_time_steps(self, fig_display=True):
         fig = plt.figure(figsize=(5,3.5))
         zs = np.concatenate([self.proppy_step_sizes, self.ck_step_sizes, self.bp_pw_step_sizes, self.bp_grid_step_sizes, self.sde_step_sizes], axis=0)
         min_, max_ = zs.min(), zs.max()
@@ -479,11 +482,12 @@ class Comparison():
         plt.xlabel('simulation time [s]')
         plt.ylabel('$\kappa$ [m$^2$/s]')
         plt.legend(loc = 'center left')
-        plt.savefig(self.path_figs+'/kappa_vs_time_steps.pdf', bbox_inches='tight', pad_inches=0.02)
-        plt.show()
+        if fig_display:
+            plt.savefig(self.path_figs+'/kappa_vs_time_steps.pdf', bbox_inches='tight', pad_inches=0.02)
+            plt.show()
 
 
-    def plot_kappa_vs_time_deviation(self):
+    def plot_kappa_vs_time_deviation(self, fig_display=True):
         fig = plt.figure(figsize=(5,3.5))
         err_proppy = np.abs(np.log10(self.proppy_kappas)-np.log10(self.kappa_theory))
         err_crp_ck = np.abs(np.log10(self.ck_kappas)-np.log10(self.kappa_theory))
@@ -517,11 +521,12 @@ class Comparison():
         plt.xlabel('simulation time [s]')
         plt.ylabel('$\kappa$ [m$^2$/s]')
         plt.legend(loc='center left')
-        plt.savefig(self.path_figs+'/kappa_vs_time_deviation.pdf', bbox_inches='tight', pad_inches=0.02)
-        plt.show()
+        if fig_display:
+            plt.savefig(self.path_figs+'/kappa_vs_time_deviation.pdf', bbox_inches='tight', pad_inches=0.02)
+            plt.show()
 
 
-    def plot_deviation_vs_time_steps(self, day=True):
+    def plot_deviation_vs_time_steps(self, day=True, fig_display=True):
         fig = plt.figure(figsize=(5,3.5))
         plt.axhline(y=0, color='k', linestyle='-', zorder=-1, label='theory')
         plt.axvline(x=1, color='grey', linestyle=(0, (5, 0.4)), zorder=-1, label='1 sec')
@@ -560,11 +565,12 @@ class Comparison():
         plt.xlabel('simulation time [s]')
         plt.ylabel('deviation = |log($\kappa_\mathrm{sim}$) / log($\kappa_\mathrm{theory}$)|')
         plt.legend(loc='upper right')
-        plt.savefig(self.path_figs+'/deviation_vs_time_steps.pdf', bbox_inches='tight', pad_inches=0.02)
-        plt.show()
+        if fig_display:
+            plt.savefig(self.path_figs+'/deviation_vs_time_steps.pdf', bbox_inches='tight', pad_inches=0.02)
+            plt.show()
 
     
-    def plot_time_vs_deviation_steps(self, day=True):
+    def plot_time_vs_deviation_steps(self, day=True, fig_display=True):
         fig = plt.figure(figsize=(5,3.5))
 
         plt.axvline(x=0, color='k', linestyle='-', zorder=-1, label='theory')
@@ -604,11 +610,12 @@ class Comparison():
         plt.ylabel('simulation time [s]')
         plt.xlabel('deviation = |log($\kappa_\mathrm{sim}$) / log($\kappa_\mathrm{theory}$)|')
         plt.legend(loc='upper right', ncol=2)
-        plt.savefig(self.path_figs+'/time_vs_deviation_steps.pdf', bbox_inches='tight', pad_inches=0.02)
-        plt.show()
+        if fig_display:
+            plt.savefig(self.path_figs+'/time_vs_deviation_steps.pdf', bbox_inches='tight', pad_inches=0.02)
+            plt.show()
 
 
-    def plot_time_vs_steps_deviation(self, day = True, lambda_theory=True):
+    def plot_time_vs_steps_deviation(self, day = True, lambda_theory=True, fig_display=True):
         fig = plt.figure(figsize=(5,3.5))
         err_proppy = np.abs(np.log10(self.proppy_kappas)-np.log10(self.kappa_theory))
         err_crp_ck = np.abs(np.log10(self.ck_kappas)-np.log10(self.kappa_theory))
@@ -654,5 +661,6 @@ class Comparison():
         plt.xlabel('step sizes [m]')
         plt.ylabel('simulation time [s]')
         plt.legend(loc='center left')
-        plt.savefig(self.path_figs+'/time_vs_steps_deviation.pdf', bbox_inches='tight', pad_inches=0.02)
-        plt.show()
+        if fig_display:
+            plt.savefig(self.path_figs+'/time_vs_steps_deviation.pdf', bbox_inches='tight', pad_inches=0.02)
+            plt.show()
