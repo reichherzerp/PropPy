@@ -14,7 +14,7 @@ Simply clone the repository and import the package `import proppy as pp` while s
 
 - Details of the individual modules are in [detailed simulation setup](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/tutorials/Tutorial_1---Detailed_Simulation_Setup.ipynb).
 
-- If you are already familiar with diffusion coefficients, it is advisable to also try [anisotropic diffusion](https://gitlab.ruhr-uni-bochum.de/tp4/diffusion/rwpropa/-/blob/master/rwpropa/tutorials/Tutorial_2---Anisotropic_Diffusion.ipynb), which occurs due to an ordered magnetic field.
+- If you are already familiar with diffusion coefficients, it is advisable to also try [anisotropic diffusion](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/tutorials/Tutorial_2---Anisotropic_Diffusion.ipynb), which occurs due to an ordered magnetic field.
 
 - To get a better feeling of how the code works, you should visualize [particle trajectories](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/tutorials/Tutorial_3---Particle_Trajectories.ipynb) with a dedicated notebook.
 
@@ -22,7 +22,7 @@ Simply clone the repository and import the package `import proppy as pp` while s
 
 - A special usecase for sphereical observers is studied in more detail in the conteyt of [AGN plasmoids](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/tutorials/Tutorial_5---Tutorial_AGN_Plasmoid_Example.ipynb).
 
-The software is [validated against CRPropa 3.1.7](https://github.com/CRPropa/CRPropa3/tree/3.1.7), which is an established code for charged particle propagation and interaction. In comparison, the strengths of RWPropa stand out, especially the good accuracy with the approach of solving the equation of motion. However, RWPropa is much faster.
+The software is [validated against CRPropa 3.1.7](https://github.com/CRPropa/CRPropa3/tree/3.1.7), which is an established code for charged particle propagation and interaction:
 
 Dedicated comparisons are shown in the folder [comparison](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/tree/master/comparison):
 - [Active galactice nuclei jet plasmoids (ballistic case)](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/comparison/Comparison%20in%20compact%20astrophysical%20sources%201e14m%20trajectory.ipynb)
@@ -82,15 +82,13 @@ The propagator can be easily added to the simulation. Afterwards, calling the de
 
 ```
 nr_steps = 10**4
-step_size = 0.5*10**10 # [m]
+step_size = 0.2*10**10 # [m]
 diffusion_coefficient = 5*10**18 # [m^2/s]
 speed_of_light = 3*10**8 # [m/s]
 mfp_iso = 3*diffusion_coefficient/speed_of_light
-mfp = np.array([10**11, 10**11, 10**11], dtype=np.float32)  # [m]
-rms = 1 # Gaus
-magnetic_field = pp.OrderedBackgroundField(rms, [0,0,1]).magnetic_field
+mfp = np.array([mfp_iso, mfp_iso, mfp_iso], dtype=np.float32)  # [m]
 
-propagator = pp.IsotropicPropagator( mfp, nr_steps, step_size)
+propagator = pp.IsotropicPropagator(mfp, nr_steps, step_size)
 sim.add_propagator(propagator)
 sim.propagator.get_description()
 ```
@@ -108,7 +106,7 @@ for the observation conditions (unique_steps, shperes, box_dimensions)
 substeps = [False, False, True] # observe only steps (no substeps)
 min_step = 1
 max_step = nr_steps
-nr_obs_steps = 200
+nr_obs_steps = 600
 
 observer = pp.TimeEvolutionObserverLog(min_step, max_step, nr_obs_steps, substeps)
 
@@ -133,12 +131,12 @@ df_time_evolution_observer = df.loc[df['radius'] == -1.0]
 sta = pp.Statistics(df_time_evolution_observer)
 isotropic = True # diffusion is isotropic
 errors = False # don't show error bars
-df_kappas = sta.plot_diffusion_coefficients(isotropic, errors)
+df_kappas = sta.plot_diffusion_coefficients(isotropic, errors, None)
 ```
 <img src="https://gitlab.ruhr-uni-bochum.de/tp4/diffusion/rwpropa/-/wikis/uploads/ba57a8da0e991d66291b0e6d64da11b5/kappa.png" alt="running diffusion coefficient" width="500"/>
 
 # Scientific usage
-In principle, this code is used wherever other propagation codes such as [CRPropa](https://crpropa.github.io/CRPropa3/), [DRAGON](https://github.com/cosmicrays/DRAGON), [GALPROP](https://galprop.stanford.edu/) are already in use. However, the advantages of RWPropa are especially in the good performance and the correct description also of the initial propagation, which is not possible for pure diffusive propagation approaches. Therefore, this code is predestined for the simulation of the particle transport in compact objects, where the initial, ballistic transport phase is often relevant (the importance depends on the scales and the energies).
+In principle, this code is used wherever other propagation codes such as [CRPropa](https://crpropa.github.io/CRPropa3/), [DRAGON](https://github.com/cosmicrays/DRAGON), [GALPROP](https://galprop.stanford.edu/) are already in use. However, the advantages of PropPy are especially in the good performance and the correct description also of the initial propagation, which is not possible for pure diffusive propagation approaches. Therefore, this code is predestined for the simulation of the particle transport in compact objects, where the initial, ballistic transport phase is often relevant (the importance depends on the scales and the energies).
 
 As an example the propagation of charged particles in blobs of blazar jets is discussed in the following. Due to the high performance and the good statistical description even at early times, the software is excellently suited for the calculation of escape times of charged particles from certain zones (blob in the example), which in turn are required in (semi)analytical calculations. Also particle distributions and arrival times can be simulated efficiently. 
 
