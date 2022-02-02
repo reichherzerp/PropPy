@@ -507,7 +507,7 @@ class Comparison():
         plt.clim(min_, max_)
         plt.scatter(self.sde_times, self.sde_kappas, c=err_crp_sde, cmap='viridis', marker='^')
         plt.clim(min_, max_)
-        plt.colorbar(label='deviation = |log($\kappa_\mathrm{sim}$) / log($\kappa_\mathrm{theory}$)|')
+        plt.colorbar(label='deviation = |log($\kappa_\mathrm{sim}$) - log($\kappa_\mathrm{theory}$)|')
         plt.loglog()
         plt.axhline(y=self.kappa_theory, color='k', linestyle='-', label='theory', zorder=-1)
 
@@ -563,7 +563,7 @@ class Comparison():
         plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')
 
         plt.xlabel('simulation time [s]')
-        plt.ylabel('deviation = |log($\kappa_\mathrm{sim}$) / log($\kappa_\mathrm{theory}$)|')
+        plt.ylabel('deviation = |log($\kappa_\mathrm{sim}$) - log($\kappa_\mathrm{theory}$)|')
         plt.legend(loc='upper right')
         if fig_display:
             plt.savefig(self.path_figs+'/deviation_vs_time_steps.pdf', bbox_inches='tight', pad_inches=0.02)
@@ -608,7 +608,7 @@ class Comparison():
         plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')
 
         plt.ylabel('simulation time [s]')
-        plt.xlabel('deviation = |log($\kappa_\mathrm{sim}$) / log($\kappa_\mathrm{theory}$)|')
+        plt.xlabel('deviation = |log($\kappa_\mathrm{sim}$) - log($\kappa_\mathrm{theory}$)|')
         plt.legend(loc='upper right', ncol=2)
         if fig_display:
             plt.savefig(self.path_figs+'/time_vs_deviation_steps.pdf', bbox_inches='tight', pad_inches=0.02)
@@ -635,7 +635,7 @@ class Comparison():
         plt.clim(min_, max_)
         plt.scatter(self.sde_step_sizes, self.sde_times, c=err_crp_sde, cmap='viridis', marker='^')
         plt.clim(min_, max_)
-        plt.colorbar(label='deviation = |log($\kappa_\mathrm{sim}$) / log($\kappa_\mathrm{theory}$)|')
+        plt.colorbar(label='deviation = |log($\kappa_\mathrm{sim}$) - log($\kappa_\mathrm{theory}$)|')
         plt.loglog()
         
         # references for simulation time
