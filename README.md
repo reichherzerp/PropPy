@@ -10,13 +10,24 @@ Simply clone the repository and import the package `import proppy as pp` while s
 
 
 ### Example notebooks
-Start by having a look at the [basic simulation setup](https://gitlab.ruhr-uni-bochum.de/tp4/diffusion/rwpropa/-/blob/master/rwpropa/tutorials/Tutorial_1---Simple_Simulation_Setup.ipynb), where the important modules are introduced and basic simulation setup is shown. 
+- Start by having a look at the [basic simulation setup](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/tutorials/Tutorial_0---Template_Simulation.ipynb), where the important modules are introduced and basic simulation setup is shown. 
 
-To get a better feeling of how the code works, you should visualize [particle trajectories](https://gitlab.ruhr-uni-bochum.de/tp4/diffusion/rwpropa/-/blob/master/rwpropa/tutorials/Tutorial_3---Particle_Trajectories.ipynb) with a dedicated notebook.
+- Details of the individual modules are in [detailed simulation setup](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/tutorials/Tutorial_1---Detailed_Simulation_Setup.ipynb).
 
-If you are already familiar with diffusion coefficients, it is advisable to also try [anisotropic diffusion](https://gitlab.ruhr-uni-bochum.de/tp4/diffusion/rwpropa/-/blob/master/rwpropa/tutorials/Tutorial_2---Anisotropic_Diffusion.ipynb), which occurs due to an ordered magnetic field.
+- If you are already familiar with diffusion coefficients, it is advisable to also try [anisotropic diffusion](https://gitlab.ruhr-uni-bochum.de/tp4/diffusion/rwpropa/-/blob/master/rwpropa/tutorials/Tutorial_2---Anisotropic_Diffusion.ipynb), which occurs due to an ordered magnetic field.
 
-The software is [validated against CRPropa](https://gitlab.ruhr-uni-bochum.de/tp4/diffusion/rwpropa/-/blob/master/rwpropa/tutorials/Tutorial_4---Tutorial_Comparison_CRPropa.ipynb), which is an established code for charged particle propagation and interaction. In comparison, the strengths of RWPropa stand out, especially the good accuracy with the approach of solving the equation of motion. However, RWPropa is much faster.
+- To get a better feeling of how the code works, you should visualize [particle trajectories](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/tutorials/Tutorial_3---Particle_Trajectories.ipynb) with a dedicated notebook.
+
+- [Spherical observers](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/tutorials/Tutorial_4---Tutorial_Spherical_Observer.ipynb) are a special type of observers that are useful in many astrophysical environments.
+
+- A special usecase for sphereical observers is studied in more detail in the conteyt of [AGN plasmoids](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/tutorials/Tutorial_5---Tutorial_AGN_Plasmoid_Example.ipynb).
+
+The software is [validated against CRPropa 3.1.7](https://github.com/CRPropa/CRPropa3/tree/3.1.7), which is an established code for charged particle propagation and interaction. In comparison, the strengths of RWPropa stand out, especially the good accuracy with the approach of solving the equation of motion. However, RWPropa is much faster.
+
+Dedicated comparisons are shown in the folder [comparison](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/tree/master/comparison):
+- [Active galactice nuclei jet plasmoids (ballistic case)](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/comparison/Comparison%20in%20compact%20astrophysical%20sources%201e14m%20trajectory.ipynb)
+- [Active galactice nuclei jet plasmoids (diffusive case)](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/comparison/Comparison%20in%20compact%20astrophysical%20sources%201e17m%20trajectory.ipynb)
+- [Ultra-high-energy cosmic rays in intergalactic magnetic fields](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/comparison/Comparison%20of%20UHECRs%20in%20IGMFs%204e27m.ipynb)
 
 #### Basic example
 ```
