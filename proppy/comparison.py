@@ -100,7 +100,7 @@ class Comparison():
         return (1 - np.exp(-x/tau))*kappa
 
 
-    def plot_running_diffusion_coefficients(self, d_theory=[1e17, 4e17], pp_step_max=0, times=[], kappas_ref=[], show_lambda=True):
+    def plot_running_diffusion_coefficients(self, d_theory=[1e17, 4e17], pp_step_max=0, times=[], kappas_ref=[], show_lambda=True, save_fig=True):
         fig = plt.figure(figsize=(5,5))
         # set height ratios for subplots
         gs = gridspec.GridSpec(2, 1, height_ratios=[2.5, 1]) 
