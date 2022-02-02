@@ -13,7 +13,7 @@ setup(
     # The description that will be shown on PyPI.
     # Keep it short and concise
     # This field is OPTIONAL
-    description="PropPy is an open-source python software for propagating charged high-energy particles (cosmic rays) in a astrophysical environments",
+    description="PropPy is an open-source python software for propagating charged high-energy particles (cosmic rays) in astrophysical environments",
 
     # The content that will be shown on your project page.
     # In this case, we're displaying whatever is there in our README.md file
