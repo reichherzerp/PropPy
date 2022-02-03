@@ -6,7 +6,26 @@ PropPy is a novel high-performance software tool to propagate individual charged
 
 
 ### Installation
-Simply clone the repository and import the package `import proppy as pp` while specifying the correct path.
+#### Installing with pip
+If you are using Linux or maxOS you can install PropPy with pip:
+```
+pip install proppy
+```
+
+#### Installing from source
+1. Clone the proppy repository:
+```
+git clone https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy
+```
+2. Move into the project folder and run either 
+```
+pip install .
+```
+or if you do not have pip
+```
+python setup.py install
+```
+Note that you should add `--user` if you do not have root access.
 
 
 ### Example notebooks
