@@ -7,7 +7,7 @@ PropPy is a novel high-performance software tool to propagate individual charged
 
 ### Installation
 #### Installing with pip
-If you are using Linux or maxOS you can install PropPy with pip:
+If you are using Linux or macOS you can install PropPy with pip:
 ```
 pip install proppy
 ```
@@ -39,7 +39,7 @@ Note that you should add `--user` if you do not have root access.
 
 - [Spherical observers](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/tutorials/Tutorial_4---Tutorial_Spherical_Observer.ipynb) are a special type of observers that are useful in many astrophysical environments.
 
-- A special usecase for sphereical observers is studied in more detail in the conteyt of [AGN plasmoids](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/tutorials/Tutorial_5---Tutorial_AGN_Plasmoid_Example.ipynb).
+- A special usecase for spherical observers is studied in more detail in the context of [AGN plasmoids](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/tutorials/Tutorial_5---Tutorial_AGN_Plasmoid_Example.ipynb).
 
 The software is [validated against CRPropa 3.1.7](https://github.com/CRPropa/CRPropa3/tree/3.1.7), which is an established code for charged particle propagation and interaction:
 
@@ -63,16 +63,16 @@ The software is modular. After initializing the simulation, we can add the indvi
 - propagator
 - observer
 
-Each module contains special classes for different use cases. In the first tutorial, we only use basic classes to demonstrate the basic usage of the propagation software. In the following tutorials, each module with its special classes will be explained in detail. For example, there exist many different observer types such as time evolution observers (lin or log spcaing) and sphercial observers. 
+Each module contains special classes for different use cases. In the first tutorial, we only use basic classes to demonstrate the basic usage of the propagation software. In the following tutorials, each module with its special classes will be explained in detail. For example, there exist many different observer types such as time evolution observers (lin or log spacing) and spherical observers. 
 
 ```
 sim = pp.Simulation()
 ```
 
 #### Source
-First, we have to define a source of particles that we want to propagate. The simples source type is the point source that emmits particles isotropically. The only user-specifyed parameters are:
+First, we have to define a source of particles that we want to propagate. The simples source type is the point source that emits particles isotropically. The only user-specified parameters are:
 - **energy**: Energy of the particles in eV.
-- **source posistion**: The position of the point source.
+- **source position**: The position of the point source.
 - **number of particles**: Number of particles that should be emitted from this source.
 
 The source can be easily added to the simulation. Afterwards, calling the description on the source of the simulation prints all relevant information and the values of the source parameters.
@@ -88,12 +88,12 @@ sim.source.get_description()
 ```
 
 #### Propagator
-Propagates particles via a correlated rrandom walk. The overall behaviour is governed by a generalized telegraph equation.
+Propagates particles via a correlated random walk. The overall behaviour is governed by a generalized telegraph equation.
 
 Here, we use isotropic diffusion for simplicity that propagates particles using a correlated random walk in Cartesian coordinates. Isotropic diffusion is given when the turbulence is isotropic and there is no background field. In the other tutorials also the anisotropic diffusion is used. 
 
-The only user-specifyed parameters for the simple case of isotropic diffusion are:
-- **mean-free paths**: The mean-free paths λ​ can be derived from the diffusion coefficients κ​ via λ​=3κ​/c. Therfore, the diagonal elements of the diagonalized diffusion tensor are needed to determine the characteristics of the transport. For isotropic diffusion all diffusion coefficients are equal​. Typical free-mean paths of charged particles in plasmoids in AGN jets are 10^12m (see Reichherzer et al. (2021)).
+The only user-specified parameters for the simple case of isotropic diffusion are:
+- **mean-free paths**: The mean-free paths λ​ can be derived from the diffusion coefficients κ​ via λ​=3κ​/c. Therefore, the diagonal elements of the diagonalized diffusion tensor are needed to determine the characteristics of the transport. For isotropic diffusion all diffusion coefficients are equal​. Typical free-mean paths of charged particles in plasmoids in AGN jets are 10^12m (see Reichherzer et al. (2021)).
 - **number of steps**: The number of simulation steps for each individual particle.
 - **step size**: Size of an individual step. Together with the parameter number of steps, the step size determines the trajectory length of the particles. 
 
@@ -114,7 +114,7 @@ sim.propagator.get_description()
 
 #### Observer
 
-The Observer determines during the simulation when and what data to write out (observe).In each simulation step, the current particle state is evaluated by the Observer to check if one of the observing contions is satisfyed. The conditions to observe can be based 
+The Observer determines during the simulation when and what data to write out (observe).In each simulation step, the current particle state is evaluated by the Observer to check if one of the observing conditions is satisfied. The conditions to observe can be based 
 on the time (-> step) or the coordinates of the particle. The conditions to observe can be based on the time (or step) or the coordinates of the particle.
 
 step number [unique_steps] -> time (TimeEvolutionObservers)radius of observer sphere [shperes] -> sphere around source (SphericalObservers)cartesian coordinates [box_dimensions] -> box around source (BoxObserver) (not yet implemented)
@@ -164,7 +164,7 @@ Contribution on [HEASA 2021 conference](https://indico.cern.ch/event/1037017/):
 
 
 # Documentation
-For more detailed documentation of all parameters, return types, and behaviors of the above modules, please refer to the in-code documentation that is present in the header of each file, class and function in the software. In the following the most improtant modules are presented.
+For more detailed documentation of all parameters, return types, and behaviors of the above modules, please refer to the in-code documentation that is present in the header of each file, class and function in the software. In the following the most important modules are presented.
 
 #### Simulation module
 This module provides the Simulation class where all other modules are defined and set for the simulation, such as the source, the observer, and the propagator.
@@ -200,15 +200,15 @@ on the time (-> step) or the coordinates of the particle.
 Observes particles in all propagation steps.
 
 ##### - TimeEvolutionObserverLog
-Observes particles at the user specified step numbers.
+Observes particles at the user-specified step numbers.
 The user only gives the minimum, the maximum and the total step numbers. The TimeEvolutionObserverLog computes the list (logarithmically).
 
 ##### - TimeEvolutionObserverLin
-Observes particles at the user specified step numbers.
+Observes particles at the user-specified step numbers.
 The user only gives the minimum, the maximum and the total step numbers. The TimeEvolutionObserverLin computes the list (linearly).
 
 ##### - TimeEvolutionObserver
-Observes particles at the user specified step numbers. The user passes the list of steps to the TimeEvolutionObserver.
+Observes particles at the user-specified step numbers. The user passes the list of steps to the TimeEvolutionObserver.
 
 #### Propagator module
 
@@ -262,10 +262,11 @@ The routine on how to compute diffusion coefficients is described in:
 
 Contributions are always welcome! Please fork the repository and open a new pull request for any new features.
 
-After making changes, make sure everything works by running
-
-`python3 -m unittest tests.py`
-
+After making changes, your code should pass all unit tests. Code can be tested by invoking
+```
+pytest
+```
+Using `pytest -s` shows you further details during the test.
 Please also add a new unittest for testing your new development if appropriate. 
 
 ### Support
