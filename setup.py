@@ -5,7 +5,7 @@ import pathlib
 # Fetches the content from README.md
 # This will be used for the "long_description" field.
 README_MD = open(join(dirname(abspath(__file__)), "README.md")).read()
-PYTHON = ">=3.7"
+PYTHON = ">=3.8"
 
 here = pathlib.Path(__file__).parent
 
@@ -14,7 +14,7 @@ with open(here / "requirements.txt", "r") as f:
 
 setup(
     name="proppy",
-    version="2.0.0",
+    version="1.0.0",
     packages=find_packages(exclude=["test", "examples"]),
 
     # The description that will be shown on PyPI.
@@ -27,7 +27,7 @@ setup(
     # This field is OPTIONAL
     long_description=README_MD,
     long_description_content_type="text/markdown",
-    url="https://gitlab.ruhr-uni-bochum.de/reichp2y/rwpropa",
+    url="https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy",
     author="Patrick Reichherzer",
     author_email="patrick.reichherzer@ruhr-uni-bochum,de",
     
@@ -38,8 +38,8 @@ setup(
     # This is OPTIONAL
     classifiers=[
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License"
@@ -49,5 +49,5 @@ setup(
 
     # Keywords are tags that identify your project and help searching for it
     # This field is OPTIONAL
-    keywords="astronomy, astrophysics",
+    keywords="astronomy, astrophysics, cosmic rays, diffusion",
 )
