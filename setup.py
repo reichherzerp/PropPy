@@ -1,9 +1,16 @@
 from setuptools import setup, find_packages
 from os.path import abspath, dirname, join
+import pathlib
 
 # Fetches the content from README.md
 # This will be used for the "long_description" field.
 README_MD = open(join(dirname(abspath(__file__)), "README.md")).read()
+PYTHON = ">=3.7"
+
+here = pathlib.Path(__file__).parent
+
+with open(here / "requirements.txt", "r") as f:
+    REQUIRED = f.readlines()
 
 setup(
     name="proppy",
@@ -23,15 +30,22 @@ setup(
     url="https://gitlab.ruhr-uni-bochum.de/reichp2y/rwpropa",
     author="Patrick Reichherzer",
     author_email="patrick.reichherzer@ruhr-uni-bochum,de",
+    
 
     # Classifiers help categorize your project.
     # For a complete list of classifiers, visit:
     # https://pypi.org/classifiers
     # This is OPTIONAL
     classifiers=[
-        "License :: OSI Approved :: MIT License",
-        "Intended Audience :: Astronomers",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: MIT License"
     ],
+    python_requires=PYTHON,
+    install_requires=REQUIRED,
 
     # Keywords are tags that identify your project and help searching for it
     # This field is OPTIONAL
