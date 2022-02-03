@@ -6,6 +6,9 @@ PropPy is a novel high-performance software tool to propagate individual charged
 
 
 ### Installation
+#### Requirements
+Usage with Python 3.8 and 3.9 is supported and tested. The packages listed in requirements.txt are needed for PropPy and installed automatically by installing PropPy.
+
 #### Installing with pip
 If you are using Linux or macOS you can install PropPy with pip:
 ```

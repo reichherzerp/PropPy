@@ -187,6 +187,7 @@ The comparisons yield the following conclusions:
 
 - Smaller simulation times for given step sizes in combination with the fewer step size requirements translate into significant increasion in speed for the diffusive method and the CRW method compared to the EOM-based methods. 
 
+# Conclusion
 PropPy is excellently suited for calculating escape times of charged particles from certain zones (blob in the example) due to the high performance and the good statistical description of the CRW method, also for the ballistic transport phase. For example, escape times are needed in (semi)analytical calculations of flare dynimacs. PropPy can also efficiently simulate particle distributions and arrival times.
 
 
