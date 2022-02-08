@@ -26,20 +26,8 @@ bibliography: paper.bib
 
 ---
 
-# Summary
+# Introduction
 
-PropPy is an open-source python software for propagating charged high-energy particles (cosmic rays, CRs) in a turbulent magnetic field. Its modular architecture comprises various modules for sources, magnetic fields, propagators, and observers covering a wide range of applications.
-
-When compared to codes that solve the equation of motion (EOM) in each propagation step, our propagation is based on a correlated random walk (CRW) in Cartesian (for isotropic diffusion) or cylindrical (for anisotropic diffusion) coordinates, which makes each simulation step significantly faster. This novel approach is justified by the fact that a transport equation can be derived via the formulation of the CRW (see theory section below), which is used in analytical descriptions of particle transport [@Litvinenko2015; @Tautz2016]:
-\begin{equation}\label{eq:telegraph}
-\frac{\partial f}{\partial t} + \sum_i \tau_i \frac{\partial^2 f}{\partial t^2}= \sum_i \kappa_i \frac{\partial^2 f}{\partial x_i^2},
-\end{equation}
-where $i$ indicates the three spatial directions, $\tau_i$ denotes the time scale for particles to become diffusive, and $\kappa_i$ is the diffusion coefficient, from which the relevant parameters of the CRW can be determined. 
-
-Besides the analytical verification of the CRW ansatz, comparison simulations between PropPy and an established cosmic-ray propagation software, CRPropa, are presented.
-These tests show that both approaches are comparable in terms of the statistical properties such as the running diffusion coefficient and the escape times from regions such as are relevant and present in many astrophysical environments.
-
-This makes PropPy a high-performance software for the simulation of charged particles in turbulent magnetic fields. This is especially true for compact objects and transient events with short time scales, such as gamma-ray bursts (GRBs), active galactic nuclei (AGN) flares, where the accurate description of the initial particle propagation is crucial. Fast simulations of transient events can help analyze observations and provide information to evaluate the need for follow-up observations in the context of real-time multimessenger astrophysics [@AstroColibri2021].
 
 
 
@@ -105,11 +93,14 @@ Finally, with $f = \alpha + \beta$, we have
 \begin{equation}\label{eq:alpha_plus_beta_rewritten}
 \frac{1}{2\xi}\frac{\partial^2 f}{\partial t^2} = \frac{v^2}{2\xi} \frac{\partial^2 f}{\partial x^2} - \frac{\partial f}{\partial t}.
 \end{equation}
-In fact, when we generalize this approach for three dimensions, assuming local homogeneity, and connecting diffusion coefficients with the CRW parameters this leads to \autoref{eq:telegraph}. Therefore, the statistics of particles that follow CRW can be described with the telegraph equation and thus agrees with analytical theories of particle transport of cosmic rays [@Litvinenko2015; @Tautz2016].
+In fact, when we generalize this approach for three dimensions, assuming local homogeneity, and connecting diffusion coefficients with the CRW parameters, this leads to the telegraph equation
+\begin{equation}\label{eq:telegraph}
+\frac{\partial f}{\partial t} + \sum_i \tau_i \frac{\partial^2 f}{\partial t^2}= \sum_i \kappa_i \frac{\partial^2 f}{\partial x_i^2}.
+\end{equation}
+Therefore, the statistics of particles that follow CRW can be described with the telegraph equation and thus agrees with analytical theories of particle transport of cosmic rays [@Litvinenko2015; @Tautz2016].
 
 
 # Comparison
-
 In principle, the CRW propagation method implemented in PropPy can be applied wherever other propagation codes for charged particles such as CRPropa [@CRPropa2016; @CRPropa2021], DRAGON [@Dragon2017], GALPROP [@Galprop1998] are already in use. However, the advantages of PropPy are especially in the high performance and the accurate description of statistical transport properties also for the initial transport regime, which is not possible for pure diffusive propagation approaches. 
 
 
@@ -129,7 +120,7 @@ While there are numerous possible sources covering a large parameter space of ph
 - particle energies: $E=100\,$PeV
 - isotropic 3d Kolmogorov turbulence
 - magnetic field strength: $B_\mathrm{rms} = 1\,$Gaus
-- correlation length turbulence: $l_\mathrm{c} = \sim 10^{11}\,$m
+- correlation length turbulence: $l_\mathrm{c} \sim 10^{11}\,$m
 
 
 With these parameters, we can derive the expected diffusion coefficient from theory [@Subedi2017]. These parameters result in gyroradii of the charged cosmic rays
@@ -179,7 +170,7 @@ The lowest panel shows the required processor time of the simulation as a functi
  \label{fig:comparison}](comparison_compact_source.pdf)
 
 
-The comparisons yield the following conclusions:
+The comparisons yield the following results:
 
 - The EOM-based propagation approaches BP and CK, as well as the CRW method from PropPy can correctly model the initial ballistic transport phase. The diffusive approach (SDE) can not describe this initial ballistic phase by construction since it always assumes diffusive particle transport. 
 
@@ -187,8 +178,21 @@ The comparisons yield the following conclusions:
 
 - Smaller simulation times for given step sizes in combination with the fewer step size requirements translate into significant increasion in speed for the diffusive method and the CRW method compared to the EOM-based methods. 
 
+
 # Conclusion
-PropPy is excellently suited for calculating escape times of charged particles from certain zones (blob in the example) due to the high performance and the good statistical description of the CRW method, also for the ballistic transport phase. For example, escape times are needed in (semi)analytical calculations of flare dynimacs. PropPy can also efficiently simulate particle distributions and arrival times.
+PropPy is an open-source python software for propagating charged high-energy particles (cosmic rays, CRs) in a turbulent magnetic field. Its modular architecture comprises various modules for sources, magnetic fields, propagators, and observers covering a wide range of applications.
+
+When compared to codes that solve the equation of motion (EOM) in each propagation step, our propagation is based on a correlated random walk (CRW) in Cartesian (for isotropic diffusion) or cylindrical (for anisotropic diffusion) coordinates, which makes each simulation step significantly faster. This novel approach is justified by the fact that a transport equation can be derived via the formulation of the CRW (see theory section below), which is used in analytical descriptions of particle transport [@Litvinenko2015; @Tautz2016]:
+\begin{equation}\label{eq:telegraph}
+\frac{\partial f}{\partial t} + \sum_i \tau_i \frac{\partial^2 f}{\partial t^2}= \sum_i \kappa_i \frac{\partial^2 f}{\partial x_i^2},
+\end{equation}
+where $i$ indicates the three spatial directions, $\tau_i$ denotes the time scale for particles to become diffusive, and $\kappa_i$ is the diffusion coefficient, from which the relevant parameters of the CRW can be determined. 
+
+Besides the analytical verification of the CRW ansatz, comparison simulations between PropPy and an established cosmic-ray propagation software, CRPropa, are presented.
+These tests show that both approaches are comparable in terms of the statistical properties such as the running diffusion coefficient and the escape times from regions such as are relevant and present in many astrophysical environments.
+
+This makes PropPy a high-performance software for the simulation of charged particles in turbulent magnetic fields. This is especially true for compact objects and transient events with short time scales, such as gamma-ray bursts (GRBs), active galactic nuclei (AGN) flares, where the accurate description of the initial particle propagation is crucial. Fast simulations of transient events can help analyze observations and provide information to evaluate the need for follow-up observations in the context of real-time multimessenger astrophysics [@AstroColibri2021].
+
 
 
 # Acknowledgements
