@@ -124,7 +124,7 @@ Simulations are used for describing as accurately as possible the particle trans
 
 Since CRPropa is the only code that supports both EOM and diffusive propagation methods with anisotropic diffusion coefficients, this software (version: CRPropa 3.1.7) is used for comparison simulations with PropPy. 
 
-While there are numerous possible sources covering a large parameter space of physical properties relevant to particle transport, for this comparison between PropPy propagation and CRPropa modules, we use typical parameters used in the literature for AGN plasmoids (see, e.g. [@Hoerbe2020] and references therein):
+While there are numerous possible sources covering a large parameter space of physical properties relevant to particle transport, for this comparison between PropPy propagation and CRPropa modules, we use typical parameters used in the literature for AGN plasmoids (see, e.g. [@Hoerbe2020, @BeckerTjus2022] and references therein):
 
 - particle energies: $E=100\,$PeV
 - isotropic 3d Kolmogorov turbulence
@@ -152,7 +152,7 @@ This diffusion coefficient results in expected mean-free paths of
 
 Particles become diffusive at trajectory lengths of about $\lambda$, which is why the simulations are stopped after trajectory lengths of $10^{17}$ m to have some buffer and a clear plateau in the running diffusion coefficients.
 
-As a simulation setting, $10^3$ protons with $E=100\,$PeV are emitted isotropically from a point source. The simulations and the presented results can be reproduced via the simulation and analysis scripts provided in the comparison folder of PropPy.  
+As a simulation setting, $10^3$ protons with $E=100\,$PeV are emitted isotropically from a point source. The simulations and the presented results can be reproduced via the simulation and analysis scripts provided in the comparison folder of PropPy.
 
 The summation of planar waves with different wave numbers, amplitudes, and directions generates the synthetic turbulence. Here, there are two possible approaches:
 - The complete turbulence can be generated in advance of the simulation and stored on a large grid by using an inverse discrete Fourier transform. During run-time, the local magnetic field is computed via interpolation of the surrounding grid points that store the magnetic field information. Here, the tri-linear interpolation is used as it is fast and sufficiently accurate [@Schlegel2020]. The turbulence is stored on $1024^3$ grid points.
