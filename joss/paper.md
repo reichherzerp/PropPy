@@ -26,11 +26,6 @@ bibliography: paper.bib
 
 ---
 
-# Introduction
-
-
-
-
 # Statement of need 
 
 Understanding the transport of charged high-energy particles in turbulent magnetic fields is essential for resolving the long-standing question of their extragalactic origin. The transport properties of cosmic rays are relevant in many ways: 
