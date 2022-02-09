@@ -52,7 +52,7 @@ class Comparison():
                 self.proppy_step_sizes = self.df_proppy_results['step_size']*3.086*10**16 # [m]
                 self.proppy_kappas = self.df_proppy_results['kappa']*(3.086*10**16)**2 # [m^2/s]
         except:
-            print('no PropPy data')
+            print('missing PropPy data')
             self.proppy_times = np.array([])
             self.proppy_step_sizes = np.array([])
             self.proppy_kappas = np.array([])
@@ -62,7 +62,7 @@ class Comparison():
             self.ck_step_sizes = self.df_crp_ck_results['step_size']
             self.ck_kappas = self.df_crp_ck_results['kappa']
         except:
-            print('no ck data')
+            print('missing ck data')
             self.ck_times = np.array([])
             self.ck_step_sizes = np.array([])
             self.ck_kappas = np.array([])
@@ -71,7 +71,7 @@ class Comparison():
             self.bp_pw_step_sizes = self.df_crp_bp_pw_results['step_size']
             self.bp_pw_kappas = self.df_crp_bp_pw_results['kappa']
         except:
-            print('no bp pw data')
+            print('missing bp pw data')
             self.bp_pw_times = np.array([])
             self.bp_pw_step_sizes = np.array([])
             self.bp_pw_kappas = np.array([])
@@ -80,7 +80,7 @@ class Comparison():
             self.bp_grid_step_sizes = self.df_crp_bp_grid_results['step_size']
             self.bp_grid_kappas = self.df_crp_bp_grid_results['kappa']
         except:
-            print('no bp grid data')
+            print('missing bp grid data')
             self.bp_grid_times = np.array([])
             self.bp_grid_step_sizes = np.array([])
             self.bp_grid_kappas = np.array([])
@@ -89,7 +89,7 @@ class Comparison():
             self.sde_step_sizes = self.df_crp_sde_results['step_size']
             self.sde_kappas = self.df_crp_sde_results['kappa']
         except:
-            print('no SDE data')
+            print('missing SDE data')
             self.sde_times = np.array([])
             self.sde_step_sizes = np.array([])
             self.sde_kappas = np.array([])
@@ -99,7 +99,7 @@ class Comparison():
         return (1 - np.exp(-x/tau))*kappa
 
 
-    def plot_running_diffusion_coefficients(self, d_theory=[1e17, 4e17], pp_step_max=0, times=[], kappas_ref=[], show_lambda=True, fig_display=True):
+    def plot_running_diffusion_coefficients(self, d_theory=[1e17, 4e17], pp_step_max=0, times=[], kappas_ref=[], show_lambda=True, fig_display=True, index_last=-1, x_min_index=0):
         if fig_display:
             fig = plt.figure(figsize=(5,5))
         # set height ratios for subplots
@@ -124,8 +124,8 @@ class Comparison():
         kappas_bp_grid = []
         kappas_sde = []
 
-        plt.xlim([0.5*self.step_sizes[-1], d_theory[-1]*1.5])
-        for i, step_size in enumerate(self.step_sizes):
+        plt.xlim([0.5*self.step_sizes[x_min_index], d_theory[-1]*1.5])
+        for i, step_size in enumerate(self.step_sizes[:index_last]):
             color = plt.cm.viridis(np.linspace(0, 1, len(self.step_sizes))[i])
             n_max = -1
             try:
@@ -145,7 +145,7 @@ class Comparison():
                 kappas_proppy.append(np.mean(proppy_kappa[-10:]))
             except Exception as e: 
                 print(e)
-                print('no data for PropPy')
+                print('missing data for PropPy')
             
             try:
                 crp_l = np.load(self.path_data+'/sim_result_crp_BP_PW_stepsize_'+str(step_size/10**11)+'_l.npy')
@@ -155,7 +155,7 @@ class Comparison():
                 kappas_bp_pw.append(np.mean(crp_kappa[-10:]))
             except Exception as e: 
                 print(e)
-                print('no data for BP pw')
+                print('missing data for BP pw')
             try:
                 crp_l = np.load(self.path_data+'/sim_result_crp_BP_grid_stepsize_'+str(step_size/10**11)+'_l.npy')
                 crp_kappa = np.load(self.path_data+'/sim_result_crp_BP_grid_stepsize_'+str(step_size/10**11)+'_kappa.npy')
@@ -164,7 +164,7 @@ class Comparison():
                 kappas_bp_grid.append(np.mean(crp_kappa[-10:]))
             except Exception as e: 
                 print(e)
-                print('no data for BP grid')
+                print('missing data for BP grid')
             
             try:
                 crp_l = np.load(self.path_data+'/sim_result_crp_CK_PW_stepsize_'+str(step_size/10**11)+'_l.npy')
@@ -174,7 +174,7 @@ class Comparison():
                 kappas_ck.append(np.mean(crp_kappa[-10:]))
             except Exception as e: 
                 print(e)
-                print('no data for CK')
+                print('missing data for CK')
 
             try:
                 crp_l = np.load(self.path_data+'/sim_result_crp_SDE__stepsize_'+str(step_size/10**11)+'_l.npy')
@@ -184,7 +184,7 @@ class Comparison():
                 kappas_sde.append(np.mean(crp_kappa[-10:]))
             except Exception as e: 
                 print(e)
-                print('no data for SDE')
+                print('missing data for SDE')
 
         # colorbar
         plt.scatter(np.zeros(len(self.step_sizes)), np.zeros(len(self.step_sizes)), c=self.step_sizes, cmap='viridis', norm=matplotlib.colors.LogNorm())
@@ -245,7 +245,7 @@ class Comparison():
                     kappa_dev = np.abs(kappa_theory - proppy_kappa) / kappa_theory * 100
                     plt.plot(proppy_l, kappa_dev, color='red', ls='-', zorder=2, lw=2)
             except:
-                print('no data for PropPy')
+                print('missing data for PropPy')
 
 
             try:
@@ -255,7 +255,7 @@ class Comparison():
                 kappa_dev = np.abs(kappa_theory - crp_kappa) / kappa_theory * 100
                 plt.plot(crp_l, kappa_dev, color=color, ls=(0, (1, 1)), lw=2)
             except:
-                print('no data for BP pw')
+                print('missing data for BP pw')
             
 
             try:
@@ -265,7 +265,7 @@ class Comparison():
                 kappa_dev = np.abs(kappa_theory - crp_kappa) / kappa_theory * 100
                 plt.plot(crp_l, kappa_dev, color=color, ls='--', lw=2)
             except:
-                print('no data for SDE')
+                print('missing data for SDE')
 
 
         plt.yscale('log')
@@ -291,6 +291,8 @@ class Comparison():
         plt.axvline(x=self.lambda_theory, label='$\lambda_\mathrm{theory}$', color='grey', ls='-.')
         plt.axhline(y=self.kappa_theory, color='k', linestyle='-', label='theory')
         plt.legend()
+        plt.xlabel('step size [m]')
+        plt.ylabel('$\kappa$ [m²/cm]')
         plt.loglog()
         if fig_display:
             plt.show()
