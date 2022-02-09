@@ -27,13 +27,13 @@ bibliography: paper.bib
 ---
 
 # Statement of need 
-Understanding the transport of charged high-energy particles in turbulent magnetic fields is essential for resolving the long-standing question of their extragalactic origin. The transport properties of cosmic rays are relevant in many ways: 
+Understanding the transport of charged high-energy particles (cosmic rays, CRs) in turbulent magnetic fields is essential for resolving the long-standing question of their extragalactic origin. The transport properties of cosmic rays are relevant in many ways: 
 
 * In cosmic-ray sources, the transport properties determine their residence time in the sources and thus the interaction processes leading to the production of secondary particles [@BeckerTjus2020]. 
 * Due to the enormous distance from sources to our Galaxy, cosmic rays have to travel through the turbulent intergalactic medium [@2018arXiv181103062A]. 
 * In our Galaxy, the Galactic magnetic field influences their trajectory and, finally, their arrival in the Earth's atmosphere [@Reichherzerb2021].
 
-Analytical theories have been developed over the last century [@Jokipii_1966; @Zweibel2013; @Schlickeiser2015] to describe the transport of cosmic rays. However, these theories are often limited by strongly simplifying assumptions concerning the transport of charged particles in turbulent magnetic fields. To overcome these limitations, propagation codes have been developed over the last decades to overcome these limitations with dedicated cosmic-ray-transport simulations (e.g.\,@Giacalone1999; @Casse2001; @Shukurov2017; @Reichherzer2020; @Reichherzer2021b). In EOM propagation methods, particles are moved stepwise, with the next step always determined based on the solution of the equation of motion with the external force as the Lorentz force only taking into account magnetic fields. Note the magnetic field must be computed for each propagation step for all particle positions, a process that is typically time-consuming in numerical simulations [@Schlegel2020]. This is especially relevant when the particles are highly diffusive, i.e.\,when the size of the propagation environment $L$ exceeds the gyro radius of the particle $r_g\ll L$. A much more efficient method, the diffusive approach, is based on the statistical properties of the particles and exploits their theoretical description via a transport equation [@CRPropa2017]. In the limit of infinitely large times, diffusive transport occurs for all charged particles in isotropic turbulence. In the transport equation, the diffusion tensor implicitly contains all statistic properties. A major drawback of this approach is that can only model the transport of charged particles over large time scales so that the particles have enough time to become diffusive [@BeckerTjus2022].
+Analytical theories have been developed over the last century [@Jokipii_1966; @Zweibel2013; @Schlickeiser2015] to describe the transport of cosmic rays. However, these theories are often limited by strongly simplifying assumptions concerning the transport of charged particles in turbulent magnetic fields. To overcome these limitations, propagation codes have been developed over the last decades to overcome these limitations with dedicated cosmic-ray-transport simulations (e.g.\,@Giacalone1999; @Casse2001; @Shukurov2017; @Reichherzer2020; @Reichherzer2021b). In equation of motion (EOM) propagation methods, particles are moved stepwise, with the next step always determined based on the solution of the equation of motion with the external force as the Lorentz force only taking into account magnetic fields. Note the magnetic field must be computed for each propagation step for all particle positions, a process that is typically time-consuming in numerical simulations [@Schlegel2020]. This is especially relevant when the particles are highly diffusive, i.e.\,when the size of the propagation environment $L$ exceeds the gyro radius of the particle $r_g\ll L$. A much more efficient method, the diffusive approach, is based on the statistical properties of the particles and exploits their theoretical description via a transport equation [@CRPropa2017]. In the limit of infinitely large times, diffusive transport occurs for all charged particles in isotropic turbulence. In the transport equation, the diffusion tensor implicitly contains all statistic properties. A major drawback of this approach is that can only model the transport of charged particles over large time scales so that the particles have enough time to become diffusive [@BeckerTjus2022].
 
 To tackle this issue and meet the need for realistic and fast simulations of the sources of cosmic rays, we present the software PropPy. Our software applies the approach of the correlated random walk (CRW), where statistical aspects are used for speed-up while also providing a good description of the initial phase. Additionally, the properties of the CRW can be determined directly from the diffusion tensor and the gyration radius of the particle.
 
@@ -42,7 +42,7 @@ The comparison of the three different approaches diffusive, EOM, and CRW shows t
 
 # Background Theory
 
-First we assume particle transport in one dimension, where they can move either in positive or negative direction along the $x$-axis. The following derivation has been discussed in various contexts in the literature, such as when describing animal trails (see e.g.\,\@Codling2008 for a review), and can also be applied for cosmic-ray propagation (see e.g.\,@Seta2019).
+First we assume particle transport in one dimension, where they can move either in positive or negative direction along the $x$-axis. The following derivation has been discussed in various contexts in the literature, such as when describing animal trails (see e.g. @Codling2008 for a review), and can also be applied for cosmic-ray propagation (see e.g.\,@Seta2019).
 
 During the CRW, the following two substeps are performed in each propagation step that propagtes particles for the time $\tau_\mathrm{s}$:
 \begin{enumerate}
@@ -93,7 +93,7 @@ In fact, when we generalize this approach for three dimensions, assuming local h
 \begin{equation}\label{eq:telegraph}
 \frac{\partial f}{\partial t} + \sum_i \tau_i \frac{\partial^2 f}{\partial t^2}= \sum_i \kappa_i \frac{\partial^2 f}{\partial x_i^2}\,.
 \end{equation}
-This verifies that the statistics of particles that follow CRW can be described with the telegraph equation and thus agrees with analytical theories of particle transport of cosmic rays, see previous work by e.g.\,@Litvinenko2015; @Tautz2016.
+This verifies that the statistics of particles that follow CRW can be described with the telegraph equation and thus agrees with analytical theories of particle transport of cosmic rays, see previous work by e.g. @Litvinenko2015; @Tautz2016.
 
 
 # Comparison
@@ -137,13 +137,18 @@ Particles become diffusive at trajectory lengths of about $\lambda$, which is wh
 As a simulation setting, $10^3$ protons with $E=100\,$PeV are emitted isotropically from a point source. The simulations and the presented results can be reproduced via the simulation and analysis scripts provided in the comparison folder of PropPy 1.0.0 [@reichherzer_patrick_2022_5959220]. The simulation results are available at [@reichherzer_patrick_2022_5959618].
 
 The summation of planar waves with different wave numbers, amplitudes, and directions generates the synthetic turbulence. Here, there are two possible approaches:
-- The complete turbulence can be generated in advance of the simulation and stored on a large grid by using an inverse discrete Fourier transform. During run-time, the local magnetic field is computed via interpolation of the surrounding grid points that store the magnetic field information. Here, the tri-linear interpolation is used as it is fast and sufficiently accurate [@Schlegel2020]. The turbulence is stored on $1024^3$ grid points.
-- As an alternative approach, the summation of different amplitudes, wavenumbers, and directions can also be performed during run-time at the exact position where it is needed. Numerous constraints of the first method, the grid method, are avoided in this plane-wave (PW) approach, with the disadvantage that the simulations take longer. 1000 wave modes are used, which was determined to be sufficient in convergence tests.
+\begin{enumerate}
+  \item The complete turbulence can be generated in advance of the simulation and stored on a large grid by using an inverse discrete Fourier transform. During run-time, the local magnetic field is computed via interpolation of the surrounding grid points that store the magnetic field information. Here, the tri-linear interpolation is used as it is fast and sufficiently accurate [@Schlegel2020]. The turbulence is stored on $1024^3$ grid points.
+  \item As an alternative approach, the summation of different amplitudes, wavenumbers, and directions can also be performed during run-time at the exact position where it is needed. Numerous constraints of the first method, the grid method, are avoided in this plane-wave (PW) approach, with the disadvantage that the simulations take longer. 1000 wave modes are used, which was determined to be sufficient in convergence tests.
+\end{enumerate}
 
 
 Here, the performance of PropPy is compared to the two different propagation methods implemented in CRPropa, which are:
-- Solving the EOM, using either the Boris-Push (BP) [@CRPropa2021] or the Cash-Karp (CK) [@CRPropa2016] algorithm.
-- Solving Stochastic Differential Equations (SDE) [@CRPropa2017]. For this method, no turbulence has to be generated, but only the diffusion coefficient has to be inputted, which already contains the information on how the particles move statistically in the turbulence.
+
+\begin{enumerate}
+  \item Solving the EOM, using either the Boris-Push (BP) [@CRPropa2021] or the Cash-Karp (CK) [@CRPropa2016] algorithm.
+  \item Solving Stochastic Differential Equations (SDE) [@CRPropa2017]. For this method, no turbulence has to be generated, but only the diffusion coefficient has to be inputted, which already contains the information on how the particles move statistically in the turbulence.
+\end{enumerate}
 
 \autoref{fig:comparison} shows a comparison of the simulation results for the calculated running diffusion coefficients for the different methods of propagation and turbulence generation. 
 
@@ -162,17 +167,17 @@ The lowest panel shows the required processor time of the simulation as a functi
 
 The comparisons yield the following results:
 
-- The EOM-based propagation approaches BP and CK, as well as the CRW method from PropPy can correctly model the initial ballistic transport phase. The diffusive approach (SDE) can not describe this initial ballistic phase by construction since it always assumes diffusive particle transport. 
+* The EOM-based propagation approaches BP and CK, as well as the CRW method from PropPy can correctly model the initial ballistic transport phase. The diffusive approach (SDE) can not describe this initial ballistic phase by construction since it always assumes diffusive particle transport. 
 
-- The diffusive approach and the CRW approach can use relatively large step sizes to model the correct statistical behavior. The latter only needs to resolve the mean-free paths sufficiently well, which is guaranteed if the step size at least ten times smaller than the mean-free path. In the case of the EOM-based methods step sizes must be small enough to resolve both the gyration motion and the scales of turbulence sufficiently well. This can be seen as the diffusion coefficients in the middle right panel converge to a constant value only when the step sizes are smaller than the gyration radii and smaller than the correlation length of the turbulence.
+* The diffusive approach and the CRW approach can use relatively large step sizes to model the correct statistical behavior. The latter only needs to resolve the mean-free paths sufficiently well, which is guaranteed if the step size at least ten times smaller than the mean-free path. In the case of the EOM-based methods step sizes must be small enough to resolve both the gyration motion and the scales of turbulence sufficiently well. This can be seen as the diffusion coefficients in the middle right panel converge to a constant value only when the step sizes are smaller than the gyration radii and smaller than the correlation length of the turbulence.
 
-- Smaller simulation times for given step sizes in combination with the fewer step size requirements translate into significant increasion in speed for the diffusive method and the CRW method compared to the EOM-based methods. 
+* Smaller simulation times for given step sizes in combination with the fewer step size requirements translate into significant increasion in speed for the diffusive method and the CRW method compared to the EOM-based methods. 
 
 
 # Conclusion
-PropPy is an open-source python software for propagating charged high-energy particles (cosmic rays, CRs) in a turbulent magnetic field. Its modular architecture comprises various modules for sources, magnetic fields, propagators, and observers covering a wide range of applications.
+PropPy is an open-source python software for propagating charged high-energy particles in a turbulent magnetic field. Its modular architecture comprises various modules for sources, magnetic fields, propagators, and observers covering a wide range of applications.
 
-When compared to codes that solve the equation of motion (EOM) in each propagation step, our propagation is based on a correlated random walk (CRW) in Cartesian (for isotropic diffusion) or cylindrical (for anisotropic diffusion) coordinates, which makes each simulation step significantly faster. This novel approach is justified by the fact that a transport equation can be derived via the formulation of the CRW (see theory section below), which is used in analytical descriptions of particle transport [@Litvinenko2015; @Tautz2016]:
+When compared to codes that solve the EOM in each propagation step, our propagation is based on a CRW in Cartesian (for isotropic diffusion) or cylindrical (for anisotropic diffusion) coordinates, which makes each simulation step significantly faster. This novel approach is justified by the fact that a transport equation can be derived via the formulation of the CRW (see theory section below), which is used in analytical descriptions of particle transport [@Litvinenko2015; @Tautz2016]:
 \begin{equation}\label{eq:telegraph}
 \frac{\partial f}{\partial t} + \sum_i \tau_i \frac{\partial^2 f}{\partial t^2}= \sum_i \kappa_i \frac{\partial^2 f}{\partial x_i^2},
 \end{equation}
