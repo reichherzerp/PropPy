@@ -136,9 +136,9 @@ Particles become diffusive at trajectory lengths of about $\lambda$, which is wh
 
 As a simulation setting, $10^3$ protons with $E=100\,$PeV are emitted isotropically from a point source. The simulations and the presented results can be reproduced via the simulation and analysis scripts provided in the comparison folder of PropPy 1.0.0 [@reichherzer_patrick_2022_5959220]. The simulation results are available at [@reichherzer_patrick_2022_5959618].
 
-The summation of planar waves with different wave numbers, amplitudes, and directions generates the synthetic turbulence. Here, there are two possible approaches:
+The summation of planar waves with different wave numbers, amplitudes, and directions generates the synthetic turbulence. Here, there are two possible approaches [@Schlegel:2020]:
 \begin{enumerate}
-  \item The complete turbulence can be generated in advance of the simulation and stored on a large grid by using an inverse discrete Fourier transform. During run-time, the local magnetic field is computed via interpolation of the surrounding grid points that store the magnetic field information. Here, the tri-linear interpolation is used as it is fast and sufficiently accurate [@Schlegel2020]. The turbulence is stored on $1024^3$ grid points.
+  \item The complete turbulence can be generated in advance of the simulation and stored on a large grid by using an inverse discrete Fourier transform. During run-time, the local magnetic field is computed via interpolation of the surrounding grid points that store the magnetic field information. Here, the tri-linear interpolation is used as it is fast and sufficiently accurate. The turbulence is stored on $1024^3$ grid points.
   \item As an alternative approach, the summation of different amplitudes, wavenumbers, and directions can also be performed during run-time at the exact position where it is needed. Numerous constraints of the first method, the grid method, are avoided in this plane-wave (PW) approach, with the disadvantage that the simulations take longer. 1000 wave modes are used, which was determined to be sufficient in convergence tests.
 \end{enumerate}
 
