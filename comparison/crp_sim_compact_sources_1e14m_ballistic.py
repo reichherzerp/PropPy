@@ -1,4 +1,6 @@
 # First, activate CRPropa environment and then run this current script
+# Use the branch https://github.com/reichherzerp/CRPropa3/tree/LogObserverTimeEvolution
+# to have access to the log ObserverTimeEvolution needed for the script!
 
 from crpropa_sim import *
 import numpy as np
