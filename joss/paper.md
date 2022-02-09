@@ -146,7 +146,7 @@ The summation of planar waves with different wave numbers, amplitudes, and direc
 Here, the performance of PropPy is compared to the two different propagation methods implemented in CRPropa, which are:
 
 \begin{enumerate}
-  \item Solving the EOM, using either the Boris-Push (BP) [@CRPropa2021] or the Cash-Karp (CK) [@CRPropa2016] algorithm.
+  \item Solving the EOM, using either the Boris-Push (BP) [@CRPropa2021] or the Cash-Karp (CK) [@CRPropa2016] algorithm. 
   \item Solving Stochastic Differential Equations (SDE) [@CRPropa2017]. For this method, no turbulence has to be generated, but only the diffusion coefficient has to be inputted, which already contains the information on how the particles move statistically in the turbulence.
 \end{enumerate}
 
