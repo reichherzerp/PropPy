@@ -1,5 +1,5 @@
 ---
-title: 'Correlated random walk propagation of cosmic rays in magnetic turbulence'
+title: 'PropPy -- Correlated random walk propagation of cosmic rays in magnetic turbulence'
 tags:
   - Python
   - astronomy
