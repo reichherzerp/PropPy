@@ -316,20 +316,28 @@ class Comparison():
 
         ### 1. subplot
         ax0 = plt.subplot(gs[0])
+        if color_coded:
+            zs = np.concatenate([self.proppy_times, self.ck_times, self.bp_pw_times, self.bp_grid_times, self.sde_times], axis=0)
+            min_, max_ = zs.min(), zs.max()
+            plt.scatter(self.proppy_step_sizes, self.proppy_kappas, c=self.proppy_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s')
+            plt.clim(min_, max_)
+            plt.scatter(self.ck_step_sizes, self.ck_kappas, c=self.ck_times, cmap='viridis', norm=matplotlib.colors.LogNorm())
+            plt.clim(min_, max_)
+            plt.scatter(self.bp_pw_step_sizes, self.bp_pw_kappas, c=self.bp_pw_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='d')
+            plt.clim(min_, max_)
+            plt.scatter(self.bp_grid_step_sizes, self.bp_grid_kappas, c=self.bp_grid_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='*')
+            plt.clim(min_, max_)
+            plt.scatter(self.sde_step_sizes, self.sde_kappas, c=self.sde_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='^')
+            plt.clim(min_, max_)
+            plt.colorbar(label='simulation time [s]', pad=0.01)
+        else:
+            plt.scatter(self.proppy_step_sizes, self.proppy_kappas, marker='s')
+            plt.scatter(self.ck_step_sizes, self.ck_kappas, )
+            plt.scatter(self.bp_pw_step_sizes, self.bp_pw_kappas, marker='d')
+            plt.scatter(self.bp_grid_step_sizes, self.bp_grid_kappas, marker='*')
+            plt.scatter(self.sde_step_sizes, self.sde_kappas, marker='^')
+        
 
-        zs = np.concatenate([self.proppy_times, self.ck_times, self.bp_pw_times, self.bp_grid_times, self.sde_times], axis=0)
-        min_, max_ = zs.min(), zs.max()
-        plt.scatter(self.proppy_step_sizes, self.proppy_kappas, c=self.proppy_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s')
-        plt.clim(min_, max_)
-        plt.scatter(self.ck_step_sizes, self.ck_kappas, c=self.ck_times, cmap='viridis', norm=matplotlib.colors.LogNorm())
-        plt.clim(min_, max_)
-        plt.scatter(self.bp_pw_step_sizes, self.bp_pw_kappas, c=self.bp_pw_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='d')
-        plt.clim(min_, max_)
-        plt.scatter(self.bp_grid_step_sizes, self.bp_grid_kappas, c=self.bp_grid_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='*')
-        plt.clim(min_, max_)
-        plt.scatter(self.sde_step_sizes, self.sde_kappas, c=self.sde_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='^')
-        plt.clim(min_, max_)
-        plt.colorbar(label='simulation time [s]', pad=0.01)
         plt.loglog()
         if lambda_theory:
             plt.axvline(x=self.lambda_theory, label='$\lambda_\mathrm{theory}$', color='grey', ls='-.', zorder=-1)
@@ -383,8 +391,8 @@ class Comparison():
         plt.axvline(x=self.r_g*2*3.14, label='$2\pi\, r_\mathrm{g}$', color='grey', ls='--', zorder=-1)
 
         plt.axhline(y=0, color='k', linestyle='-', zorder=-2)
-
-        self.color_bar_invisible()
+        if color_coded:
+            self.color_bar_invisible()
         ax1.tick_params(top=True, right=True, direction='in', which='both')
 
         plt.ylabel(ylabel2)
