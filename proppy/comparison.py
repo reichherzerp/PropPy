@@ -140,7 +140,7 @@ class Comparison():
                     proppy_l = proppy_l*3.086*10**16 # [m]
                     proppy_kappa = proppy_kappa*(3.086*10**16)**2 # [m^2/s]
                 if pp_step_max == 0 or step_size < self.lambda_theory:
-                    ax0.plot(proppy_l[:n_max], np.array(proppy_kappa[:n_max])*10**4, color='red', ls='-', zorder=2, lw=2) 
+                    ax0.plot(proppy_l[:n_max], np.array(proppy_kappa[:n_max])*10**4, color='red', ls='-', zorder=6, lw=2) 
                 steps_proppy.append(step_size)
                 kappas_proppy.append(np.mean(proppy_kappa[-10:]))
             except Exception as e: 
@@ -307,7 +307,7 @@ class Comparison():
         cb.set_ticks([])
 
 
-    def plot_kappa_convergence_tests(self, ylabel="$\kappa$ [m$^2$/s]", ylabel2="log deviation",  lambda_theory=True, kappa_mean_seeds=0, kappa_mean_seeds_err=0, fig_display=True):
+    def plot_kappa_convergence_tests(self, ylabel="$\kappa$ [m$^2$/s]", ylabel2="log deviation",  lambda_theory=True, kappa_mean_seeds=0, kappa_mean_seeds_err=0, fig_display=True, color_coded=True):
         fig = plt.figure(figsize=(5,5))
         # set height ratios for subplots
         gs = gridspec.GridSpec(2, 1, height_ratios=[2.5, 1]) 
@@ -358,17 +358,24 @@ class Comparison():
         err_crp_bp_pw = np.abs(np.log10(self.bp_pw_kappas)-np.log10(self.kappa_theory))
         err_crp_bp_grid = np.abs(np.log10(self.bp_grid_kappas)-np.log10(self.kappa_theory))
         err_crp_sde = np.abs(np.log10(self.sde_kappas)-np.log10(self.kappa_theory))
-        
-        plt.scatter(self.proppy_step_sizes, err_proppy, c=self.proppy_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s')
-        plt.clim(min_, max_)
-        plt.scatter(self.ck_step_sizes, err_crp_ck, c=self.ck_times, cmap='viridis', norm=matplotlib.colors.LogNorm())
-        plt.clim(min_, max_)
-        plt.scatter(self.bp_pw_step_sizes, err_crp_bp_pw, c=self.bp_pw_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='d')
-        plt.clim(min_, max_)
-        plt.scatter(self.bp_grid_step_sizes, err_crp_bp_grid, c=self.bp_grid_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='*')
-        plt.clim(min_, max_)
-        plt.scatter(self.sde_step_sizes, err_crp_sde, c=self.sde_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='^')
-        plt.clim(min_, max_)
+
+        if color_coded:
+            plt.scatter(self.proppy_step_sizes, err_proppy, c=self.proppy_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='s')
+            plt.clim(min_, max_)
+            plt.scatter(self.ck_step_sizes, err_crp_ck, c=self.ck_times, cmap='viridis', norm=matplotlib.colors.LogNorm())
+            plt.clim(min_, max_)
+            plt.scatter(self.bp_pw_step_sizes, err_crp_bp_pw, c=self.bp_pw_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='d')
+            plt.clim(min_, max_)
+            plt.scatter(self.bp_grid_step_sizes, err_crp_bp_grid, c=self.bp_grid_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='*')
+            plt.clim(min_, max_)
+            plt.scatter(self.sde_step_sizes, err_crp_sde, c=self.sde_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='^')
+            plt.clim(min_, max_)
+        else:
+            plt.scatter(self.proppy_step_sizes, err_proppy, c='k', marker='s')
+            plt.scatter(self.ck_step_sizes, err_crp_ck, c='r')
+            plt.scatter(self.bp_pw_step_sizes, err_crp_bp_pw, c='g', marker='d')
+            plt.scatter(self.bp_grid_step_sizes, err_crp_bp_grid, c='grey', marker='*')
+            plt.scatter(self.sde_step_sizes, err_crp_sde, c='blue', marker='^')
 
         if lambda_theory:
             plt.axvline(x=self.lambda_theory, label='$\lambda_\mathrm{theory}$', color='grey', ls='-.', zorder=-1)
