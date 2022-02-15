@@ -140,7 +140,7 @@ class Comparison():
                     proppy_l = proppy_l*3.086*10**16 # [m]
                     proppy_kappa = proppy_kappa*(3.086*10**16)**2 # [m^2/s]
                 if pp_step_max == 0 or step_size < self.lambda_theory:
-                    ax0.plot(proppy_l[:n_max], np.array(proppy_kappa[:n_max])*10**4, color='red', ls='-', zorder=6, lw=2) 
+                    ax0.plot(proppy_l[:n_max], np.array(proppy_kappa[:n_max])*10**4, color='brown', ls='-', zorder=6, lw=2) 
                 steps_proppy.append(step_size)
                 kappas_proppy.append(np.mean(proppy_kappa[-10:]))
             except Exception as e: 
@@ -195,7 +195,7 @@ class Comparison():
         plt.plot([0,0], [0,0], c='grey', ls=(0, (1, 8)), label='CRPropa (BP) [grid]', lw=2)
         plt.plot([0,0], [0,0], c='grey', ls='-.', label='CRPropa (CK) [PW]', lw=2)
         plt.plot([0,0], [0,0], c='grey', ls='--', label='CRPropa (SDE)', lw=2)
-        plt.plot([0,0], [0,0], c='red', ls='-', label='PropPy', lw=2)
+        plt.plot([0,0], [0,0], c='brown', ls='-', label='PropPy', lw=2)
 
         ax0.tick_params(labelbottom=False)
         ax0.tick_params(top=True, right=True, direction='in', which='both')
@@ -243,7 +243,7 @@ class Comparison():
                 if pp_step_max == 0 or step_size < self.lambda_theory:
                     kappa_theory = self.func_kappa_run(proppy_l, kappas_ref[-1], tau)
                     kappa_dev = np.abs(kappa_theory - proppy_kappa) / kappa_theory * 100
-                    plt.plot(proppy_l, kappa_dev, color='red', ls='-', zorder=2, lw=2)
+                    plt.plot(proppy_l, kappa_dev, color='brown', ls='-', zorder=2, lw=2)
             except:
                 print('missing data for PropPy')
 
@@ -308,7 +308,10 @@ class Comparison():
 
 
     def plot_kappa_convergence_tests(self, ylabel="$\kappa$ [m$^2$/s]", ylabel2="log deviation",  lambda_theory=True, kappa_mean_seeds=0, kappa_mean_seeds_err=0, fig_display=True, color_coded=True):
-        fig = plt.figure(figsize=(5,5))
+        if color_coded == True:
+            fig = plt.figure(figsize=(5,5))
+        else:
+            fig = plt.figure(figsize=(3.5,4))
         # set height ratios for subplots
         gs = gridspec.GridSpec(2, 1, height_ratios=[2.5, 1]) 
         # remove vertical gap between subplots
@@ -330,12 +333,19 @@ class Comparison():
             plt.scatter(self.sde_step_sizes, self.sde_kappas, c=self.sde_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='^')
             plt.clim(min_, max_)
             plt.colorbar(label='simulation time [s]', pad=0.01)
+
+            # legend
+            plt.scatter([0],[0], label='PropPy', marker='s', color='grey', zorder=-1)
+            plt.scatter([0],[0], label='CRPropa (CK) [PW]', color='grey', zorder=-1)
+            plt.scatter([0],[0], label='CRPropa (BP) [PW]', marker='d', color='grey', zorder=-1)
+            plt.scatter([0],[0], label='CRPropa (BP) [grid]', marker='*', color='grey', zorder=-1)
+            plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey', zorder=-1)
         else:
-            plt.scatter(self.proppy_step_sizes, self.proppy_kappas, marker='s')
-            plt.scatter(self.ck_step_sizes, self.ck_kappas, )
-            plt.scatter(self.bp_pw_step_sizes, self.bp_pw_kappas, marker='d')
-            plt.scatter(self.bp_grid_step_sizes, self.bp_grid_kappas, marker='*')
-            plt.scatter(self.sde_step_sizes, self.sde_kappas, marker='^')
+            plt.scatter(self.proppy_step_sizes, self.proppy_kappas, marker='s', c='brown', label='PropPy')
+            plt.scatter(self.ck_step_sizes, self.ck_kappas, c='mediumseagreen', label='CRPropa (CK) [PW]')
+            plt.scatter(self.bp_pw_step_sizes, self.bp_pw_kappas, marker='d', c='slategrey', label='CRPropa (BP) [PW]')
+            plt.scatter(self.bp_grid_step_sizes, self.bp_grid_kappas, marker='*', c='royalblue', label='CRPropa (BP) [grid]')
+            plt.scatter(self.sde_step_sizes, self.sde_kappas, marker='^', c='darkgreen', label='CRPropa (SDE)')
         
 
         plt.loglog()
@@ -345,12 +355,7 @@ class Comparison():
         plt.axvline(x=self.r_g*2*3.14, label='$2\pi\, r_\mathrm{g}$', color='grey', ls='--', zorder=-1)
         plt.axhline(y=self.kappa_theory, color='k', linestyle='-', label='theory', zorder=-1)
 
-        # legend
-        plt.scatter([0],[0], label='PropPy', marker='s', color='grey', zorder=-1)
-        plt.scatter([0],[0], label='CRPropa (CK) [PW]', color='grey', zorder=-1)
-        plt.scatter([0],[0], label='CRPropa (BP) [PW]', marker='d', color='grey', zorder=-1)
-        plt.scatter([0],[0], label='CRPropa (BP) [grid]', marker='*', color='grey', zorder=-1)
-        plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey', zorder=-1)
+        
 
         plt.xlabel('step size [m]')
         plt.ylabel(ylabel)
@@ -379,12 +384,13 @@ class Comparison():
             plt.scatter(self.sde_step_sizes, err_crp_sde, c=self.sde_times, cmap='viridis', norm=matplotlib.colors.LogNorm(), marker='^')
             plt.clim(min_, max_)
         else:
-            plt.scatter(self.proppy_step_sizes, err_proppy, c='k', marker='s')
-            plt.scatter(self.ck_step_sizes, err_crp_ck, c='r')
-            plt.scatter(self.bp_pw_step_sizes, err_crp_bp_pw, c='g', marker='d')
-            plt.scatter(self.bp_grid_step_sizes, err_crp_bp_grid, c='grey', marker='*')
-            plt.scatter(self.sde_step_sizes, err_crp_sde, c='blue', marker='^')
+            plt.scatter(self.proppy_step_sizes, err_proppy, c='brown', marker='s')
+            plt.scatter(self.ck_step_sizes, err_crp_ck, c='mediumseagreen')
+            plt.scatter(self.bp_pw_step_sizes, err_crp_bp_pw, c='slategrey', marker='d')
+            plt.scatter(self.bp_grid_step_sizes, err_crp_bp_grid, c='royalblue', marker='*')
+            plt.scatter(self.sde_step_sizes, err_crp_sde, c='darkgreen', marker='^')
 
+        
         if lambda_theory:
             plt.axvline(x=self.lambda_theory, label='$\lambda_\mathrm{theory}$', color='grey', ls='-.', zorder=-1)
         plt.axvline(x=self.l_c, label='$l_\mathrm{c}$', color='grey', ls=':', zorder=-1)
@@ -396,6 +402,7 @@ class Comparison():
         ax1.tick_params(top=True, right=True, direction='in', which='both')
 
         plt.ylabel(ylabel2)
+        plt.xlabel('step sizes [m]')
 
         if fig_display:
             plt.savefig(self.path_figs+'/kappa_vs_stepsize.pdf', bbox_inches='tight', pad_inches=0.02)
@@ -632,27 +639,47 @@ class Comparison():
             plt.show()
 
 
-    def plot_time_vs_steps_deviation(self, day = True, lambda_theory=True, fig_display=True):
-        fig = plt.figure(figsize=(5,3.5))
-        err_proppy = np.abs(np.log10(self.proppy_kappas)-np.log10(self.kappa_theory))
-        err_crp_ck = np.abs(np.log10(self.ck_kappas)-np.log10(self.kappa_theory))
-        err_crp_bp_pw = np.abs(np.log10(self.bp_pw_kappas)-np.log10(self.kappa_theory))
-        err_crp_bp_grid = np.abs(np.log10(self.bp_grid_kappas)-np.log10(self.kappa_theory))
-        err_crp_sde = np.abs(np.log10(self.sde_kappas)-np.log10(self.kappa_theory))
-        zs = np.concatenate([err_proppy, err_crp_ck, err_crp_bp_pw, err_crp_bp_grid, err_crp_sde], axis=0)
-        zs = zs[~np.isnan(zs)]
-        min_, max_ = zs.min(), zs.max()
-        plt.scatter(self.proppy_step_sizes, self.proppy_times, c=err_proppy, cmap='viridis', marker='s')
-        plt.clim(min_, max_)
-        plt.scatter(self.ck_step_sizes, self.ck_times, c=err_crp_ck, cmap='viridis')
-        plt.clim(min_, max_)
-        plt.scatter(self.bp_pw_step_sizes, self.bp_pw_times, c=err_crp_bp_pw, cmap='viridis', marker='d')
-        plt.clim(min_, max_)
-        plt.scatter(self.bp_grid_step_sizes, self.bp_grid_times, c=err_crp_bp_grid, cmap='viridis', marker='*')
-        plt.clim(min_, max_)
-        plt.scatter(self.sde_step_sizes, self.sde_times, c=err_crp_sde, cmap='viridis', marker='^')
-        plt.clim(min_, max_)
-        plt.colorbar(label='deviation = |log($\kappa_\mathrm{sim}$) - log($\kappa_\mathrm{theory}$)|')
+    def plot_time_vs_steps_deviation(self, day = True, lambda_theory=True, fig_display=True, color_coded=True):
+        if color_coded == True:
+            fig = plt.figure(figsize=(5,3.5))
+        else:
+            fig = plt.figure(figsize=(3.5, 3))
+
+        if color_coded:
+            err_proppy = np.abs(np.log10(self.proppy_kappas)-np.log10(self.kappa_theory))
+            err_crp_ck = np.abs(np.log10(self.ck_kappas)-np.log10(self.kappa_theory))
+            err_crp_bp_pw = np.abs(np.log10(self.bp_pw_kappas)-np.log10(self.kappa_theory))
+            err_crp_bp_grid = np.abs(np.log10(self.bp_grid_kappas)-np.log10(self.kappa_theory))
+            err_crp_sde = np.abs(np.log10(self.sde_kappas)-np.log10(self.kappa_theory))
+            zs = np.concatenate([err_proppy, err_crp_ck, err_crp_bp_pw, err_crp_bp_grid, err_crp_sde], axis=0)
+            zs = zs[~np.isnan(zs)]
+            min_, max_ = zs.min(), zs.max()
+            plt.scatter(self.proppy_step_sizes, self.proppy_times, c=err_proppy, cmap='viridis', marker='s')
+            plt.clim(min_, max_)
+            plt.scatter(self.ck_step_sizes, self.ck_times, c=err_crp_ck, cmap='viridis')
+            plt.clim(min_, max_)
+            plt.scatter(self.bp_pw_step_sizes, self.bp_pw_times, c=err_crp_bp_pw, cmap='viridis', marker='d')
+            plt.clim(min_, max_)
+            plt.scatter(self.bp_grid_step_sizes, self.bp_grid_times, c=err_crp_bp_grid, cmap='viridis', marker='*')
+            plt.clim(min_, max_)
+            plt.scatter(self.sde_step_sizes, self.sde_times, c=err_crp_sde, cmap='viridis', marker='^')
+            plt.clim(min_, max_)
+            plt.colorbar(label='deviation = |log($\kappa_\mathrm{sim}$) - log($\kappa_\mathrm{theory}$)|')
+            
+            # legend
+            plt.scatter([0],[0], label='PropPy', marker='s', color='grey')
+            plt.scatter([0],[0], label='CRPropa (CK) [PW]', color='grey')
+            plt.scatter([0],[0], label='CRPropa (BP) [PW]', marker='d', color='grey', zorder=-1)
+            plt.scatter([0],[0], label='CRPropa (BP) [grid]', marker='*', color='grey', zorder=-1)
+            plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')
+        else:
+            plt.scatter(self.proppy_step_sizes, self.proppy_times, marker='s', c='brown', label='PropPy')
+            plt.scatter(self.ck_step_sizes, self.ck_times, c='mediumseagreen', label='CRPropa (CK) [PW]')
+            plt.scatter(self.bp_pw_step_sizes, self.bp_pw_times, marker='d', c='slategrey', label='CRPropa (BP) [PW]')
+            plt.scatter(self.bp_grid_step_sizes, self.bp_grid_times, marker='*', c='royalblue', label='CRPropa (BP) [grid]')
+            plt.scatter(self.sde_step_sizes, self.sde_times, marker='^', c='darkgreen', label='CRPropa (SDE)')
+        
+        
         plt.loglog()
         
         # references for simulation time
@@ -668,12 +695,6 @@ class Comparison():
         plt.axvline(x=self.l_c, label='$l_\mathrm{c}$', color='grey', linestyle=(0, (5, 0.4)), zorder=-1)
         plt.axvline(x=self.r_g*2*3.14, label='$2\pi\, r_\mathrm{g}$', color='grey', linestyle=(0, (5, 2.5)), zorder=-1)
 
-        # legend
-        plt.scatter([0],[0], label='PropPy', marker='s', color='grey')
-        plt.scatter([0],[0], label='CRPropa (CK) [PW]', color='grey')
-        plt.scatter([0],[0], label='CRPropa (BP) [PW]', marker='d', color='grey', zorder=-1)
-        plt.scatter([0],[0], label='CRPropa (BP) [grid]', marker='*', color='grey', zorder=-1)
-        plt.scatter([0],[0], label='CRPropa (SDE)', marker='^', color='grey')
 
         plt.xlabel('step sizes [m]')
         plt.ylabel('simulation time [s]')
