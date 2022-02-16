@@ -223,8 +223,10 @@ class Comparison():
             # \kappa (t) \approx \frac{t}{\tau}.
             # \end{equation}
             tau = times[0] / kappas_ref[0] * kappas_ref[-1]
-        
 
+        if show_lambda:
+            plt.axvline(x=self.lambda_theory, color='k', linestyle='--', label='$\lambda_\mathrm{theory}$', zorder=-1)
+        
         for i, step_size in enumerate(self.step_sizes[:-2]):
             color = plt.cm.viridis(np.linspace(0, 1, len(self.step_sizes))[i])
             n_max = -1
@@ -256,6 +258,24 @@ class Comparison():
                 plt.plot(crp_l, kappa_dev, color=color, ls=(0, (1, 1)), lw=2)
             except:
                 print('missing data for BP pw')
+
+            try:
+                crp_l = np.load(self.path_data+'/sim_result_crp_CK_PW_stepsize_'+str(step_size/10**11)+'_l.npy')
+                crp_kappa = np.load(self.path_data+'/sim_result_crp_CK_PW_stepsize_'+str(step_size/10**11)+'_kappa.npy')
+                kappa_theory = self.func_kappa_run(crp_l, kappas_ref[-1], tau)
+                kappa_dev = np.abs(kappa_theory - crp_kappa) / kappa_theory * 100
+                plt.plot(crp_l, kappa_dev, color=color, ls=(0, (1, 1)), lw=2)
+            except:
+                print('missing data for CK pw')
+
+            try:
+                crp_l = np.load(self.path_data+'/sim_result_crp_BP_grid_stepsize_'+str(step_size/10**11)+'_l.npy')
+                crp_kappa = np.load(self.path_data+'/sim_result_crp_BP_grid_stepsize_'+str(step_size/10**11)+'_kappa.npy')
+                kappa_theory = self.func_kappa_run(crp_l, kappas_ref[-1], tau)
+                kappa_dev = np.abs(kappa_theory - crp_kappa) / kappa_theory * 100
+                plt.plot(crp_l, kappa_dev, color=color, ls=(0, (1, 1)), lw=2)
+            except:
+                print('missing data for BP grid')
             
 
             try:
