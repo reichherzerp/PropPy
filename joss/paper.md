@@ -52,9 +52,6 @@ To tackle this issue and meet the need for realistic and fast simulations of the
 
 In principle, the CRW propagation method implemented in PropPy can be applied wherever other propagation codes for charged particles such as CRPropa [@CRPropa2016; @CRPropa2021], DRAGON [@Dragon2017], GALPROP [@Galprop1998] are already in use. However, the advantages of PropPy are especially in the high performance and the accurate description of statistical transport properties also for the initial transport regime, which is not possible for pure diffusive propagation approaches. 
 
-The comparison of the three different approaches diffusive, EOM, and CRW shows that CRW simulation results are in good agreement with EOM simulations, while being considerably faster.
-
-
 
 # Comparison
 Simulations are used for describing as accurately as possible the particle transport that has an impact on numerous observable multimessenger signatures. In the following comparison, we focus on the transport properties in these sources, which are described by the diffusion coefficient.
@@ -70,13 +67,8 @@ We compare the performance of PropPy with the two different propagation methods 
   \item Solving Stochastic Differential Equations (SDE). For this method, no turbulence has to be generated, but only the diffusion coefficient has to be inputted, which already contains the information on how the particles move statistically in the turbulence.
 \end{enumerate}
 
-The comparisons yield the following results:
+The comparison of the three different approaches diffusive, EOM, and CRW shows that CRW simulation results are in good agreement with EOM simulations, while being considerably faster.
 
-* The EOM-based propagation approaches BP and CK, as well as the CRW method from PropPy can correctly model the initial ballistic transport phase. The diffusive approach (SDE) can not describe this initial ballistic phase by construction since it always assumes diffusive particle transport. 
-
-* The diffusive approach and the CRW approach can use relatively large step sizes to model the correct statistical behavior. The latter only needs to resolve the mean-free paths sufficiently well, which is guaranteed if the step size at least ten times smaller than the mean-free path. In the case of the EOM-based methods step sizes must be small enough to resolve both the gyration motion and the scales of turbulence sufficiently well. This can be seen as the diffusion coefficients in the middle right panel converge to a constant value only when the step sizes are smaller than the gyration radii and smaller than the correlation length of the turbulence.
-
-* Smaller simulation times for given step sizes in combination with the fewer step size requirements translate into significant increasion in speed for the diffusive method and the CRW method compared to the EOM-based methods. 
 
 # Acknowledgements
 
