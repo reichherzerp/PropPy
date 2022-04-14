@@ -149,7 +149,7 @@ isotropic = True # diffusion is isotropic
 errors = False # don't show error bars
 df_kappas = sta.plot_diffusion_coefficients(isotropic, errors, None)
 ```
-<img src="https://gitlab.ruhr-uni-bochum.de/tp4/diffusion/rwpropa/-/wikis/uploads/ba57a8da0e991d66291b0e6d64da11b5/kappa.png" alt="running diffusion coefficient" width="500"/>
+<img src="https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/wikis/uploads/394186c14a8ba6edbce424eb778152fd/kappa_proppy.png" alt="running diffusion coefficient" width="500"/>
 
 # Scientific usage
 In principle, this code is used wherever other propagation codes such as [CRPropa](https://crpropa.github.io/CRPropa3/), [DRAGON](https://github.com/cosmicrays/DRAGON), [GALPROP](https://galprop.stanford.edu/) are already in use. However, the advantages of PropPy are especially in the good performance and the correct description also of the initial propagation, which is not possible for pure diffusive propagation approaches. Therefore, this code is predestined for the simulation of the particle transport in compact objects, where the initial, ballistic transport phase is often relevant (the importance depends on the scales and the energies).
@@ -157,7 +157,7 @@ In principle, this code is used wherever other propagation codes such as [CRProp
 As an example the propagation of charged particles in blobs of blazar jets is discussed in the following. Due to the high performance and the good statistical description even at early times, the software is excellently suited for the calculation of escape times of charged particles from certain zones (blob in the example), which in turn are required in (semi)analytical calculations. Also particle distributions and arrival times can be simulated efficiently. 
 
 Contribution on [HEASA 2021 conference](https://indico.cern.ch/event/1037017/):
-![poster](https://gitlab.ruhr-uni-bochum.de/tp4/diffusion/rwpropa/-/wikis/uploads/d7846a634cb0e85114f39f012663bcb4/poster_small.png)
+![poster](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/wikis/uploads/ee814e5d8f1bde6bca654e45d5797fd6/poster_small_proppy.png)
 
 
 # Documentation
