@@ -1,0 +1,15 @@
+image: python:3.10-alpine
+
+pages:
+  tags:
+    - sphinx
+  stage: deploy
+  script:
+  - pip install sphinx
+  - pip install sphinx_rtd_theme
+  - sphinx-build -b html docs/ public/
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
