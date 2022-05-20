@@ -7,7 +7,7 @@ PropPy is a novel high-performance software tool to propagate individual charged
 
 ### Installation
 #### Requirements
-Usage with Python 3.8 and 3.9 is supported and tested. The packages listed in requirements.txt are needed for PropPy and installed automatically by installing PropPy.
+Usage with Python 3.7, 3.8, and 3.9 is supported and tested. The packages listed in requirements.txt are needed for PropPy and installed automatically by installing PropPy.
 
 #### Installing from source
 1. Clone the proppy repository:
@@ -263,9 +263,9 @@ Contributions are always welcome! Please fork the repository and open a new pull
 
 After making changes, your code should pass all unit tests. Code can be tested by invoking
 ```
-pytest
+python3 -m pytest
 ```
-Using `pytest -s` shows you further details during the test.
+or simply `pytest`. Using `pytest -s` shows you further details during the test. Ignoring deprecation warnings can be accomplished using `python3 -m pytest -W ignore::DeprecationWarning`.
 Please also add a new unittest for testing your new development if appropriate. 
 
 ### Support
