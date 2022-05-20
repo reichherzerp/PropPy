@@ -28,6 +28,7 @@ and the propagator.
 
 import numpy as np
 import pandas as pd
+from pathlib import Path
 from .source import *
 from .propagator import *
 from .observer import *
@@ -80,6 +81,11 @@ class Simulation():
     def save_data(self, file_name):
         df = pd.DataFrame(self.data[1:])
         df.columns = self.observer.get_column_names()
+        path = file_name
+        while path[-1] != '/':
+            path = path[:-1]
+        print(path)
+        Path(path).mkdir(exist_ok=True)
         df.to_pickle(file_name+".pkl")
         print('saved data file ' + file_name + ".pkl")
 
