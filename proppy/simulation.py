@@ -81,13 +81,19 @@ class Simulation():
     def save_data(self, file_name):
         df = pd.DataFrame(self.data[1:])
         df.columns = self.observer.get_column_names()
-        path = file_name
-        while path[-1] != '/':
-            path = path[:-1]
-        print(path)
-        Path(path).mkdir(exist_ok=True)
-        df.to_pickle(file_name+".pkl")
-        print('saved data file ' + file_name + ".pkl")
+        try:
+            path = file_name
+            while path[-1] != '/':
+                path = path[:-1]
+            print(path)
+            Path(path).mkdir(exist_ok=True)
+        except:
+            print('could not create data folder: ' +path)
+        try:
+            df.to_pickle(file_name+".pkl")
+            print('saved data file ' + file_name + ".pkl")
+        except:
+            print('error: could not saved data file ' + file_name + ".pkl")
 
 
 #-----------------------------------------------------------------------------
