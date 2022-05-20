@@ -5,7 +5,7 @@ import pathlib
 # Fetches the content from README.md
 # This will be used for the "long_description" field.
 README_MD = open(join(dirname(abspath(__file__)), "README.md")).read()
-PYTHON = ">=3.8"
+PYTHON = ">=3.7"
 
 here = pathlib.Path(__file__).parent
 
@@ -45,6 +45,7 @@ setup(
         "License :: OSI Approved :: MIT License"
     ],
     python_requires=PYTHON,
+    setup_requires=["wheel"],
     install_requires=REQUIRED,
 
     # Keywords are tags that identify your project and help searching for it
