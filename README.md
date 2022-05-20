@@ -40,10 +40,10 @@ Note that you should add `--user` if you do not have root access.
 
 The software is [validated against CRPropa 3.1.7](https://github.com/CRPropa/CRPropa3/tree/3.1.7), which is an established code for charged particle propagation and interaction. Note that you have to use the branch [CRPropa 3.1.7 with log time observer](https://github.com/reichherzerp/CRPropa3/tree/LogObserverTimeEvolution) in order to run the scripts:
 
-Dedicated comparisons are shown in the folder [comparison](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/tree/master/comparison):
-- [Active galactice nuclei jet plasmoids (ballistic case)](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/comparison/Comparison%20in%20compact%20astrophysical%20sources%201e14m%20trajectory.ipynb)
-- [Active galactice nuclei jet plasmoids (diffusive case)](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/comparison/Comparison%20in%20compact%20astrophysical%20sources%201e17m%20trajectory.ipynb)
-- [Ultra-high-energy cosmic rays in intergalactic magnetic fields](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/blob/master/comparison/Comparison%20of%20UHECRs%20in%20IGMFs%204e27m.ipynb)
+Dedicated comparisons are shown in the folder [comparison](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/tree/comparison/comparison):
+- [Active galactice nuclei jet plasmoids (ballistic case)](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/tree/comparison/comparison/Comparison%20in%20compact%20astrophysical%20sources%201e14m%20trajectory.ipynb)
+- [Active galactice nuclei jet plasmoids (diffusive case)](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/tree/comparison/comparison/Comparison%20in%20compact%20astrophysical%20sources%201e17m%20trajectory.ipynb)
+- [Ultra-high-energy cosmic rays in intergalactic magnetic fields](https://gitlab.ruhr-uni-bochum.de/reichp2y/proppy/-/tree/comparison/comparison/Comparison%20of%20UHECRs%20in%20IGMFs%204e27m.ipynb)
 
 #### Basic example
 ```
