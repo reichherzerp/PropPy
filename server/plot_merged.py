@@ -14,7 +14,7 @@ bins = 30
 d = trajectory_lengths/10**14
 hist, bins = np.histogram(d, bins=bins)
 logbins = np.logspace(np.log10(min(d)),np.log10(max(d)),len(bins))
-plt.hist(d, bins=logbins, alpha=0.5, label='$\kappa =$ {:.1e}m$^2$/s'.format(diff))
+plt.hist(d, bins=logbins, alpha=0.5, label=r'$\kappa =$ {:.1e}m$^2$/s'.format(diff))
 plt.axvline(x=1, color='k', ls='--', label='plasmoid radius')
 plt.title('total # particles = {:.0e}'.format(len(d)))
 plt.xlabel('D/{:.0e}m'.format(radius))

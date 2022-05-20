@@ -123,7 +123,7 @@ class Statistics():
         print(max(d))
         hist, bins = np.histogram(d, bins=bins)
         logbins = np.logspace(np.log10(min(d)),np.log10(d_max_value),len(bins))
-        plt.hist(d, bins=logbins, alpha=0.5, label='$\kappa =$ {:.1e}m$^2$/s'.format(diffusion_coefficient))
+        plt.hist(d, bins=logbins, alpha=0.5, label=r'$\kappa =$ {:.1e}m$^2$/s'.format(diffusion_coefficient))
         plt.axvline(x=1, color='k', ls='--', label='plasmoid radius')
         plt.title('total # particles = {:.0e}'.format(nr_particles))
         plt.xlabel('D/{:.0e}m'.format(radius))
@@ -137,7 +137,7 @@ class Statistics():
         d = trajectory_lengths/10**14
         hist, bins = np.histogram(d, bins=bins) 
         linbins = np.linspace((min(d)),(d_max_value),len(bins))
-        plt.hist(d, bins=linbins, alpha=0.5, label='$\kappa =$ {:.1e}m$^2$/s'.format(diffusion_coefficient))
+        plt.hist(d, bins=linbins, alpha=0.5, label=r'$\kappa =$ {:.1e}m$^2$/s'.format(diffusion_coefficient))
         plt.axvline(x=1, color='k', ls='--', label='plasmoid radius')
         plt.title('total # particles = {:.0e}'.format(nr_particles))
         plt.xlabel('D/{:.0e}m'.format(radius))
@@ -236,25 +236,25 @@ class Statistics():
         if error:
             # plot with error bars
             if isotropic:
-                plt.errorbar(l, kappa_xx, yerr=kappa_xx_err, fmt=".", elinewidth=0.5, markersize=4, c='k', label='$\kappa_{xx}$')
-                plt.errorbar(l, kappa_yy, yerr=kappa_yy_err, fmt=".", elinewidth=0.5, markersize=4, c='dodgerblue', label='$\kappa_{yy}$')
-                plt.errorbar(l, kappa_zz, yerr=kappa_zz_err, fmt=".", elinewidth=0.5, markersize=4, c='brown', label='$\kappa_{zz}$')
+                plt.errorbar(l, kappa_xx, yerr=kappa_xx_err, fmt=".", elinewidth=0.5, markersize=4, c='k', label=r'$\kappa_{xx}$')
+                plt.errorbar(l, kappa_yy, yerr=kappa_yy_err, fmt=".", elinewidth=0.5, markersize=4, c='dodgerblue', label=r'$\kappa_{yy}$')
+                plt.errorbar(l, kappa_zz, yerr=kappa_zz_err, fmt=".", elinewidth=0.5, markersize=4, c='brown', label=r'$\kappa_{zz}$')
             else:
-                plt.errorbar(l, kappa_zz, yerr=kappa_zz_err, fmt=".", elinewidth=0.5, markersize=4, c='dodgerblue', label='$\kappa_\parallel$')
-                plt.errorbar(l, kappa_perp, yerr=kappa_perp_err, fmt=".", elinewidth=0.5, markersize=4, c='brown', label='$\kappa_\perp$')
+                plt.errorbar(l, kappa_zz, yerr=kappa_zz_err, fmt=".", elinewidth=0.5, markersize=4, c='dodgerblue', label=r'$\kappa_\parallel$')
+                plt.errorbar(l, kappa_perp, yerr=kappa_perp_err, fmt=".", elinewidth=0.5, markersize=4, c='brown', label=r'$\kappa_\perp$')
         else:
             # plot without error bars
             if isotropic:
-                plt.plot(l, kappa_xx, zorder=1, label='$\kappa_{xx}$', c='k') 
+                plt.plot(l, kappa_xx, zorder=1, label=r'$\kappa_{xx}$', c='k') 
                 plt.scatter(l, kappa_xx, zorder=2, s=2, c='k')
-                plt.plot(l, kappa_yy, zorder=1, label='$\kappa_{yy}$', c='brown') 
+                plt.plot(l, kappa_yy, zorder=1, label=r'$\kappa_{yy}$', c='brown') 
                 plt.scatter(l, kappa_yy, zorder=2, s=2, c='brown')
-                plt.plot(l, kappa_zz, zorder=1, label='$\kappa_{zz}$', c='dodgerblue') 
+                plt.plot(l, kappa_zz, zorder=1, label=r'$\kappa_{zz}$', c='dodgerblue') 
                 plt.scatter(l, kappa_zz, zorder=2, s=2, c='dodgerblue')
             else:
-                plt.plot(l, kappa_perp, zorder=1, label='$\kappa_\perp$', c='brown') 
+                plt.plot(l, kappa_perp, zorder=1, label=r'$\kappa_\perp$', c='brown') 
                 plt.scatter(l, kappa_perp, zorder=2, s=2, c='brown')
-                plt.plot(l, kappa_zz, zorder=1, label='$\kappa_\parallel$', c='dodgerblue') 
+                plt.plot(l, kappa_zz, zorder=1, label=r'$\kappa_\parallel$', c='dodgerblue') 
                 plt.scatter(l, kappa_zz, zorder=2, s=2, c='dodgerblue')
         
         plt.xlabel('trajectory length [m]')
