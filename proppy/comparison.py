@@ -307,7 +307,7 @@ class Comparison():
         plt.scatter(steps_bp_grid, kappas_bp_grid, label='CRPropa (BP) [grid]', marker='*', color='purple')
         plt.scatter(steps_sde, kappas_sde, label='CRPropa (SDE)', marker='^', color='blue')
         plt.axvline(x=self.l_c, label=r'$l_\mathrm{c}$', color='grey', ls=':')
-        plt.axvline(x=self.r_g*2*3.14, label='$2\pi\, r_\mathrm{g}$', color='grey', ls='--')
+        plt.axvline(x=self.r_g*2*3.14, label=r'$2\pi\, r_\mathrm{g}$', color='grey', ls='--')
         plt.axvline(x=self.lambda_theory, label=r'$\lambda_\mathrm{theory}$', color='grey', ls='-.')
         plt.axhline(y=self.kappa_theory, color='k', linestyle='-', label='theory')
         plt.legend()
@@ -454,7 +454,7 @@ class Comparison():
 
         plt.xlabel('position $x_i$ [m]')
         plt.ylabel('# particles')
-        plt.title('$l_\mathrm{traj} = 10^{17}$ m ('+prop_type+')')
+        plt.title(r'$l_\mathrm{traj} = 10^{17}$ m ('+prop_type+')')
 
         if fig_display:
             plt.savefig(self.path_figs+'/particle_distributions_'+prop_type+'.pdf', bbox_inches='tight', pad_inches=0.02) 
@@ -491,7 +491,7 @@ class Comparison():
 
         plt.xlabel('position $x_i$ [m]')
         plt.ylabel('# particles')
-        plt.title('$l_\mathrm{traj} = 10^{17}$ m ('+prop_type+')')
+        plt.title(r'$l_\mathrm{traj} = 10^{17}$ m ('+prop_type+')')
 
         if fig_display:
             plt.savefig(self.path_figs+'/particle_distributions_'+prop_type+'.pdf', bbox_inches='tight', pad_inches=0.02) 
