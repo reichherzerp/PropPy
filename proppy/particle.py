@@ -4,7 +4,6 @@ By calling the particles simulate function, the particle will be
 propagated completely and observed as specified in the observer.
 """
 
-from numba import jit, b1, float32, int32
 import numpy as np
 from numba.experimental import jitclass
 from .observer import *

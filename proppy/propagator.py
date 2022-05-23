@@ -52,7 +52,7 @@ Typical usage example:
 """
 
 
-from numba import jit, b1, float32, int32
+from numba import b1, float32, int32
 import numpy as np
 from numba.experimental import jitclass
 from .magnetic_field import *

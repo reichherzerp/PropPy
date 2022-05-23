@@ -5,7 +5,7 @@ to observers to easily write out the current particle state for analysis.
 """
 
 
-from numba import jit, b1, float32, int32, float64
+from numba import b1, float32, int32, float64
 import numpy as np
 from numba.experimental import jitclass
 

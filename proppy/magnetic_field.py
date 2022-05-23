@@ -24,7 +24,7 @@ of the field and how to align the diffusion tensor.
 """
 
 
-from numba import jit, b1, float32, int32
+from numba import float32
 import numpy as np
 from numba.experimental import jitclass
 from abc import ABC, ABCMeta, abstractmethod
