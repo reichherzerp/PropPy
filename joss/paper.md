@@ -28,7 +28,7 @@ bibliography: paper.bib
 # Summary 
 PropPy is an open-source Python software package for propagating charged high-energy particles (cosmic rays, CRs) in a turbulent magnetic field. Its modular architecture comprises various modules for sources, magnetic fields, propagators, and observers covering a wide range of applications.
 
-When compared to codes that solve the equation of motion (EOM) in each propagation step, our propagation is based on a correlated random walk (CRW) in Cartesian (for isotropic diffusion) or cylindrical (for anisotropic diffusion) coordinates, which makes each simulation step significantly faster. This novel approach is justified by the fact that a transport equation can be derived via the formulation of the CRW (see theory section below), which is used in analytical descriptions of particle transport [@2013ApJ...765...31L; @Effenberg2014; @Litvinenko2015; @Tautz2016]:
+When compared to codes that solve the equation of motion (EOM) in each propagation step, our propagation is based on a correlated random walk (CRW) in Cartesian (for isotropic diffusion) or cylindrical (for anisotropic diffusion) coordinates, which makes each simulation step significantly faster. This novel approach is justified by the fact that a transport equation can be derived via the formulation of the CRW (see theory section below), which is used in analytical descriptions of particle transport [@Litvinenko2013; @Effenberg2014; @Litvinenko2015; @Tautz2016]:
 \begin{equation}\label{eq:telegraph}
 \frac{\partial f}{\partial t} + \sum_i \tau_i \frac{\partial^2 f}{\partial t^2}= \sum_i \kappa_i \frac{\partial^2 f}{\partial x_i^2},
 \end{equation}
