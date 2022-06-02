@@ -71,6 +71,6 @@ The comparison of the three different approaches diffusive, EOM, and CRW shows t
 # Acknowledgements
 
 We acknowledge support from funding from the German Science Foundation DFG, within the Collaborative Research Center SFB1491 "Cosmic Interacting Matters - From Source to Signal". PR acknowledge support by Institut Pascal at Université Paris-Saclay during the Paris-Saclay Astroparticle Symposium 2021, with the support of the P2IO Laboratory of Excellence (programme “Investissements d’avenir” ANR-11-IDEX-0003-01 Paris-Saclay and ANR-10-LABX-0038), the P2I research departments of the Paris-Saclay university, as well as IJCLab, CEA, IPhT, APPEC, the IN2P3 master projet UCMN and EuCAPT.
-Special thanks to L. Schlegel, F. Schüssler, J. Suc, and E.G. Zweibel for valuable discussions.
+Special thanks to L. Schlegel, F. Schüssler, J. Suc, and E.G. Zweibel for valuable discussions. We appreciate the efforts of editor C. Hedges and the reviewers C. Evoli and A. Seta for reviewing the software package and the paper.
 
 # References
